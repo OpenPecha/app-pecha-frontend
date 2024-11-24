@@ -13,7 +13,7 @@ const UserRegistration = () => {
     const [password, setPassword] = useState("");
     const [userType, setUserType] = useState("Select");
 
-    const register = (e) => {
+    const registerUser = (e) => {
         e.preventDefault();
         axiosInstance.get("/api/register")
     };
@@ -27,7 +27,7 @@ const UserRegistration = () => {
                 <Col xs={ 12 } md={ 18 } lg={ 25 } className="register-box">
                     <h2 className="text-center register-title">{ t("signup") }</h2>
 
-                    <Form onSubmit={ register }>
+                    <Form onSubmit={ registerUser }>
                         <Form.Group className="mb-3">
                             <Form.Control
                                 type="email"
