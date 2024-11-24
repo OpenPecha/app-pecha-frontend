@@ -1,83 +1,90 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
-import "./UserRegistration.scss"; // Import the SCSS file for custom styling
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import "./UserRegistration.scss";
 
 const UserRegistration = () => {
-    return (
-        <Container fluid className="register-container d-flex align-items-center justify-content-center">
-            <Row>
-                <Col xs={12} md={18} lg={25} className="register-box">
-                    {/* Registration Heading */}
-                    <h2 className="text-center register-title">Sign Up</h2>
+  const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("Select");
 
-                    {/* Registration Form */}
-                    <Form>
-                        {/* Email Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="email"
-                                placeholder="Email Address"
-                                className="form-input"
-                            />
-                        </Form.Group>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log({ email, firstName, lastName, password, userType });
+  };
 
-                        {/* First Name Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="text"
-                                placeholder="First Name"
-                                className="form-input"
-                            />
-                        </Form.Group>
+  return (
+    <Container
+      fluid
+      className="register-container d-flex align-items-center justify-content-center"
+    >
+      <Row>
+        <Col xs={12} md={18} lg={25} className="register-box">
+          <h2 className="text-center register-title">{t("signup")}</h2>
 
-                        {/* Last Name Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="text"
-                                placeholder="Last Name"
-                                className="form-input"
-                            />
-                        </Form.Group>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="email"
+                placeholder={t("emailAddress")}
+                className="form-input"
+              />
+            </Form.Group>
 
-                        {/* Password Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="password"
-                                placeholder="Password"
-                                className="form-input"
-                            />
-                        </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder={t("firstName")}
+                className="form-input"
+              />
+            </Form.Group>
 
-                        {/* Dropdown for User Type */}
-                        <Form.Group className="mb-3">
-                            <Form.Select className="form-input">
-                                <option>Select</option>
-                                <option>Monastic</option>
-                                <option>Teacher</option>
-                                <option>Student</option>
-                                <option>Educated* / Dr / Prof</option>
-                                <option>Regular User</option>
-                            </Form.Select>
-                        </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder={t("lastName")}
+                className="form-input"
+              />
+            </Form.Group>
 
-                        {/* Sign Up Button */}
-                        <Button type="submit" className="register-button w-100">
-                            Sign Up
-                        </Button>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="password"
+                placeholder={t("password")}
+                className="form-input"
+              />
+            </Form.Group>
 
-                        {/* Link to Log In */}
-                        <div className="register-links text-center mt-3">
-                            <span>Already have an account? </span>
-                            <Link to="/login" className="login-link">
-                                Log in
-                            </Link>
-                        </div>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
-    );
+            <Form.Group className="mb-3">
+              <Form.Select className="form-input">
+                <option>{t("select")}</option>
+                <option>{t("monastic")}</option>
+                <option>{t("teacher")}</option>
+                <option>{t("student")}</option>
+                <option>{t("educated")}</option>
+                <option>{t("regularUser")}</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Button type="submit" className="register-button w-100">
+              {t("signup")}
+            </Button>
+
+            <div className="register-links text-center mt-3">
+              <span>{t("alreadyHaveAccount")} </span>
+              <Link to="/login" className="login-link">
+                {t("login")}
+              </Link>
+            </div>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+  );
 };
 
 export default UserRegistration;

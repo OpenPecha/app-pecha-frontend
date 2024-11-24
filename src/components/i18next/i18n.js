@@ -1,31 +1,128 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector'; // NOTE :  can be removed
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector"; // NOTE :  can be removed
 
 const resources = {
-    en: {
-        translation: {
-            "Email": "Email",
-            "First Name": "First Name",
-            "Last Name": "Last Name",
-            "Password": "Password",
-            "Confirm Password": "Confirm Password",
-            "Register": "Register",
-            "Passwords do not match": "Passwords do not match"
-        }
+  en: {
+    translation: {
+      browseLibrary: "Browse the Library",
+      explore: "Explore",
+      wayOfBoddhisattva: "The Way of the Boddhisattva",
+      liturgy: "Liturgy",
+      prayersAndRituals: "Prayers and rituals",
+      buddhavacana: "Buddhavacana",
+      livingLibrary: "A Living Library of Buddhist Text",
+      livingLibraryDescription:
+        "Pecha connects users to Buddhist scriptures in various languages. Search a verse to explore its origins, interpretations, and related texts. Engage with the community by sharing insights and learning from others through sheets and topics.",
+      learnMore: "Learn More ›",
+      texts: "Texts",
+      topics: "Topics",
+      community: "Community",
+      searchPlaceholder: "Search",
+      login: "Login",
+      signup: "Sign Up",
+      help: "Help",
+      login: "Log In",
+      emailAddress: "Email Address",
+      password: "Password",
+      forgotPassword: "Forgot Password?",
+      createAccount: "Create new account",
+      loginToPecha: "Login to Pecha",
+      firstName: "First Name",
+      lastName: "Last Name",
+      password: "Password",
+      select: "Select",
+      monastic: "Monastic",
+      teacher: "Teacher",
+      student: "Student",
+      educated: "Educated* / Dr / Prof",
+      regularUser: "Regular User",
+      alreadyHaveAccount: "Already have an account?",
     },
-    // Add other languages here
+  },
+  bo: {
+    translation: {
+      browseLibrary: "དཔེ་མཛོད་འཚོལ་ཞིབ།",
+      explore: "འཚོལ་ཞིབ།",
+      wayOfBoddhisattva: "བྱང་ཆུབ་སེམས་པའི་ལམ།",
+      liturgy: "མདོ་རིགས།",
+      prayersAndRituals: "སྨོན་ལམ་དང་ཆོ་ག",
+      buddhavacana: "བུད་དྷ་དབུ་དང་ནང་རབས།",
+      livingLibrary: "དགོན་འཛིན་གྱི་དཔེ་མཛོད།",
+      livingLibraryDescription:
+        "བློ་མངའ་ཞིབ་འཚོལ་དང་ལག་རྟེན་དང་ཆེས་སྦྱོང་དང་འབྲེལ་བ་ཞིག་ཤིག་སེམས་བསྐྱེད་སྦྱོང་རིམ་དང་རྗེས་མ་སྤྱོད།",
+      learnMore: "དེ་ལས་མངོན་བརྗེད།",
+      texts: "ཡི་གེ།",
+      topics: "གཞི་གནས།",
+      community: "ཚོགས་འདུ།",
+      searchPlaceholder: "འཚོལ།",
+      login: "ཐོ་འགོད།",
+      signup: "ཐོ་བཀོད།",
+      help: "སྒྲུང་བཅོས།",
+      login: "ཐོ་འགོད།",
+      emailAddress: "རྐྱེན་ཁང་།",
+      password: "སང་བ་མཁའ་ཡོད།",
+      forgotPassword: "བསྐུར་ལམ་ཤོག་ནང་བཞིན་དགོད།",
+      createAccount: "ཐོ་བཀོད།",
+      loginToPecha: "ཐོ་འགོད་ནང་བཞིན་དགོད།",
+      firstName: "དབང་མི",
+      lastName: "རྒྱལ་མཐའ།",
+      password: "སང་བ་མཁའ་ཡོད།",
+      select: "དོན་བཞིན།",
+      monastic: "དཔེ་སྐུལ།",
+      teacher: "བློ་བཞིན།",
+      student: "དངོས་དོན།",
+      educated: "དཔེ་མཛོད།",
+      regularUser: "དཔེ་མཛོད་གློད་པ།",
+      alreadyHaveAccount: "གནང་བའི་འཉམ་ཞིབ།",
+    },
+  },
+  he: {
+    translation: {
+      browseLibrary: "עיין בספרייה",
+      explore: "חקור",
+      wayOfBoddhisattva: "דרך הבודהיסטווה",
+      liturgy: "טקסים דתיים",
+      prayersAndRituals: "תפילות וטקסים",
+      buddhavacana: "דברי בודהא",
+      livingLibrary: "ספרייה חיה של טקסטים בודהיסטיים",
+      livingLibraryDescription:
+        "Pecha מחבר משתמשים לכתבי קודש בודהיסטיים במגוון שפות. חפש פסוק כדי לחקור את מקורותיו, פרשנויותיו וטקסטים קשורים. שתף תובנות ולמד מאחרים באמצעות דפים ונושאים.",
+      learnMore: "קרא עוד ›",
+      texts: "טקסטים",
+      topics: "נושאים",
+      community: "קהילה",
+      searchPlaceholder: "חיפוש",
+      login: "התחברות",
+      signup: "הרשמה",
+      help: "עזרה",
+      loginToPecha: "התחבר ל-Pecha",
+      login: "התחברות",
+      emailAddress: "כתובת אימייל",
+      password: "סיסמא",
+      forgotPassword: "שכחת סיסמא?",
+      createAccount: "צור חשבון חדש",
+      firstName: "שם פרטי",
+      lastName: "שם משפחה",
+      password: "סיסמא",
+      select: "בחר",
+      monastic: "נזיר",
+      teacher: "מורה",
+      student: "סטודנט",
+      educated: 'מלומד* / ד"ר / פרופ',
+      regularUser: "משתמש רגיל",
+      alreadyHaveAccount: "כבר יש לך חשבון?",
+    },
+  },
 };
 
-i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-        resources,
-        fallbackLng: 'en',
-        interpolation: {
-            escapeValue: false
-        }
-    });
+i18n.use(initReactI18next).init({
+  resources,
+  lng: localStorage.getItem("language") || "en", // Load language from localStorage or default to 'en'
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false, // React already escapes values
+  },
+});
 
 export default i18n;
