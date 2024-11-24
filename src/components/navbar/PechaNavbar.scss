@@ -1,0 +1,80 @@
+// Variables for colors and other reusable properties
+$primary-color: #333;
+$secondary-color: #555;
+$hover-color: #f39c12;
+$background-color: #f8f9fa;
+$dark-color: #000;
+$light-color: #fff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$font-family: Arial, sans-serif;
+
+// Navbar Custom Styles
+.custom-navbar {
+  font-family: $font-family;
+  box-shadow: 0 2px 5px $shadow-color;
+  &.bg-light{
+    background-color: white!important;
+  }
+
+  // Flower Icon
+  .flower-icon {
+    font-size: 1.5rem;
+  }
+
+  // Links Styling
+  .navbar-nav {
+    .nav-link {
+      color: $secondary-color !important;
+      font-weight: bold;
+      margin-right: 15px;
+      font-size: 1rem;
+
+      &:hover {
+        color: $hover-color !important; // Orange hover effect
+      }
+    }
+  }
+
+  // Search Bar
+  .form-control {
+    border-radius: 0.25rem;
+  }
+
+  .input-group {
+    button {
+      border-radius: 0 0.25rem 0.25rem 0;
+    }
+  }
+
+  // Buttons (Login and Signup)
+  .btn-outline-dark {
+    font-weight: bold;
+    color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover {
+      background-color: $primary-color;
+      color: $light-color;
+    }
+  }
+
+  .btn-dark {
+    font-weight: bold;
+    color: $light-color;
+    background-color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover {
+      background-color: $dark-color;
+    }
+  }
+
+  // Dropdown Menu
+  .dropdown-toggle {
+    box-shadow: none !important;
+  }
+
+  .dropdown-menu {
+    min-width: 150px;
+  }
+}

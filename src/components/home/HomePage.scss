@@ -1,0 +1,110 @@
+// General Container Styling
+.homepage-container {
+  padding: 0;
+}
+.row{
+  --bs-gutter-x:0;
+}
+// Shared Style for Left and Right Sections
+.left-section,
+.right-section {
+  padding-top: 10%; // Consistent top padding for vertical alignment
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; // Ensure content starts from the top
+}
+
+// Left Section (70%)
+.left-section {
+  .section-1 {
+    // Section 1: Browse the Library
+    display: flex;
+    justify-content: space-between;
+    align-items: center; // Aligns text and button vertically
+    margin-bottom: 2rem; // Add spacing below this section
+
+    .browse-library-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .browse-button {
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+  }
+
+  .section-2 {
+    // Section 2 Content
+    .part {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      // Add spacing between parts
+      margin-bottom: 5%;
+
+      .green-line {
+        width: 100%; // Full width line
+        height: 2px;
+        background-color: green;
+      }
+
+      .red-line {
+        width: 100%; // Full width line
+        height: 2px;
+        background-color: red;
+      }
+
+      .part-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      .part-subtitle {
+        font-size: 0.9rem;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Right Section (30%)
+.right-section {
+  background-color: #f8f9fa; // Light grey background
+  padding: 7rem 2rem 2rem 2rem; // Padding inside the section
+  height: auto; // Let it fill the column height
+
+
+  .right-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333; // Dark grey heading color
+    margin-bottom: 1rem; // Space below the title
+  }
+
+  .right-divider {
+    border: 0;
+    height: 1px;
+    background: #ccc; // Light grey divider
+    margin: 0.5rem 0;
+  }
+
+  .right-paragraph {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555; // Medium grey paragraph color
+
+    .learn-more {
+      color: #007bff; // Bootstrap primary blue
+      font-weight: bold;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+

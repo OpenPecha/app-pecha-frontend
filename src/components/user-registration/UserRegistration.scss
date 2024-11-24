@@ -1,0 +1,87 @@
+// Color Variables
+$background-color: #f9f9f9; // Light background for the container
+$white-color: #ffffff; // White for the form background
+$dark-grey: #333333; // Dark grey for titles
+$light-grey: #cccccc; // Light grey for borders
+$red-color: red; // Red for buttons
+$dark-red-color: darkred; // Darker red for button hover
+$orange-color: #f39c12; // Orange for input focus
+$error-color: red; // Red for error messages
+
+// Center the registration container
+.register-container {
+  height: 100vh; // Full viewport height for perfect vertical centering
+  background-color: $background-color; // Use variable for background color
+  .row{
+    --bs-gutter-x:5rem;
+  }
+}
+
+// Registration Box
+.register-box {
+  background: $white-color; // White background for the form container
+  padding: 2rem; // Padding inside the box
+  border-radius: 8px; // Rounded corners
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Subtle box shadow
+
+  .register-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: $dark-grey; // Dark grey text for title
+    margin-bottom: 2rem; // Space below the title
+  }
+
+  .form-input {
+    padding: 0.8rem; // Adjust padding for larger input fields
+    font-size: 1rem;
+    border-radius: 5px; // Rounded input fields
+    border: 1px solid $light-grey; // Light grey border
+
+    &:focus {
+      outline: none;
+      border-color: $orange-color; // Orange border on focus
+      box-shadow: 0 0 5px rgba(243, 156, 18, 0.5); // Focus shadow
+    }
+  }
+
+  // Register button
+  .register-button {
+    background-color: $red-color; // Red button background
+    color: $white-color; // White text
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px; // Rounded corners
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark-red-color; // Darker red on hover
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  // Links section
+  .register-links {
+    margin-top: 1rem;
+
+    .login-link {
+      font-size: 0.9rem;
+      color: black; // Black text
+      text-decoration: none; // Remove underline
+
+      &:hover {
+        text-decoration: underline; // Underline on hover
+      }
+    }
+  }
+
+  // Password error message
+  .text-danger {
+    color: $error-color; // Red text for error message
+    font-size: 0.9rem;
+  }
+}
