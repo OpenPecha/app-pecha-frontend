@@ -25,10 +25,7 @@ const PechaNavbar = () => {
     <Navbar bg="light" expand="lg" className="custom-navbar" sticky="top">
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-          <span role="img" aria-label="flower" className="flower-icon">
-            🌸
-          </span>
-          <span className="ms-2 fw-bold">Pecha</span>
+          <img className={"logo"} src={"/img/pecha-logo.svg"} alt={"Pecha"}/>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="navbar-links" />
