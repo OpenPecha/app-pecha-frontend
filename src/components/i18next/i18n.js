@@ -1,8 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector"; // NOTE :  can be removed
 
-const resources = {
+export const resources = {
   en: {
     translation: {
       browseLibrary: "Browse the Library",
@@ -19,12 +18,10 @@ const resources = {
       topics: "Topics",
       community: "Community",
       searchPlaceholder: "Search",
-      login: "Login",
       signup: "Sign Up",
       help: "Help",
       login: "Log In",
       emailAddress: "Email Address",
-      password: "Password",
       forgotPassword: "Forgot Password?",
       createAccount: "Create new account",
       loginToPecha: "Login to Pecha",
@@ -59,9 +56,7 @@ const resources = {
       login: "ཐོ་འགོད།",
       signup: "ཐོ་བཀོད།",
       help: "སྒྲུང་བཅོས།",
-      login: "ཐོ་འགོད།",
       emailAddress: "རྐྱེན་ཁང་།",
-      password: "སང་བ་མཁའ་ཡོད།",
       forgotPassword: "བསྐུར་ལམ་ཤོག་ནང་བཞིན་དགོད།",
       createAccount: "ཐོ་བཀོད།",
       loginToPecha: "ཐོ་འགོད་ནང་བཞིན་དགོད།",
@@ -93,7 +88,6 @@ const resources = {
       topics: "נושאים",
       community: "קהילה",
       searchPlaceholder: "חיפוש",
-      login: "התחברות",
       signup: "הרשמה",
       help: "עזרה",
       loginToPecha: "התחבר ל-Pecha",
@@ -104,7 +98,6 @@ const resources = {
       createAccount: "צור חשבון חדש",
       firstName: "שם פרטי",
       lastName: "שם משפחה",
-      password: "סיסמא",
       select: "בחר",
       monastic: "נזיר",
       teacher: "מורה",

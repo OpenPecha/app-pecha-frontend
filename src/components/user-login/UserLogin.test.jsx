@@ -3,41 +3,38 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
+import { mockReactI18Nest } from "../../test-utils/CommonMocks.js";
 
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key) => key,
-  }),
-}));
+mockReactI18Nest();
 
 describe("UserLogin Component", () => {
   const queryClient = new QueryClient();
   const setup = () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
+      <Router>
+        <QueryClientProvider client={queryClient}>
           <UserLogin />
-        </Router>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </Router>
     );
   };
 
   test("renders the login form correctly", () => {
     setup();
 
-    expect(screen.getByText("loginToPecha")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("emailAddress")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("password")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "login" })).toBeInTheDocument();
-    expect(screen.getByText("forgotPassword")).toBeInTheDocument();
-    expect(screen.getByText("createAccount")).toBeInTheDocument();
+    expect(screen.getByText("Login to Pecha")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email Address")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Log In" })).toBeInTheDocument();
+    expect(screen.getByText("Forgot Password?")).toBeInTheDocument();
+    expect(screen.getByText("Create new account")).toBeInTheDocument();
   });
 
   test("handles user input for email and password fields", () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("emailAddress");
-    const passwordInput = screen.getByPlaceholderText("password");
+    const emailInput = screen.getByPlaceholderText("Email Address");
+    const passwordInput = screen.getByPlaceholderText("Password");
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     expect(emailInput.value).toBe("test@example.com");
@@ -49,7 +46,7 @@ describe("UserLogin Component", () => {
   test("renders error message on invalid form submission (email or password empty)", () => {
     setup();
 
-    const loginButton = screen.getByRole("button", { name: "login" });
+    const loginButton = screen.getByRole("button", { name: "Log In" });
 
     fireEvent.click(loginButton);
 
@@ -61,23 +58,23 @@ describe("UserLogin Component", () => {
   test("checks forgot password link navigates correctly", () => {
     setup();
 
-    const forgotPasswordLink = screen.getByText("forgotPassword");
+    const forgotPasswordLink = screen.getByText("Forgot Password?");
     expect(forgotPasswordLink).toHaveAttribute("href", "/forgot-password");
   });
 
   test("checks create account link navigates correctly", () => {
     setup();
 
-    const createAccountLink = screen.getByText("createAccount");
+    const createAccountLink = screen.getByText("Create new account");
     expect(createAccountLink).toHaveAttribute("href", "/register");
   });
 
   test("submits the form when valid data is entered", () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("emailAddress");
-    const passwordInput = screen.getByPlaceholderText("password");
-    const loginButton = screen.getByRole("button", { name: "login" });
+    const emailInput = screen.getByPlaceholderText("Email Address");
+    const passwordInput = screen.getByPlaceholderText("Password");
+    const loginButton = screen.getByRole("button", { name: "Log In" });
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });

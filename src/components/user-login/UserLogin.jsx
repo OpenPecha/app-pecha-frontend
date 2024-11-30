@@ -24,7 +24,6 @@ const UserLogin = () => {
       },
       onError: (error) => {
         console.error("Login failed", error);
-        alert(t("loginFailed"));
       },
     }
   );
