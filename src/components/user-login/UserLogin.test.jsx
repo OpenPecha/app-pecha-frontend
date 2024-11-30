@@ -1,20 +1,24 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key) => key, 
+    t: (key) => key,
   }),
 }));
 
 describe("UserLogin Component", () => {
+  const queryClient = new QueryClient();
   const setup = () => {
     render(
-      <Router>
-        <UserLogin />
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <UserLogin />
+        </Router>
+      </QueryClientProvider>
     );
   };
 
@@ -51,7 +55,7 @@ describe("UserLogin Component", () => {
 
     expect(
       screen.queryByText("Please fill in all fields")
-    ).not.toBeInTheDocument(); 
+    ).not.toBeInTheDocument();
   });
 
   test("checks forgot password link navigates correctly", () => {
@@ -85,6 +89,6 @@ describe("UserLogin Component", () => {
       screen.queryByText("Please fill in all fields")
     ).not.toBeInTheDocument();
 
-    expect(handleSubmit).not.toHaveBeenCalled(); 
+    expect(handleSubmit).not.toHaveBeenCalled();
   });
 });
