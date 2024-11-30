@@ -1,23 +1,13 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter as Router } from "react-router-dom";
-import { expect, vi } from "vitest"; // Vitest mock utility
+import { expect } from "vitest";
 import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
+import { mockAxios, mockReactI18Nest } from "../../test-utils/CommonMocks.js";
 
-// Mock i18n for translations
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key) => key,
-  }),
-}));
-
-// Mock axiosInstance
-vi.mock("../../services/config/axios-config.js", () => ({
-  default: {
-    get: vi.fn(), // Mock axios GET method
-  },
-}));
+mockReactI18Nest();
+mockAxios();
 
 describe("UserRegistration Component", () => {
   const setup = () => {
@@ -34,24 +24,24 @@ describe("UserRegistration Component", () => {
     // Check form title
     const title = screen.getByTestId("signup-title");
     expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("signup");
+    expect(title).toHaveTextContent("Sign Up");
 
     // Check all input fields
-    expect(screen.getByPlaceholderText("emailAddress")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("firstName")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("lastName")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("password")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email Address")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
 
     // // Check dropdown (user type select)
     // expect(screen.getByText("select")).toBeInTheDocument();
     // expect(screen.getByText("monastic")).toBeInTheDocument();
 
     // Check signup button
-    expect(screen.getByRole("button", { name: "signup" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign Up" })).toBeInTheDocument();
 
     // Check login link
-    expect(screen.getByText("alreadyHaveAccount")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "login" })).toHaveAttribute(
+    expect(screen.getByText("Already have an account?")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Log In" })).toHaveAttribute(
       "href",
       "/login"
     );
@@ -60,11 +50,11 @@ describe("UserRegistration Component", () => {
   test("handles user input correctly", async () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("emailAddress");
-    const firstNameInput = screen.getByPlaceholderText("firstName");
-    const lastNameInput = screen.getByPlaceholderText("lastName");
-    const passwordInput = screen.getByPlaceholderText("password");
-    const userTypeSelect = screen.getByText("select");
+    const emailInput = screen.getByPlaceholderText("Email Address");
+    const firstNameInput = screen.getByPlaceholderText("First Name");
+    const lastNameInput = screen.getByPlaceholderText("Last Name");
+    const passwordInput = screen.getByPlaceholderText("Password");
+    const userTypeSelect = screen.getByText("Select");
 
     // Simulate user typing
     await userEvent.type(emailInput, "test@example.com");
@@ -80,10 +70,10 @@ describe("UserRegistration Component", () => {
     expect(passwordInput).toHaveValue("password123");
 
     // Simulate dropdown selection by matching visible text
-    await userEvent.selectOptions(screen.getByRole("combobox"), ["monastic"]);
+    await userEvent.selectOptions(screen.getByRole("combobox"), ["Monastic"]);
 
     // Assert the correct option is selected by its visible text
-    expect(screen.getByRole("option", { name: "monastic" }).selected).toBe(
+    expect(screen.getByRole("option", { name: "Monastic" }).selected).toBe(
       true
     );
   });
@@ -96,7 +86,7 @@ describe("UserRegistration Component", () => {
     ).default;
 
     const form = screen.getByRole("form"); // Form element
-    const submitButton = screen.getByRole("button", { name: "signup" });
+    const submitButton = screen.getByRole("button", { name: "Sign Up" });
 
     // Simulate form submission
     fireEvent.submit(form);
@@ -108,20 +98,20 @@ describe("UserRegistration Component", () => {
   test("displays error if form is submitted with empty fields", async () => {
     setup();
 
-    const submitButton = screen.getByRole("button", { name: "signup" });
+    const submitButton = screen.getByRole("button", { name: "Sign Up" });
 
     // Simulate form submission without filling fields
     await userEvent.click(submitButton);
 
     // Ideally, you'd add error-handling logic in your component (e.g., showing a message)
     // Update this test case if you implement error messages
-    expect(screen.getByRole("button", { name: "signup" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
   });
 
   test("checks navigation to login page", () => {
     setup();
 
-    const loginLink = screen.getByRole("link", { name: "login" });
+    const loginLink = screen.getByRole("link", { name: "Log In" });
 
     // Check that the link navigates to "/login"
     expect(loginLink).toHaveAttribute("href", "/login");
