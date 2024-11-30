@@ -1,23 +1,15 @@
 import React from "react";
-import {
-  Navbar,
-  Nav,
-  Container,
-  Form,
-  Button,
-  Dropdown,
-  InputGroup,
-} from "react-bootstrap";
+import { Button, Container, Dropdown, Form, InputGroup, Nav, Navbar, } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaQuestionCircle, FaGlobe } from "react-icons/fa";
-import "./PechaNavbar.scss";
+import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
+import "./NavigationBar.scss";
 import { useTranslation } from "react-i18next";
 
-const PechaNavbar = () => {
+const NavigationBar = () => {
   const { t, i18n } = useTranslation();
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+  const changeLanguage = async (lng) => {
+    await i18n.changeLanguage(lng);
     localStorage.setItem("language", lng);
   };
 
@@ -98,4 +90,4 @@ const PechaNavbar = () => {
   );
 };
 
-export default PechaNavbar;
+export default NavigationBar;

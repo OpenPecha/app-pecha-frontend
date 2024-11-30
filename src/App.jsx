@@ -3,12 +3,12 @@ import UserRegistration from "./components/user-registration/UserRegistration.js
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomePage from "./components/home/HomePage.jsx";
 import UserLogin from "./components/user-login/UserLogin.jsx";
-import PechaNavbar from "./components/navbar/PechaNavbar.jsx";
+import NavigationBar from "./components/navbar/NavigationBar.jsx";
 
 function App() {
     return (
         <Router>
-            <PechaNavbar />
+            <NavigationBar />
             <Routes>
                 <Route path="/" element={ <HomePage /> } />
                 <Route path="/texts" element={ <HomePage /> } />
