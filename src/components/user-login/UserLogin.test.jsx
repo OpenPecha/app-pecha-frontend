@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
 import { mockReactI18Nest } from "../../test-utils/CommonMocks.js";
@@ -7,10 +8,13 @@ import { mockReactI18Nest } from "../../test-utils/CommonMocks.js";
 mockReactI18Nest();
 
 describe("UserLogin Component", () => {
+  const queryClient = new QueryClient();
   const setup = () => {
     render(
       <Router>
-        <UserLogin />
+        <QueryClientProvider client={queryClient}>
+          <UserLogin />
+        </QueryClientProvider>
       </Router>
     );
   };
@@ -48,7 +52,7 @@ describe("UserLogin Component", () => {
 
     expect(
       screen.queryByText("Please fill in all fields")
-    ).not.toBeInTheDocument(); 
+    ).not.toBeInTheDocument();
   });
 
   test("checks forgot password link navigates correctly", () => {
@@ -82,6 +86,6 @@ describe("UserLogin Component", () => {
       screen.queryByText("Please fill in all fields")
     ).not.toBeInTheDocument();
 
-    expect(handleSubmit).not.toHaveBeenCalled(); 
+    expect(handleSubmit).not.toHaveBeenCalled();
   });
 });

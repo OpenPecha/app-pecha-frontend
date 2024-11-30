@@ -1,19 +1,24 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter as Router } from "react-router-dom";
 import { expect } from "vitest";
 import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
 import { mockAxios, mockReactI18Nest } from "../../test-utils/CommonMocks.js";
+import { QueryClient, QueryClientProvider } from "react-query";
+import axiosInstance from "../../services/config/axios-config.js";
 
 mockReactI18Nest();
 mockAxios();
 
 describe("UserRegistration Component", () => {
+  const queryClient = new QueryClient();
   const setup = () => {
     render(
       <Router>
-        <UserRegistration />
+        <QueryClientProvider client={queryClient}>
+          <UserRegistration />
+        </QueryClientProvider>
       </Router>
     );
   };
@@ -31,10 +36,6 @@ describe("UserRegistration Component", () => {
     expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
-
-    // // Check dropdown (user type select)
-    // expect(screen.getByText("select")).toBeInTheDocument();
-    // expect(screen.getByText("monastic")).toBeInTheDocument();
 
     // Check signup button
     expect(screen.getByRole("button", { name: "Sign Up" })).toBeInTheDocument();
@@ -81,18 +82,18 @@ describe("UserRegistration Component", () => {
   test("submits the form and calls the registerUser function", async () => {
     setup();
 
-    const axiosInstance = (
-      await import("../../services/config/axios-config.js")
-    ).default;
-
     const form = screen.getByRole("form"); // Form element
-    const submitButton = screen.getByRole("button", { name: "Sign Up" });
 
     // Simulate form submission
     fireEvent.submit(form);
 
     // Check if the mocked API call was made
-    expect(axiosInstance.get).toHaveBeenCalledWith("/api/register");
+    await waitFor(() => {
+      expect(axiosInstance.post).toHaveBeenCalledWith(
+        "/api/v1/auth/register",
+        expect.anything()
+      );
+    });
   });
 
   test("displays error if form is submitted with empty fields", async () => {
@@ -103,8 +104,6 @@ describe("UserRegistration Component", () => {
     // Simulate form submission without filling fields
     await userEvent.click(submitButton);
 
-    // Ideally, you'd add error-handling logic in your component (e.g., showing a message)
-    // Update this test case if you implement error messages
     expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
   });
 
