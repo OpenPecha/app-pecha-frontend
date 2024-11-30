@@ -4,11 +4,13 @@ import { useTranslation } from "react-i18next";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../../services/config/axios-config";
+import { Link } from "react-router-dom";
 
 const UserLogin = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   const loginMutation = useMutation(
     async (loginData) => {
@@ -28,10 +30,45 @@ const UserLogin = () => {
     }
   );
 
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 8;
+  };
+
+  const validateForm = () => {
+    const validationErrors = {};
+
+    if (!email) {
+      validationErrors.email = t("required");
+    } else if (!validateEmail(email)) {
+      validationErrors.email = t("invalidEmail");
+    }
+
+    if (!password) {
+      validationErrors.password = t("required");
+    } else if (!validatePassword(password)) {
+      validationErrors.password = t("invalidPassword");
+    }
+
+    return validationErrors;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    loginMutation.mutate({ email, password });
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      setErrors({});
+      loginMutation.mutate({ email, password });
+    }
   };
+
   return (
     <Container
       fluid
@@ -42,26 +79,37 @@ const UserLogin = () => {
           <h2 className="text-center login-title">{t("loginToPecha")}</h2>
 
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            {/* Email Field */}
+            <Form.Group className="mb-3" controlId="formEmail">
               <Form.Control
                 type="email"
                 placeholder={t("emailAddress")}
                 className="form-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                isInvalid={!!errors.email}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.email}
+              </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3">
+            {/* Password Field */}
+            <Form.Group className="mb-3" controlId="formPassword">
               <Form.Control
                 type="password"
                 placeholder={t("password")}
                 className="form-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                isInvalid={!!errors.password}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.password}
+              </Form.Control.Feedback>
             </Form.Group>
 
+            {/* Login Button */}
             <Button
               type="submit"
               className="login-button w-100"
@@ -70,14 +118,15 @@ const UserLogin = () => {
               {loginMutation.isLoading ? t("loggingIn") : t("login")}
             </Button>
 
+            {/* Links */}
             <div className="login-links text-center mt-3">
-              <a href="/forgot-password" className="forgot-password">
+              <Link to="/forgot-password" className="forgot-password">
                 {t("forgotPassword")}
-              </a>
+              </Link>
               <br />
-              <a href="/register" className="create-account">
+              <Link to="/register" className="create-account">
                 {t("createAccount")}
-              </a>
+              </Link>
             </div>
           </Form>
         </Col>
@@ -87,4 +136,3 @@ const UserLogin = () => {
 };
 
 export default UserLogin;
-

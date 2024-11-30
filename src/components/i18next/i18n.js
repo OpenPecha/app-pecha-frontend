@@ -35,6 +35,9 @@ export const resources = {
       educated: "Educated* / Dr / Prof",
       regularUser: "Regular User",
       alreadyHaveAccount: "Already have an account?",
+      required: "Required",
+      invalidEmail: "Invalid email address",
+      invalidPassword: "Invalid password",
     },
   },
   bo: {
@@ -70,6 +73,9 @@ export const resources = {
       educated: "དཔེ་མཛོད།",
       regularUser: "དཔེ་མཛོད་གློད་པ།",
       alreadyHaveAccount: "གནང་བའི་འཉམ་ཞིབ།",
+      required: "bo - Required",
+      invalidEmail: "bo - Invalid email address",
+      invalidPassword: "bo - Invalid password",
     },
   },
   he: {
@@ -105,6 +111,9 @@ export const resources = {
       educated: 'מלומד* / ד"ר / פרופ',
       regularUser: "משתמש רגיל",
       alreadyHaveAccount: "כבר יש לך חשבון?",
+      required: "he - Required",
+      invalidEmail: "he - Invalid email address",
+      invalidPassword: "he - Invalid password",
     },
   },
 };
