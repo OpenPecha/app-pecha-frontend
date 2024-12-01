@@ -21,8 +21,8 @@ export const resources = {
       signup: "Sign Up",
       help: "Help",
       login: "Log In",
-      emailAddress: "Email Address",
-      forgotPassword: "Forgot Password?",
+      emailAddress: "Email address",
+      forgotPassword: "Forgot password?",
       createAccount: "Create new account",
       loginToPecha: "Login to Pecha",
       firstName: "First Name",
@@ -38,6 +38,8 @@ export const resources = {
       required: "Required",
       invalidEmail: "Invalid email address",
       invalidPassword: "Invalid password",
+      confirmPassword: "Confirm password",
+      passwordsDoNotMatch: "Passwords do not match",
     },
   },
   bo: {
@@ -76,6 +78,8 @@ export const resources = {
       required: "bo - Required",
       invalidEmail: "bo - Invalid email address",
       invalidPassword: "bo - Invalid password",
+      confirmPassword: "bo - Confirm password",
+      passwordsDoNotMatch: "bo - Passwords do not match",
     },
   },
   he: {
@@ -114,6 +118,8 @@ export const resources = {
       required: "he - Required",
       invalidEmail: "he - Invalid email address",
       invalidPassword: "he - Invalid password",
+      confirmPassword: "he - Confirm password",
+      passwordsDoNotMatch: "he - Passwords do not match",
     },
   },
 };

@@ -5,12 +5,15 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../../services/config/axios-config";
 import { Link } from "react-router-dom";
+import eyeOpen from "../../assets/icon/eye-open.svg";
+import eyeClose from "../../assets/icon/eye-closed.svg";
 
 const UserLogin = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useMutation(
     async (loginData) => {
@@ -95,9 +98,12 @@ const UserLogin = () => {
             </Form.Group>
 
             {/* Password Field */}
-            <Form.Group className="mb-3" controlId="formPassword">
+            <Form.Group
+              className="mb-3 position-relative"
+              controlId="formPassword"
+            >
               <Form.Control
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder={t("password")}
                 className="form-input"
                 value={password}
@@ -107,6 +113,29 @@ const UserLogin = () => {
               <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
+
+              {/* Eye Button */}
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="position-absolute"
+                style={{
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                }}
+              >
+                {showPassword ? (
+                  <img src={eyeOpen} alt="Eye Icon" width="16" height="16" />
+                ) : (
+                  <img
+                    src={eyeClose}
+                    alt="Eye Slash Icon"
+                    width="16"
+                    height="16"
+                  />
+                )}
+              </span>
             </Form.Group>
 
             {/* Login Button */}
