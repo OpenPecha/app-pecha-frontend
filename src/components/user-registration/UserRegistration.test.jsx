@@ -32,7 +32,7 @@ describe("UserRegistration Component", () => {
     expect(title).toHaveTextContent("Sign Up");
 
     // Check all input fields
-    expect(screen.getByPlaceholderText("Email Address")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
@@ -51,11 +51,10 @@ describe("UserRegistration Component", () => {
   test("handles user input correctly", async () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("Email Address");
+    const emailInput = screen.getByPlaceholderText("Email address");
     const firstNameInput = screen.getByPlaceholderText("First Name");
     const lastNameInput = screen.getByPlaceholderText("Last Name");
     const passwordInput = screen.getByPlaceholderText("Password");
-    const userTypeSelect = screen.getByText("Select");
 
     // Simulate user typing
     await userEvent.type(emailInput, "test@example.com");
@@ -69,14 +68,6 @@ describe("UserRegistration Component", () => {
 
     await userEvent.type(passwordInput, "password123");
     expect(passwordInput).toHaveValue("password123");
-
-    // Simulate dropdown selection by matching visible text
-    await userEvent.selectOptions(screen.getByRole("combobox"), ["Monastic"]);
-
-    // Assert the correct option is selected by its visible text
-    expect(screen.getByRole("option", { name: "Monastic" }).selected).toBe(
-      true
-    );
   });
 
   // test("submits the form and calls the registerUser function", async () => {

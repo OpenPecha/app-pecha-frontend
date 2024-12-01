@@ -23,17 +23,17 @@ describe("UserLogin Component", () => {
     setup();
 
     expect(screen.getByText("Login to Pecha")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Email Address")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Log In" })).toBeInTheDocument();
-    expect(screen.getByText("Forgot Password?")).toBeInTheDocument();
+    expect(screen.getByText("Forgot password?")).toBeInTheDocument();
     expect(screen.getByText("Create new account")).toBeInTheDocument();
   });
 
   test("handles user input for email and password fields", () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("Email Address");
+    const emailInput = screen.getByPlaceholderText("Email address");
     const passwordInput = screen.getByPlaceholderText("Password");
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
@@ -58,7 +58,7 @@ describe("UserLogin Component", () => {
   test("checks forgot password link navigates correctly", () => {
     setup();
 
-    const forgotPasswordLink = screen.getByText("Forgot Password?");
+    const forgotPasswordLink = screen.getByText("Forgot password?");
     expect(forgotPasswordLink).toHaveAttribute("href", "/forgot-password");
   });
 
@@ -72,7 +72,7 @@ describe("UserLogin Component", () => {
   test("submits the form when valid data is entered", () => {
     setup();
 
-    const emailInput = screen.getByPlaceholderText("Email Address");
+    const emailInput = screen.getByPlaceholderText("Email address");
     const passwordInput = screen.getByPlaceholderText("Password");
     const loginButton = screen.getByRole("button", { name: "Log In" });
 

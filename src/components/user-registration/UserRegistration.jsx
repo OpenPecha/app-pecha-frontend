@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./UserRegistration.scss";
@@ -15,7 +15,6 @@ const UserRegistration = () => {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userType, setUserType] = useState("Select");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -66,20 +65,16 @@ const UserRegistration = () => {
 
     if (!password) {
       validationErrors.password = t("required");
-    } else if (!validatePassword(password)) {
+    }
+    if (!validatePassword(password)) {
       validationErrors.password = t("invalidPassword");
     }
-
     if (password !== confirmPassword) {
       validationErrors.confirmPassword = t("passwordsDoNotMatch");
     }
 
     if (!confirmPassword) {
       validationErrors.confirmPassword = t("required");
-    }
-
-    if (userType === "Select") {
-      validationErrors.userType = t("required");
     }
 
     return validationErrors;
@@ -95,10 +90,9 @@ const UserRegistration = () => {
       setErrors({});
       registerMutation.mutate({
         email,
-        firstName,
-        lastName,
+        firstname: firstName,
+        lastname: lastName,
         password,
-        userType,
       });
     }
   };
@@ -239,26 +233,6 @@ const UserRegistration = () => {
                   />
                 )}
               </span>
-            </Form.Group>
-
-            {/* User Type Dropdown */}
-            <Form.Group className="mb-3" controlId="formUserType">
-              <Form.Select
-                className="form-input"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                isInvalid={!!errors.userType}
-              >
-                <option>{t("select")}</option>
-                <option>{t("monastic")}</option>
-                <option>{t("teacher")}</option>
-                <option>{t("student")}</option>
-                <option>{t("educated")}</option>
-                <option>{t("regularUser")}</option>
-              </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.userType}
-              </Form.Control.Feedback>
             </Form.Group>
 
             {/* Submit Button */}
