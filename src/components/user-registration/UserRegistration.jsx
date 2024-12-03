@@ -1,16 +1,17 @@
-import React, {useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {useTranslation} from "react-i18next";
+import React, { useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./UserRegistration.scss";
 import axiosInstance from "../../services/config/axios-config.js";
-import {useMutation} from "react-query";
+import { useMutation } from "react-query";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
-import {useAuth} from "../../helpers/AuthContext.jsx";
+import { useAuth } from "../../helpers/AuthContext.jsx";
 
 const UserRegistration = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -19,6 +20,7 @@ const UserRegistration = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [registrationError, setRegistrationError] = useState("");
     const { login } = useAuth();
     const registerMutation = useMutation(
         async (registerData) => {
@@ -30,11 +32,13 @@ const UserRegistration = () => {
         },
         {
             onSuccess: (data) => {
-                console.log("Registration successful", data);
-                const { accessToken, refreshToken } = data;
-                login(accessToken, refreshToken);
+                setRegistrationError("");
+                const { access_token, refresh_token } = data;
+                login(access_token, refresh_token);
+                navigate('/texts')
             },
             onError: (error) => {
+                setRegistrationError(error.response.data.detail);
                 console.error("Registration failed", error);
             },
         }
@@ -95,7 +99,7 @@ const UserRegistration = () => {
                 email,
                 firstname: firstName,
                 lastname: lastName,
-                password,
+                password
             });
         }
     };
@@ -106,148 +110,151 @@ const UserRegistration = () => {
             className="register-container d-flex align-items-center justify-content-center"
         >
             <Row>
-                <Col xs={12} md={18} lg={25} className="register-box">
+                <Col xs={ 12 } md={ 18 } lg={ 25 } className="register-box">
                     <h2 className="text-center register-title" data-testid="signup-title">
-                        {t("signup")}
+                        { t("signup") }
                     </h2>
 
-                    <Form onSubmit={registerUser} role="form">
-                        {/* Email Field */}
+                    <Form onSubmit={ registerUser } role="form">
+                        {/* Email Field */ }
                         <Form.Group className="mb-3" controlId="formEmail">
                             <Form.Control
                                 type="email"
-                                placeholder={t("emailAddress")}
+                                placeholder={ t("emailAddress") }
                                 className="form-input"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                isInvalid={!!errors.email}
+                                value={ email }
+                                onChange={ (e) => setEmail(e.target.value) }
+                                isInvalid={ !!errors.email }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.email}
+                                { errors.email }
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        {/* First Name Field */}
+                        {/* First Name Field */ }
                         <Form.Group className="mb-3" controlId="formFirstName">
                             <Form.Control
                                 type="text"
-                                placeholder={t("firstName")}
+                                placeholder={ t("firstName") }
                                 className="form-input"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                isInvalid={!!errors.firstName}
+                                value={ firstName }
+                                onChange={ (e) => setFirstName(e.target.value) }
+                                isInvalid={ !!errors.firstName }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.firstName}
+                                { errors.firstName }
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        {/* Last Name Field */}
+                        {/* Last Name Field */ }
                         <Form.Group className="mb-3" controlId="formLastName">
                             <Form.Control
                                 type="text"
-                                placeholder={t("lastName")}
+                                placeholder={ t("lastName") }
                                 className="form-input"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                isInvalid={!!errors.lastName}
+                                value={ lastName }
+                                onChange={ (e) => setLastName(e.target.value) }
+                                isInvalid={ !!errors.lastName }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.lastName}
+                                { errors.lastName }
                             </Form.Control.Feedback>
                         </Form.Group>
 
-                        {/* Password Field */}
+                        {/* Password Field */ }
                         <Form.Group
                             className="mb-3 position-relative"
                             controlId="formPassword"
                         >
                             <Form.Control
-                                type={showPassword ? "text" : "password"}
-                                placeholder={t("password")}
+                                type={ showPassword ? "text" : "password" }
+                                placeholder={ t("password") }
                                 className="form-input"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                isInvalid={!!errors.password}
+                                value={ password }
+                                onChange={ (e) => setPassword(e.target.value) }
+                                isInvalid={ !!errors.password }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.password}
+                                { errors.password }
                             </Form.Control.Feedback>
 
-                            {/* Password Toggle Icon */}
+                            {/* Password Toggle Icon */ }
                             <span
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={ () => setShowPassword(!showPassword) }
                                 className="position-absolute"
-                                style={{
+                                style={ {
                                     top: "50%",
                                     right: "10px",
                                     transform: "translateY(-50%)",
                                     cursor: "pointer",
-                                }}
+                                } }
                             >
-                {showPassword ? (
-                    <img src={eyeOpen} alt="Eye Icon" width="16" height="16"/>
-                ) : (
-                    <img
-                        src={eyeClose}
-                        alt="Eye Slash Icon"
-                        width="16"
-                        height="16"
-                    />
-                )}
-              </span>
+                            { showPassword ? (
+                                <img src={ eyeOpen } alt="Eye Icon" width="16" height="16" />
+                            ) : (
+                                <img
+                                    src={ eyeClose }
+                                    alt="Eye Slash Icon"
+                                    width="16"
+                                    height="16"
+                                />
+                            ) }
+                          </span>
                         </Form.Group>
 
-                        {/* Confirm Password Field */}
+                        {/* Confirm Password Field */ }
                         <Form.Group
                             className="mb-3 position-relative"
                             controlId="formConfirmPassword"
                         >
                             <Form.Control
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder={t("confirmPassword")}
+                                type={ showConfirmPassword ? "text" : "password" }
+                                placeholder={ t("confirmPassword") }
                                 className="form-input"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                isInvalid={!!errors.confirmPassword}
+                                value={ confirmPassword }
+                                onChange={ (e) => setConfirmPassword(e.target.value) }
+                                isInvalid={ !!errors.confirmPassword }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.confirmPassword}
+                                { errors.confirmPassword }
                             </Form.Control.Feedback>
-                            {/* Password Toggle Icon */}
+                            {/* Password Toggle Icon */ }
                             <span
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                onClick={ () => setShowConfirmPassword(!showConfirmPassword) }
                                 className="position-absolute"
-                                style={{
+                                style={ {
                                     top: "50%",
                                     right: "10px",
                                     transform: "translateY(-50%)",
                                     cursor: "pointer",
-                                }}
+                                } }
                             >
-                {showConfirmPassword ? (
-                    <img src={eyeOpen} alt="Eye Icon" width="16" height="16"/>
+                { showConfirmPassword ? (
+                    <img src={ eyeOpen } alt="Eye Icon" width="16" height="16" />
                 ) : (
                     <img
-                        src={eyeClose}
+                        src={ eyeClose }
                         alt="Eye Slash Icon"
                         width="16"
                         height="16"
                     />
-                )}
+                ) }
               </span>
                         </Form.Group>
 
-                        {/* Submit Button */}
+                        {/* Submit Button */ }
                         <Button type="submit" className="register-button w-100">
-                            {t("signup")}
+                            { t("signup") }
                         </Button>
+                        { registrationError && <div>
+                            { registrationError }
+                        </div> }
 
-                        {/* Link to Login */}
+                        {/* Link to Login */ }
                         <div className="register-links text-center mt-3">
-                            <span>{t("alreadyHaveAccount")} </span>
+                            <span>{ t("alreadyHaveAccount") } </span>
                             <Link to="/login" className="login-link">
-                                {t("login")}
+                                { t("login") }
                             </Link>
                         </div>
                     </Form>
