@@ -5,12 +5,14 @@ import HomePage from "./components/home/HomePage.jsx";
 import UserLogin from "./components/user-login/UserLogin.jsx";
 import NavigationBar from "./components/navbar/NavigationBar.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
+import {AuthProvider} from "./helpers/AuthContext.js";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <Router>
+      <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationBar />
         <Routes>
@@ -20,6 +22,7 @@ function App() {
           <Route path="/login" element={<UserLogin />} />
         </Routes>
       </QueryClientProvider>
+      </AuthProvider>
     </Router>
   );
 }

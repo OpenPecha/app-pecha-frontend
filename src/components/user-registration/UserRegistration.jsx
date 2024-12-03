@@ -7,6 +7,7 @@ import axiosInstance from "../../services/config/axios-config.js";
 import {useMutation} from "react-query";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
+import {useAuth} from "../../helpers/AuthContext.js";
 
 const UserRegistration = () => {
     const {t} = useTranslation();
@@ -18,7 +19,7 @@ const UserRegistration = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+    const { login } = useAuth();
     const registerMutation = useMutation(
         async (registerData) => {
             const response = await axiosInstance.post(
@@ -30,6 +31,8 @@ const UserRegistration = () => {
         {
             onSuccess: (data) => {
                 console.log("Registration successful", data);
+                const { accessToken, refreshToken } = data;
+                login(accessToken, refreshToken);
             },
             onError: (error) => {
                 console.error("Registration failed", error);
