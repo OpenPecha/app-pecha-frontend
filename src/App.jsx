@@ -5,7 +5,7 @@ import HomePage from "./components/home/HomePage.jsx";
 import UserLogin from "./components/user-login/UserLogin.jsx";
 import NavigationBar from "./components/navbar/NavigationBar.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {AuthProvider} from "./helpers/AuthContext.js";
+import {AuthProvider} from "./helpers/AuthContext.jsx";
 
 const queryClient = new QueryClient();
 

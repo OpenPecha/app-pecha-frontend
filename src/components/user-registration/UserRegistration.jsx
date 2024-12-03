@@ -7,7 +7,7 @@ import axiosInstance from "../../services/config/axios-config.js";
 import {useMutation} from "react-query";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
-import {useAuth} from "../../helpers/AuthContext.js";
+import {useAuth} from "../../helpers/AuthContext.jsx";
 
 const UserRegistration = () => {
     const {t} = useTranslation();
