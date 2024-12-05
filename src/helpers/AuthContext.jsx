@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from "react";
+import React, {createContext, useState, useContext, useMemo} from "react";
+import PropTypes from "prop-types";
 
 const AuthContext = createContext();
 
@@ -16,9 +17,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("refreshToken");
         setIsLoggedIn(false);
     };
+    const contextValue = useMemo(() => ({ isLoggedIn, login, logout }), [isLoggedIn]);
+
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
@@ -26,4 +29,8 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
     return useContext(AuthContext);
+};
+
+AuthProvider.propTypes = {
+    children: PropTypes.any,
 };

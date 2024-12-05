@@ -115,27 +115,29 @@ const UserLogin = () => {
               </Form.Control.Feedback>
 
               {/* Eye Button */}
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                className="position-absolute"
-                style={{
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                }}
+              <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPassword(!showPassword);
+                  }}                                className="position-absolute"
+                  style={{
+                    all: "unset",
+                    top: "50%",
+                    right: "10px",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
               >
                 {showPassword ? (
-                  <img src={eyeOpen} alt="Eye Icon" width="16" height="16" />
+                    <img src={eyeOpen} alt="Eye Icon" width="16" height="16" />
                 ) : (
-                  <img
-                    src={eyeClose}
-                    alt="Eye Slash Icon"
-                    width="16"
-                    height="16"
-                  />
+                    <img src={eyeClose} alt="Eye Slash Icon" width="16" height="16" />
                 )}
-              </span>
+              </button>
             </Form.Group>
 
             {/* Login Button */}
