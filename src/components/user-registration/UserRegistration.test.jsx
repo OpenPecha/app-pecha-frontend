@@ -6,19 +6,26 @@ import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
 import { mockAxios, mockReactI18Nest } from "../../test-utils/CommonMocks.js";
 import { QueryClient, QueryClientProvider } from "react-query";
-import axiosInstance from "../../services/config/axios-config.js";
+import {AuthProvider} from "../../helpers/AuthContext.jsx";
 
 mockReactI18Nest();
 mockAxios();
-
 describe("UserRegistration Component", () => {
   const queryClient = new QueryClient();
   const setup = () => {
     render(
       <Router>
+        <AuthProvider
+            value={{
+              isLoggedIn: false,
+              login: vi.fn(),
+              logout: vi.fn(),
+            }}
+        >
         <QueryClientProvider client={queryClient}>
           <UserRegistration />
         </QueryClientProvider>
+        </AuthProvider>
       </Router>
     );
   };
