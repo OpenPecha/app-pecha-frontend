@@ -185,6 +185,7 @@ const UserRegistration = () => {
                                     e.stopPropagation();
                                     setShowPassword(!showPassword);
                                 }} className="position-absolute"
+                                aria-label="toggle-password"
                                 style={{
                                     all: "unset",
                                     top: "50%",
