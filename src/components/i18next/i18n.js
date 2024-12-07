@@ -40,6 +40,7 @@ export const resources = {
       invalidPassword: "Invalid password",
       confirmPassword: "Confirm password",
       passwordsDoNotMatch: "Passwords do not match",
+      go:"Go",
     },
   },
   bo: {
@@ -80,6 +81,8 @@ export const resources = {
       invalidPassword: "bo - Invalid password",
       confirmPassword: "bo - Confirm password",
       passwordsDoNotMatch: "bo - Passwords do not match",
+      go:"bo - Go",
+
     },
   },
   he: {
@@ -120,6 +123,8 @@ export const resources = {
       invalidPassword: "he - Invalid password",
       confirmPassword: "he - Confirm password",
       passwordsDoNotMatch: "he - Passwords do not match",
+      go:"he - Go",
+
     },
   },
 };

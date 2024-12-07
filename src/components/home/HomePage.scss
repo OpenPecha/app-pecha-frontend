@@ -1,27 +1,26 @@
-// General Container Styling
 .homepage-container {
   padding: 0;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 .row{
   --bs-gutter-x:0;
 }
-// Shared Style for Left and Right Sections
 .left-section,
 .right-section {
-  padding-top: 10%; // Consistent top padding for vertical alignment
+  padding-top: 10%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; // Ensure content starts from the top
+  justify-content: flex-start;
 }
 
-// Left Section (70%)
 .left-section {
+  padding-right: 7rem!important;
   .section-1 {
-    // Section 1: Browse the Library
     display: flex;
     justify-content: space-between;
-    align-items: center; // Aligns text and button vertically
-    margin-bottom: 2rem; // Add spacing below this section
+    align-items: center;
+    margin-bottom: 2rem;
 
     .browse-library-text {
       font-size: 1.5rem;
@@ -31,29 +30,29 @@
     .browse-button {
       font-size: 0.9rem;
       font-weight: bold;
+      background-color: #888888;
+      border: none;
     }
   }
 
   .section-2 {
-    // Section 2 Content
     .part {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
 
-      // Add spacing between parts
       margin-bottom: 5%;
 
       .green-line {
-        width: 100%; // Full width line
-        height: 2px;
-        background-color: green;
+        width: 100%;
+        height: 5px;
+        background-color: rgb(151, 179, 134);;
       }
 
       .red-line {
-        width: 100%; // Full width line
-        height: 2px;
-        background-color: red;
+        width: 100%;
+        height: 5px;
+        background-color: brown;
       }
 
       .part-title {
@@ -70,34 +69,32 @@
   }
 }
 
-// Right Section (30%)
 .right-section {
-  background-color: #f8f9fa; // Light grey background
-  padding: 7rem 2rem 2rem 2rem; // Padding inside the section
-  height: auto; // Let it fill the column height
+  background-color: #f8f9fa;
+  height: auto;
 
 
   .right-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333; // Dark grey heading color
-    margin-bottom: 1rem; // Space below the title
+    color: #333;
+    margin-bottom: 1rem;
   }
 
   .right-divider {
     border: 0;
     height: 1px;
-    background: #ccc; // Light grey divider
+    background: #ccc;
     margin: 0.5rem 0;
   }
 
   .right-paragraph {
     font-size: 1rem;
     line-height: 1.5;
-    color: #555; // Medium grey paragraph color
+    color: #555;
 
     .learn-more {
-      color: #007bff; // Bootstrap primary blue
+      color: #007bff;
       font-weight: bold;
       cursor: pointer;
 

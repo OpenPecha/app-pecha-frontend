@@ -44,7 +44,7 @@ const NavigationBar = () => {
                                     placeholder={ t("searchPlaceholder") }
                                     aria-label="Search"
                                 />
-                                <Button variant="outline-secondary">Go</Button>
+                                <Button variant="outline-secondary">{t("go")}</Button>
                             </InputGroup>
                         </Form>
 

@@ -8,15 +8,18 @@ $light-color: #fff;
 $shadow-color: rgba(0, 0, 0, 0.1);
 $font-family: Arial, sans-serif;
 
-// Navbar Custom Styles
 .custom-navbar {
   font-family: $font-family;
   box-shadow: 0 2px 5px $shadow-color;
+  @media(min-width: 1400px){
+    .container{
+      max-width:100%
+    }
+  }
   &.bg-light{
     background-color: white!important;
   }
 
-  // Links Styling
   .navbar-nav {
     .nav-link {
       color: $secondary-color !important;
@@ -25,12 +28,11 @@ $font-family: Arial, sans-serif;
       font-size: 1rem;
 
       &:hover {
-        color: $hover-color !important; // Orange hover effect
+        color: $hover-color !important;
       }
     }
   }
 
-  // Search Bar
   .form-control {
     border-radius: 0.25rem;
   }
@@ -41,7 +43,6 @@ $font-family: Arial, sans-serif;
     }
   }
 
-  // Buttons (Login and Signup)
   .btn-outline-dark {
     font-weight: bold;
     color: $primary-color;
@@ -64,7 +65,6 @@ $font-family: Arial, sans-serif;
     }
   }
 
-  // Dropdown Menu
   .dropdown-toggle {
     box-shadow: none !important;
   }
