@@ -5,10 +5,12 @@ import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
 import "./NavigationBar.scss";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../helpers/AuthContext.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
 const NavigationBar = () => {
     const { t, i18n } = useTranslation();
     const { isLoggedIn } = useAuth();
+    const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
 
     const changeLanguage = async (lng) => {
         await i18n.changeLanguage(lng);
@@ -62,6 +64,32 @@ const NavigationBar = () => {
                                 </Button>
                             </>
                         }
+                        {/*
+                        {
+                            !isAuthenticated ? <><Button
+                                // as={ Link }
+                                // to="/login"
+                                onClick={() => loginWithRedirect()}
+                                variant="outline-dark"
+                                className="me-2"
+                            >
+                                { t("login") }
+                            </Button>
+                                <Button as={ Link } to="/register" variant="dark" className="me-3">
+                                    { t("signup") }
+                                </Button>
+                            </>:
+                                <Button
+                                    // as={ Link }
+                                    // to="/login"
+                                    onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                                    variant="outline-dark"
+                                    className="me-2"
+                                >
+                                    { t("logout") }
+                                </Button>
+                        }
+                        */}
 
                         <Nav.Link
                             as={ Link }

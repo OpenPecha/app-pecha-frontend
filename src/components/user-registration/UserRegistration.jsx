@@ -8,6 +8,7 @@ import {useMutation} from "react-query";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
 import {useAuth} from "../../helpers/AuthContext.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
 const UserRegistration = () => {
     const {t} = useTranslation();
@@ -22,6 +23,8 @@ const UserRegistration = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [registrationError, setRegistrationError] = useState("");
     const {login} = useAuth();
+    const { loginWithRedirect } = useAuth0();
+
     const registerMutation = useMutation(
         async (registerData) => {
             const response = await axiosInstance.post(
@@ -101,6 +104,13 @@ const UserRegistration = () => {
                 lastname: lastName,
                 password
             });
+        }
+    };
+    const loginWithSocial = async () => {
+        try {
+            await loginWithRedirect({});
+        } catch (error) {
+            console.error("Social login failed:", error);
         }
     };
 
@@ -261,6 +271,12 @@ const UserRegistration = () => {
                             <Link to="/login" className="login-link">
                                 {t("login")}
                             </Link>
+                        </div>
+                        <hr />
+                        <div className="social-login-buttons">
+                            <Button variant="outline-primary" className="w-100 mb-2" onClick={loginWithSocial}>
+                                {t("socialLogins")}
+                            </Button>
                         </div>
                     </Form>
                 </Col>

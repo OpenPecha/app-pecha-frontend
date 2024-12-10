@@ -7,6 +7,7 @@ import axiosInstance from "../../services/config/axios-config";
 import { Link } from "react-router-dom";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
+import {useAuth0} from "@auth0/auth0-react";
 
 const UserLogin = () => {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ const UserLogin = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const { loginWithRedirect } = useAuth0();
 
   const loginMutation = useMutation(
     async (loginData) => {
@@ -68,7 +70,8 @@ const UserLogin = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      loginMutation.mutate({ email, password });
+      // loginMutation.mutate({ email, password });
+      loginWithRedirect()
     }
   };
 
@@ -144,9 +147,9 @@ const UserLogin = () => {
             <Button
               type="submit"
               className="login-button w-100"
-              disabled={loginMutation.isLoading}
+              // disabled={loginMutation.isLoading}
             >
-              {loginMutation.isLoading ? t("loggingIn") : t("login")}
+              { t("login")}
             </Button>
 
             {/* Links */}
