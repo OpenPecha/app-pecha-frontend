@@ -6,7 +6,7 @@ import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
 import {mockAxios, mockReactI18Nest} from "../../test-utils/CommonMocks.js";
 import {QueryClient, QueryClientProvider} from "react-query";
-import {AuthProvider} from "../../helpers/AuthContext.jsx";
+import {PechaAuthProvider} from "../config/AuthContext.jsx";
 
 mockReactI18Nest();
 mockAxios();
@@ -16,7 +16,7 @@ describe("UserRegistration Component", () => {
     const setup = () => {
         render(
             <Router>
-                <AuthProvider
+                <PechaAuthProvider
                     value={{
                         isLoggedIn: false,
                         login: vi.fn(),
@@ -26,7 +26,7 @@ describe("UserRegistration Component", () => {
                     <QueryClientProvider client={queryClient}>
                         <UserRegistration/>
                     </QueryClientProvider>
-                </AuthProvider>
+                </PechaAuthProvider>
             </Router>
         );
     };

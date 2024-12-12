@@ -3,11 +3,11 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import "./UserRegistration.scss";
-import axiosInstance from "../../services/config/axios-config.js";
+import axiosInstance from "../config/axios-config.js";
 import {useMutation} from "react-query";
 import eyeOpen from "../../assets/icon/eye-open.svg";
 import eyeClose from "../../assets/icon/eye-closed.svg";
-import {useAuth} from "../../helpers/AuthContext.jsx";
+import {useAuth} from "../config/AuthContext.jsx";
 import {useAuth0} from "@auth0/auth0-react";
 
 const UserRegistration = () => {
@@ -23,7 +23,7 @@ const UserRegistration = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [registrationError, setRegistrationError] = useState("");
     const {login} = useAuth();
-    const { loginWithRedirect } = useAuth0();
+    const { loginWithRedirect, getAccessTokenSilently  } = useAuth0();
 
     const registerMutation = useMutation(
         async (registerData) => {
@@ -108,7 +108,11 @@ const UserRegistration = () => {
     };
     const loginWithSocial = async () => {
         try {
-            await loginWithRedirect({});
+            await loginWithRedirect({
+                appState: {
+                    returnTo: "/texts",
+                },
+            })
         } catch (error) {
             console.error("Social login failed:", error);
         }

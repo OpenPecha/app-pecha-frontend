@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const PechaAuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const login = (accessToken, refreshToken) => {
@@ -31,6 +31,6 @@ export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-AuthProvider.propTypes = {
+PechaAuthProvider.propTypes = {
     children: PropTypes.any,
 };
