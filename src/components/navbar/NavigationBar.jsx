@@ -126,9 +126,6 @@ const NavigationBar = () => {
                                 <Dropdown.Item onClick={() => changeLanguage("bo")}>
                                     བོད་ཡིག
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => changeLanguage("he")}>
-                                    עברית
-                                </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Nav>
