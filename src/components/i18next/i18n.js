@@ -41,6 +41,8 @@ export const resources = {
       confirmPassword: "Confirm password",
       passwordsDoNotMatch: "Passwords do not match",
       go:"Go",
+      logout:"Logout",
+      socialLogins:"Continue with Google/Apple",
     },
   },
   bo: {
@@ -82,7 +84,8 @@ export const resources = {
       confirmPassword: "bo - Confirm password",
       passwordsDoNotMatch: "bo - Passwords do not match",
       go:"bo - Go",
-
+      logout:"bo - Logout",
+      socialLogins:"bo - Continue with Google/Apple",
     },
   },
   he: {
@@ -124,7 +127,8 @@ export const resources = {
       confirmPassword: "he - Confirm password",
       passwordsDoNotMatch: "he - Passwords do not match",
       go:"he - Go",
-
+      logout:"he - Logout",
+      socialLogins:"he - Continue with Google/Apple",
     },
   },
 };
