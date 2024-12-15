@@ -24,7 +24,7 @@ const HomePage = () => {
                         <Row className="mb-4">
                             <Col xs={6} className="part part-left">
                                 <div className="green-line mb-3"></div>
-                                <p className="part-title">{t("wayOfBoddhisattva")}</p>
+                                <p className="title part-title">{t("wayOfBoddhisattva")}</p>
                             </Col>
 
                             <Col xs={6} className="part part-right">

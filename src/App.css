@@ -1,5 +1,19 @@
 #root {
   text-align: center;
+  --title-font-size: 16px;
+  --title-font-family: Arial;
+  --content-font-size: 11px;
+  --content-font-family: Arial;
+}
+
+.title {
+  font-size: var(--title-font-size);
+  font-family: var(--title-font-family);
+}
+
+.content {
+  font-size: var(--content-font-size);
+  font-family: var(--content-font-family);
 }
 
 .logo {
