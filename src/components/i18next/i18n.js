@@ -94,18 +94,34 @@ const fontConfig = {
             fontSize: "14px",
             fontFamily: "Roboto",
         },
+        subtitle: {
+            fontSize: "12px",
+            fontFamily: "Roboto",
+        },
         content: {
             fontSize: "9px",
+            fontFamily: "Roboto",
+        },
+        subcontent: {
+            fontSize: "7px",
             fontFamily: "Roboto",
         },
     },
     bo: {
         title: {
-            fontSize: "15px",
+            fontSize: "14px",
+            fontFamily: "Helvetica",
+        },
+        subtitle: {
+            fontSize: "12px",
             fontFamily: "Helvetica",
         },
         content: {
-            fontSize: "10px",
+            fontSize: "9px",
+            fontFamily: "Helvetica",
+        },
+        subcontent: {
+            fontSize: "7px",
             fontFamily: "Helvetica",
         },
     },
@@ -114,6 +130,8 @@ const setFontVariables = (language) => {
     const root = document.getElementById("root");
     const fonts = fontConfig[language] || fontConfig["en"];
     Object.entries(fonts).forEach(([key, styles]) => {
+        root.style.setProperty(`--${key}-font-size`, styles.fontSize);
+        root.style.setProperty(`--${key}-font-family`, styles.fontFamily);
         root.style.setProperty(`--${key}-font-size`, styles.fontSize);
         root.style.setProperty(`--${key}-font-family`, styles.fontFamily);
     });
