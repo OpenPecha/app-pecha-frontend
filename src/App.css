@@ -1,5 +1,32 @@
 #root {
   text-align: center;
+  --title-font-size: 16px;
+  --title-font-family: Arial;
+  --subtitle-font-size: 16px;
+  --subtitle-font-family: Arial;
+  --content-font-size: 16px;
+  --content-font-family: Arial;
+  --subcontent-font-size: 11px;
+  --subcontent-font-family: Arial;
+
+}
+
+.title {
+  font-size: var(--title-font-size);
+  font-family: var(--title-font-family);
+}
+.subtitle {
+  font-size: var(--subtitle-font-size);
+  font-family: var(--subtitle-font-family);
+}
+
+.content {
+  font-size: var(--content-font-size);
+  font-family: var(--content-font-family);
+}
+.subcontent {
+  font-size: var(--subcontent-font-size);
+  font-family: var(--subcontent-font-family);
 }
 
 .logo {

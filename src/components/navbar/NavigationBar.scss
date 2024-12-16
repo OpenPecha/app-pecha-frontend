@@ -9,7 +9,6 @@ $shadow-color: rgba(0, 0, 0, 0.1);
 $font-family: Arial, sans-serif;
 
 .custom-navbar {
-  font-family: $font-family;
   box-shadow: 0 2px 5px $shadow-color;
   @media(min-width: 1400px){
     .container{
@@ -25,7 +24,6 @@ $font-family: Arial, sans-serif;
       color: $secondary-color !important;
       font-weight: bold;
       margin-right: 15px;
-      font-size: 1rem;
 
       &:hover {
         color: $hover-color !important;

@@ -1,62 +1,59 @@
-// Color Variables
-$background-color: #f9f9f9; // Light background for the container
-$white-color: #ffffff; // White for the form background
-$dark-grey: #333333; // Dark grey for titles
-$light-grey: #cccccc; // Light grey for borders
-$red-color: red; // Red for buttons
-$dark-red-color: darkred; // Darker red for button hover
-$orange-color: #f39c12; // Orange for input focus
-$black-color: black; // Black for link text
 
-// Center the login container
+$background-color: #f9f9f9;
+$white-color: #ffffff;
+$dark-grey: #333333;
+$light-grey: #cccccc;
+$red-color: red;
+$dark-red-color: darkred;
+$orange-color: #f39c12;
+$black-color: black;
+
+
 .login-container {
-  min-height: 100vh; // Full viewport height for perfect vertical centering
-  background-color: $background-color; // Use variable for background color
+  min-height: 100vh;
+  background-color: $background-color;
 
   .row {
-    --bs-gutter-x: 5rem; // Bootstrap gutter adjustment
+    --bs-gutter-x: 5rem;
   }
 }
 
-// Login Box
+
 .login-box {
-  background: $white-color; // White background for the form container
+  background: $white-color;
   padding: 2rem;
-  border-radius: 8px; // Rounded corners
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Subtle box shadow
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
   .login-title {
-    font-size: 1.8rem;
     font-weight: bold;
-    color: $dark-grey; // Dark grey text for title
-    margin-bottom: 2rem; // Space below the title
+    color: $dark-grey;
+    margin-bottom: 2rem;
   }
 
   .form-input {
-    padding: 0.8rem; // Adjust padding for larger input fields
-    font-size: 1rem;
-    border-radius: 5px; // Rounded input fields
-    border: 1px solid $light-grey; // Light grey border
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid $light-grey;
 
     &:focus {
       outline: none;
-      border-color: $orange-color; // Orange border on focus
-      box-shadow: 0 0 5px rgba(243, 156, 18, 0.5); // Focus shadow
+      border-color: $orange-color;
+      box-shadow: 0 0 5px rgba(243, 156, 18, 0.5);
     }
   }
 
   .login-button {
-    background-color: $red-color; // Red button background
-    color: $white-color; // White text
+    background-color: $red-color;
+    color: $white-color;
     padding: 0.8rem;
-    font-size: 1rem;
     font-weight: bold;
     border: none;
-    border-radius: 5px; // Rounded corners
+    border-radius: 5px;
     cursor: pointer;
 
     &:hover {
-      background-color: $dark-red-color; // Darker red on hover
+      background-color: $dark-red-color;
     }
 
     &:focus {
@@ -69,12 +66,11 @@ $black-color: black; // Black for link text
 
     .forgot-password,
     .create-account {
-      font-size: 0.9rem;
-      color: $black-color; // Black text for links
+      color: $black-color;
       text-decoration: none;
 
       &:hover {
-        text-decoration: underline; // Underline on hover
+        text-decoration: underline;
       }
     }
   }

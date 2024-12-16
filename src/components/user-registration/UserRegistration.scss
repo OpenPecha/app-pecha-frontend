@@ -1,62 +1,57 @@
 // Color Variables
-$background-color: #f9f9f9; // Light background for the container
-$white-color: #ffffff; // White for the form background
-$dark-grey: #333333; // Dark grey for titles
-$light-grey: #cccccc; // Light grey for borders
-$red-color: red; // Red for buttons
-$dark-red-color: darkred; // Darker red for button hover
-$orange-color: #f39c12; // Orange for input focus
-$error-color: red; // Red for error messages
+$background-color: #f9f9f9;
+$white-color: #ffffff;
+$dark-grey: #333333;
+$light-grey: #cccccc;
+$red-color: red;
+$dark-red-color: darkred;
+$orange-color: #f39c12;
+$error-color: red;
 
-// Center the registration container
+
 .register-container {
-  height: 100vh; // Full viewport height for perfect vertical centering
-  background-color: $background-color; // Use variable for background color
+  height: 100vh;
+  background-color: $background-color;
   .row{
     --bs-gutter-x:5rem;
   }
 }
 
-// Registration Box
 .register-box {
-  background: $white-color; // White background for the form container
-  padding: 2rem; // Padding inside the box
-  border-radius: 8px; // Rounded corners
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Subtle box shadow
+  background: $white-color;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
   .register-title {
-    font-size: 1.8rem;
     font-weight: bold;
-    color: $dark-grey; // Dark grey text for title
-    margin-bottom: 2rem; // Space below the title
+    color: $dark-grey;
+    margin-bottom: 2rem;
   }
 
   .form-input {
-    padding: 0.8rem; // Adjust padding for larger input fields
-    font-size: 1rem;
-    border-radius: 5px; // Rounded input fields
-    border: 1px solid $light-grey; // Light grey border
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid $light-grey;
 
     &:focus {
       outline: none;
-      border-color: $orange-color; // Orange border on focus
-      box-shadow: 0 0 5px rgba(243, 156, 18, 0.5); // Focus shadow
+      border-color: $orange-color;
+      box-shadow: 0 0 5px rgba(243, 156, 18, 0.5);
     }
   }
 
-  // Register button
   .register-button {
-    background-color: $red-color; // Red button background
-    color: $white-color; // White text
+    background-color: $red-color;
+    color: $white-color;
     padding: 0.8rem;
-    font-size: 1rem;
     font-weight: bold;
     border: none;
-    border-radius: 5px; // Rounded corners
+    border-radius: 5px;
     cursor: pointer;
 
     &:hover {
-      background-color: $dark-red-color; // Darker red on hover
+      background-color: $dark-red-color;
     }
 
     &:focus {
@@ -64,24 +59,22 @@ $error-color: red; // Red for error messages
     }
   }
 
-  // Links section
+
   .register-links {
     margin-top: 1rem;
 
     .login-link {
-      font-size: 0.9rem;
-      color: black; // Black text
-      text-decoration: none; // Remove underline
+      color: black;
+      text-decoration: none;
 
       &:hover {
-        text-decoration: underline; // Underline on hover
+        text-decoration: underline;
       }
     }
   }
 
   // Password error message
   .text-danger {
-    color: $error-color; // Red text for error message
-    font-size: 0.9rem;
+    color: $error-color;
   }
 }
