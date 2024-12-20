@@ -120,6 +120,10 @@ const NavigationBar = () => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
+                                {(isAuthenticated || isLoggedIn) &&
+                                    <Dropdown.Item as={Link} to="/profile" className="d-flex align-items-center">
+                                        {t("profile")}
+                                    </Dropdown.Item>}
                                 <Dropdown.Item onClick={() => changeLanguage("en")}>
                                     English
                                 </Dropdown.Item>

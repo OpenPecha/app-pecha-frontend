@@ -1,0 +1,39 @@
+.user-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+
+  .profile-card {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .profile-header {
+      margin-bottom: 20px;
+
+      .profile-picture {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 2px solid #007bff;
+        margin-bottom: 10px;
+      }
+    }
+
+    h2 {
+      margin-bottom: 5px;
+    }
+
+    h5 {
+      color: #6c757d;
+      margin-bottom: 10px;
+    }
+
+    strong {
+      color: #343a40;
+    }
+  }
+}

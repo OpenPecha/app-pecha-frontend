@@ -43,6 +43,7 @@ export const resources = {
             go: "Go",
             logout: "Logout",
             socialLogins: "Continue with Google/Apple",
+            profile:"Profile",
         },
     },
     bo: {
@@ -85,6 +86,8 @@ export const resources = {
             go: "bo - Go",
             logout: "bo - Logout",
             socialLogins: "bo - Continue with Google/Apple",
+            profile:"bo - Profile",
+
         },
     },
 };
@@ -134,7 +137,6 @@ const setFontVariables = (language) => {
         root.style.setProperty(`--${key}-font-family`, styles.fontFamily);
     });
 
-    console.log(`CSS Variables for ${language}:`, fonts);
 };
 i18n.use(initReactI18next).init({
     resources,

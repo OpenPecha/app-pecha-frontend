@@ -6,7 +6,8 @@ import UserLogin from "./components/user-login/UserLogin.jsx";
 import NavigationBar from "./components/navbar/NavigationBar.jsx";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {PechaAuthProvider} from "./components/config/AuthContext.jsx";
-import {AuthenticationGuard} from "./components/config/AuthGuard.jsx";
+import {AuthenticationGuard} from "./components/config/AuthenticationGuard.jsx";
+import UserProfile from "./components/user-profile/UserProfile.jsx";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<HomePage/>}/>
                     <Route path="/texts" element={<AuthenticationGuard component={HomePage}/>}/>
+                    <Route path="/profile" element={<AuthenticationGuard component={UserProfile}/>}/>
+
                     <Route path="/register" element={<UserRegistration/>}/>
                     <Route path="/login" element={<UserLogin/>}/>
                 </Routes>
