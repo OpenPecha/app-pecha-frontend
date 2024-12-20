@@ -5,8 +5,8 @@ import {Container, Row, Col, Form, Button} from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../config/axios-config";
 import {Link} from "react-router-dom";
-import eyeOpen from "../../assets/icon/eye-open.svg";
-import eyeClose from "../../assets/icon/eye-closed.svg";
+import eyeOpen from "../../assets/icons/eye-open.svg";
+import eyeClose from "../../assets/icons/eye-closed.svg";
 import {useAuth0} from "@auth0/auth0-react";
 
 const UserLogin = () => {

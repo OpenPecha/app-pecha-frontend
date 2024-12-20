@@ -132,8 +132,6 @@ const setFontVariables = (language) => {
     Object.entries(fonts).forEach(([key, styles]) => {
         root.style.setProperty(`--${key}-font-size`, styles.fontSize);
         root.style.setProperty(`--${key}-font-family`, styles.fontFamily);
-        root.style.setProperty(`--${key}-font-size`, styles.fontSize);
-        root.style.setProperty(`--${key}-font-family`, styles.fontFamily);
     });
 
     console.log(`CSS Variables for ${language}:`, fonts);

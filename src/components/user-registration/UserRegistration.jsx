@@ -5,8 +5,8 @@ import {useTranslation} from "react-i18next";
 import "./UserRegistration.scss";
 import axiosInstance from "../config/axios-config.js";
 import {useMutation} from "react-query";
-import eyeOpen from "../../assets/icon/eye-open.svg";
-import eyeClose from "../../assets/icon/eye-closed.svg";
+import eyeOpen from "../../assets/icons/eye-open.svg";
+import eyeClose from "../../assets/icons/eye-closed.svg";
 import {useAuth} from "../config/AuthContext.jsx";
 import {useAuth0} from "@auth0/auth0-react";
 
