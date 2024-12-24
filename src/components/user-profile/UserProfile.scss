@@ -35,5 +35,14 @@
     strong {
       color: #343a40;
     }
+
+    .reset-password {
+      color: blue;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }

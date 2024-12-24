@@ -44,6 +44,7 @@ export const resources = {
             logout: "Logout",
             socialLogins: "Continue with Google/Apple",
             profile:"Profile",
+            resetPassword:"Reset password",
         },
     },
     bo: {
@@ -87,6 +88,7 @@ export const resources = {
             logout: "bo - Logout",
             socialLogins: "bo - Continue with Google/Apple",
             profile:"bo - Profile",
+            resetPassword: "bo - Reset password"
 
         },
     },
