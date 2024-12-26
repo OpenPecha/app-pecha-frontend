@@ -11,10 +11,10 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target: env.VITE_REACT_APP_BASE_URL,
+          target: env.VITE_BACKEND_BASE_URL,
           changeOrigin: true,
           headers: true,
-          secure: false
+          secure: true
         },
       },
     },
