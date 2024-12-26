@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React, {useState} from "react";
+import {Form, Button} from "react-bootstrap";
 import "./ResetPassword.scss";
-import { useTranslation } from "react-i18next";
-
-// Import eye icons
+import {useTranslation} from "react-i18next";
 import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
 import {useMutation} from "react-query";
 import axiosInstance from "../config/axios-config.js";
 
 const ResetPassword = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const [formData, setFormData] = useState({
         currentPassword: "",
@@ -36,10 +34,11 @@ const ResetPassword = () => {
         {
             onSuccess: (data) => {
                 console.log("Reset password successful", data);
+                setFormData({currentPassword: "", newPassword: "", confirmPassword: ""});
             },
             onError: (error) => {
                 console.error("Reset password failed", error);
-            },
+            }
         }
     );
 
@@ -69,8 +68,8 @@ const ResetPassword = () => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const togglePasswordVisibility = (field) => {
@@ -88,13 +87,13 @@ const ResetPassword = () => {
             setErrors(validationErrors);
         } else {
             setErrors({});
-            resetPasswordMutation.mutate(formData)
+            resetPasswordMutation.mutate(formData);
         }
     };
 
     // Reusable Field Component
     const renderInputField = (label, name) => (
-        <Form.Group className="mb-3" controlId={name}>
+        <Form.Group className="mb-3 reset-password-form" controlId={name}>
             <Form.Label>{label}</Form.Label>
             <div className="password-input-container position-relative">
                 <Form.Control
@@ -110,23 +109,13 @@ const ResetPassword = () => {
                         e.stopPropagation();
                         togglePasswordVisibility(name);
                     }}
-                    className="position-absolute"
-                    aria-label="toggle-password"
-                    style={{
-                        all: "unset",
-                        top: "50%",
-                        right: "30px",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
+                    className="password-toggle-button"
+                    aria-label={showPassword[name] ? "Hide Password" : "Show Password"}
                 >
                     {showPassword[name] ? (
-                        <img src={eyeOpen} alt="Eye Icon" width="16" height="16" />
+                        <img src={eyeOpen} alt="Eye Icon" width="16" height="16"/>
                     ) : (
-                        <img src={eyeClose} alt="Eye Slash Icon" width="16" height="16" />
+                        <img src={eyeClose} alt="Eye Slash Icon" width="16" height="16"/>
                     )}
                 </button>
                 {errors[name] && <div className="error-message">{errors[name]}</div>}
@@ -134,14 +123,12 @@ const ResetPassword = () => {
         </Form.Group>
     );
 
-
     return (
         <div className="reset-password-container">
             <Form onSubmit={handleSubmit}>
                 {renderInputField("Current Password", "currentPassword")}
                 {renderInputField("New Password", "newPassword")}
                 {renderInputField("Confirm Password", "confirmPassword")}
-
                 <Button type="submit" className="reset-button w-100">
                     Reset Password
                 </Button>

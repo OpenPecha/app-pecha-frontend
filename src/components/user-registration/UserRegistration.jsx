@@ -278,7 +278,7 @@ const UserRegistration = () => {
                         </div>
                         <hr />
                         <div className="social-login-buttons">
-                            <Button variant="outline-primary" className="w-100 mb-2" onClick={loginWithSocial}>
+                            <Button variant="outline-dark" className="w-100 mb-2" onClick={loginWithSocial}>
                                 {t("socialLogins")}
                             </Button>
                         </div>
