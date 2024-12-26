@@ -1,13 +1,14 @@
-import React, {useState} from "react";
-import {useMutation} from "react-query";
-import {useTranslation} from "react-i18next";
-import {Container, Row, Col, Form, Button} from "react-bootstrap";
+import React, { useState } from "react";
+import { useMutation } from "react-query";
+import { useTranslation } from "react-i18next";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../config/axios-config";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../config/AuthContext.jsx";
 
 const UserLogin = () => {
     const {t} = useTranslation();
@@ -16,7 +17,9 @@ const UserLogin = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const {loginWithRedirect} = useAuth0();
-
+    const { login } = useAuth();
+    const navigate = useNavigate();
+//todo - after logging this page shouldn't be accessible (/login)
     const loginMutation = useMutation(
         async (loginData) => {
             const response = await axiosInstance.post(
@@ -27,10 +30,14 @@ const UserLogin = () => {
         },
         {
             onSuccess: (data) => {
-                console.log("Login successful", data);
+                const accessToken = data.auth.access_token;
+                const refreshToken = data.auth.refresh_token;
+                login(accessToken, refreshToken);
+                navigate("/texts");
             },
             onError: (error) => {
                 console.error("Login failed", error);
+                setErrors({ error: error.response.data.message });
             },
         }
     );
@@ -94,7 +101,7 @@ const UserLogin = () => {
             <Row>
                 <Col xs={12} md={18} lg={25} className="login-box">
                     <h2 className="text-center login-title">{t("loginToPecha")}</h2>
-
+                    { errors.error && <span className={ "text-danger" }>{ errors.error }</span> }
                     <Form onSubmit={handleSubmit}>
                         {/* Email Field */}
                         <Form.Group className="mb-3" controlId="formEmail">

@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_BACKEND_BASE_URL,
           changeOrigin: true,
           headers: true,
-          secure: false
+          secure: true
         },
       },
     },

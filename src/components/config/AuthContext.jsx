@@ -1,14 +1,18 @@
-import React, {createContext, useState, useContext, useMemo} from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import PropTypes from "prop-types";
+import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "../../utils/Constants.js";
 
 const AuthContext = createContext();
 
 export const PechaAuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const login = (accessToken, refreshToken) => {
-        sessionStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+    const login = (accessToken, refreshToken = null) => {
+        sessionStorage.setItem(ACCESS_TOKEN, accessToken);
+        if (refreshToken) {
+            localStorage.setItem(REFRESH_TOKEN, refreshToken);
+        }
+        localStorage.setItem(LOGGED_IN_VIA, "pecha");
         setIsLoggedIn(true);
     };
 

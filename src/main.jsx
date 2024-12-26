@@ -6,6 +6,7 @@ import './components/i18next/i18n'
 import { BrowserRouter as Router } from "react-router-dom";
 import { Auth0ProviderWithNavigate } from "./components/config/Auth0ProviderWithNavigate.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { PechaAuthProvider } from "./components/config/AuthContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')).render(
     <Router>
         <Auth0ProviderWithNavigate>
             <QueryClientProvider client={ queryClient }>
-            <App/>
+                <PechaAuthProvider>
+                    <App />
+                </PechaAuthProvider>
             </QueryClientProvider>
         </Auth0ProviderWithNavigate>
     </Router>

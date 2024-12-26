@@ -1,11 +1,12 @@
 import React from "react";
-import {Button, Container, Dropdown, Form, InputGroup, Nav, Navbar,} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {FaGlobe, FaQuestionCircle} from "react-icons/fa";
+import { Button, Container, Dropdown, Form, InputGroup, Nav, Navbar, } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
 import "./NavigationBar.scss";
-import {useTranslation} from "react-i18next";
-import {useAuth} from "../config/AuthContext.jsx";
-import {useAuth0} from "@auth0/auth0-react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../config/AuthContext.jsx";
+import { useAuth0 } from "@auth0/auth0-react";
+import { LOGGED_IN_VIA } from "../../utils/Constants.js";
 
 const NavigationBar = () => {
     const {t, i18n} = useTranslation();
@@ -19,6 +20,7 @@ const NavigationBar = () => {
 
     function handleLogout(e) {
         e.preventDefault()
+        localStorage.removeItem(LOGGED_IN_VIA);
         isLoggedIn && pechaLogout()
         isAuthenticated && logout({
             logoutParams: {
