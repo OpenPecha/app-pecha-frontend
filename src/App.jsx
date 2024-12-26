@@ -8,6 +8,8 @@ import { useMutation } from "react-query";
 import { PechaAuthProvider } from "./components/config/AuthContext.jsx";
 import { AuthenticationGuard } from "./components/config/AuthenticationGuard.jsx";
 import UserProfile from "./components/user-profile/UserProfile.jsx";
+import ResetPassword from "./components/reset-password/ResetPassword.jsx";
+import ForgotPassword from "./components/forgot-password/ForgotPassword.jsx";
 import { useEffect } from "react";
 import axiosInstance from "./components/config/axios-config.js";
 
@@ -53,6 +55,8 @@ function App() {
                     <Route path="/" element={<HomePage/>}/>
                     <Route path="/texts" element={ <HomePage /> } />
                     <Route path="/profile" element={<AuthenticationGuard component={UserProfile}/>}/>
+                    <Route path="/reset-password" element={<AuthenticationGuard component={ResetPassword}/>}/>
+                    <Route path="/forgot-password" element={<ForgotPassword/>}/>
                     <Route path="/register" element={<UserRegistration/>}/>
                     <Route path="/login" element={<UserLogin/>}/>
                 </Routes>

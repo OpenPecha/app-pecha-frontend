@@ -3,9 +3,13 @@ import "./UserProfile.scss";
 import {useAuth0} from "@auth0/auth0-react";
 import {Card} from "react-bootstrap";
 import {useAuth} from "../config/AuthContext.jsx";
+import {Link} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 function UserProfile() {
     const {user, isAuthenticated} = useAuth0();
+    const {t} = useTranslation();
+
     console.log(user);
 
     function renderProfileViaSocialLogin() {
@@ -21,6 +25,9 @@ function UserProfile() {
                         <strong>Email:</strong> {user.email}<br/>
                         <strong>Email Verified:</strong> {user.email_verified ? 'Yes' : 'No'}<br/>
                         <strong>Last Updated:</strong> {new Date(user.updated_at).toLocaleString()}<br/>
+                        <Link to="/reset-password" className="reset-password">
+                            {t("resetPassword")}
+                        </Link>
                     </Card.Text>
                 </Card.Body>
             </Card>
