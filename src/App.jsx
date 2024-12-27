@@ -70,7 +70,7 @@ function App() {
                 <Route path="/" element={ <HomePage /> } />
                 <Route path="/texts" element={ <HomePage /> } />
                 <Route path="/profile" element={ <AuthenticationGuard component={ UserProfile } /> } />
-                <Route path="/reset-password" element={ <AuthenticationGuard component={ ResetPassword } /> } />
+                <Route path="/reset-password" element={ < ResetPassword /> } />
                 <Route path="/forgot-password" element={ <ForgotPassword /> } />
                 <Route path="/register" element={ <UserRegistration /> } />
                 <Route path="/login" element={ <UserLogin /> } />

@@ -6,19 +6,22 @@ import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
 import {useMutation} from "react-query";
 import axiosInstance from "../config/axios-config.js";
+import {useLocation} from "react-router-dom";
+import {RESET_PASSWORD_TOKEN} from "../../utils/Constants.js";
 
 const ResetPassword = () => {
     const {t} = useTranslation();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const resetPasswordToken = searchParams.get("token");
 
     const [formData, setFormData] = useState({
-        currentPassword: "",
         newPassword: "",
         confirmPassword: ""
     });
 
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState({
-        currentPassword: false,
         newPassword: false,
         confirmPassword: false
     });
@@ -34,7 +37,7 @@ const ResetPassword = () => {
         {
             onSuccess: (data) => {
                 console.log("Reset password successful", data);
-                setFormData({currentPassword: "", newPassword: "", confirmPassword: ""});
+                setFormData({newPassword: "", confirmPassword: ""});
             },
             onError: (error) => {
                 console.error("Reset password failed", error);
@@ -47,10 +50,6 @@ const ResetPassword = () => {
 
     const validateForm = () => {
         const validationErrors = {};
-
-        if (!formData.currentPassword) {
-            validationErrors.currentPassword = t("required");
-        }
 
         if (!formData.newPassword) {
             validationErrors.newPassword = t("required");
@@ -87,7 +86,8 @@ const ResetPassword = () => {
             setErrors(validationErrors);
         } else {
             setErrors({});
-            resetPasswordMutation.mutate(formData);
+            sessionStorage.setItem(RESET_PASSWORD_TOKEN, resetPasswordToken)
+            resetPasswordMutation.mutate({password : formData.newPassword});
         }
     };
 
@@ -126,7 +126,6 @@ const ResetPassword = () => {
     return (
         <div className="reset-password-container">
             <Form onSubmit={handleSubmit}>
-                {renderInputField("Current Password", "currentPassword")}
                 {renderInputField("New Password", "newPassword")}
                 {renderInputField("Confirm Password", "confirmPassword")}
                 <Button type="submit" className="reset-button w-100">
