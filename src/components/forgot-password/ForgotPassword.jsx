@@ -1,12 +1,28 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+import React, {useState} from "react";
+import {Form, Button} from "react-bootstrap";
+import {useTranslation} from "react-i18next";
 import "./ForgotPassword.scss";
+import {useMutation} from "react-query";
+import axiosInstance from "../config/axios-config.js";
+import {useNavigate} from "react-router-dom";
 
 const ForgotPassword = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const forgotPasswordMutation = useMutation(async (email) => {
+        const response = await axiosInstance.post("api/v1/auth/request-reset-password", email)
+        return response.data
+    }, {
+        onSuccess: () => {
+            alert("Email with reset password link is sent to your email address")
+            navigate("/")
+        },
+        onError : (error) =>{
+            setError(error.response.data.message);
+        }
+    })
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,6 +38,7 @@ const ForgotPassword = () => {
         } else {
             setError(""); // Clear any previous errors
             console.log("Email submitted:", email);
+            forgotPasswordMutation.mutate({email})
         }
     };
 
