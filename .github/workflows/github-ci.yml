@@ -1,4 +1,4 @@
-name: app-pecha-backend
+name: app-pecha-frontend
 
 on: [ push, pull_request,workflow_dispatch ]
 jobs:
@@ -52,11 +52,11 @@ jobs:
       - name: Build Docker image in Github container registry
         run: |
           lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker build -t ghcr.io/$lower_owner/pecha-backend:${{ env.IMAGE_TAG }} .
+          docker build -t ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }} .
       - name: Push Docker image to GHCR
         run: |
           lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker push ghcr.io/$lower_owner/pecha-backend:${{ env.IMAGE_TAG }}
+          docker push ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }}
 
   deploy:
     name: Deploy the image
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Trigger Render Deployment
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&imgURL=ghcr.io/openpecha/pecha-backend:${{ env.IMAGE_TAG }}"
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&imgURL=ghcr.io/openpecha/pecha-frontend:${{ env.IMAGE_TAG }}"
 
   sonarQube:
     if: github.event_name == 'workflow_dispatch'
