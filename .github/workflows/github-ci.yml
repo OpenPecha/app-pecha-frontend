@@ -1,0 +1,104 @@
+name: app-pecha-backend
+
+on: [ push, pull_request,workflow_dispatch ]
+jobs:
+  gitleaks:
+    name: Gitleaks Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Gitleaks
+        uses: dhsathiya/gitleaks-action@main
+        with:
+          config: .gitleaks.toml  # Optional: Use a custom config file if available
+          fail: true             # Fail workflow if secrets are detected
+          verbose: true          # Enable detailed output
+
+      - name: Upload Gitleaks Report (Optional)
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+
+  buildDockerImage:
+    name: Build and Dockerize
+    runs-on: ubuntu-latest
+    needs: [ gitleaks ]
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: log in Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.PECHA_REPO }}
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          if [[ -n "${{ github.ref }}" && "${{ github.ref }}" =~ ^refs/tags/ ]]; then
+            tagNumber=$(echo "${{ github.ref }}" | sed 's#refs/tags/##')
+            echo "IMAGE_TAG=$tagNumber" >> $GITHUB_ENV
+          else
+            calculatedSha=$(git rev-parse --short ${{ github.sha }})
+            echo "IMAGE_TAG=${{ github.run_id }}-$calculatedSha" >> $GITHUB_ENV
+          fi
+      - name: Confirm git commit SHA output
+        run: echo ${{ env.IMAGE_TAG }}
+      - name: Build Docker image in Github container registry
+        run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t ghcr.io/$lower_owner/pecha-backend:${{ env.IMAGE_TAG }} .
+      - name: Push Docker image to GHCR
+        run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/$lower_owner/pecha-backend:${{ env.IMAGE_TAG }}
+
+  deploy:
+    name: Deploy the image
+    runs-on: ubuntu-latest
+    needs: [buildDockerImage]
+    if: success()
+    steps:
+      - name: Trigger Render Deployment
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&imgURL=ghcr.io/openpecha/pecha-backend:${{ env.IMAGE_TAG }}"
+
+  sonarQube:
+    if: github.event_name == 'workflow_dispatch'
+    name: SonarQube Scan
+    needs: [buildDockerImage]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python version
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+
+      - name: Run tests with coverage
+        run: poetry run pytest --cov=your_package_name --cov-report=xml
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@v1.10
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=your_project_key
+            -Dsonar.organization=your_organization
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.python.version=3.12
+    
