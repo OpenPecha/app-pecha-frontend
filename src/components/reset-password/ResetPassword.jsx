@@ -110,7 +110,7 @@ const ResetPassword = () => {
                         togglePasswordVisibility(name);
                     }}
                     className="password-toggle-button"
-                    aria-label={showPassword[name] ? "Hide Password" : "Show Password"}
+                    aria-label="toggle-password"
                 >
                     {showPassword[name] ? (
                         <img src={eyeOpen} alt="Eye Icon" width="16" height="16"/>
