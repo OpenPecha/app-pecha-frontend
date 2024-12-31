@@ -3,9 +3,11 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
-import { mockReactI18Nest } from "../../test-utils/CommonMocks.js";
+import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
 
 mockReactI18Nest();
+mockUseAuth();
+mockAxios();
 
 describe("UserLogin Component", () => {
   const queryClient = new QueryClient();

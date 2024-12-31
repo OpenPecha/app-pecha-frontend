@@ -28,3 +28,13 @@ export const mockAxios = () => {
     },
   }));
 };
+
+export const mockUseAuth = () => {
+  vi.mock("../components/config/AuthContext.jsx", () => ({
+    useAuth: () => ({
+      isLoggedIn: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+    }),
+  }));
+}
