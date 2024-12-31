@@ -26,5 +26,12 @@ export default defineConfig(({ mode }) => {
         reportsDirectory: "./coverage",
       },
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
+    }
   };
 });

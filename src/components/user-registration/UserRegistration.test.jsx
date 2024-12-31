@@ -4,29 +4,21 @@ import {BrowserRouter as Router} from "react-router-dom";
 import {expect} from "vitest";
 import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
-import {mockAxios, mockReactI18Nest} from "../../test-utils/CommonMocks.js";
+import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
 import {QueryClient, QueryClientProvider} from "react-query";
-import {PechaAuthProvider} from "../config/AuthContext.jsx";
 
 mockReactI18Nest();
 mockAxios();
+mockUseAuth()
 describe("UserRegistration Component", () => {
 
     const queryClient = new QueryClient();
     const setup = () => {
         render(
             <Router>
-                <PechaAuthProvider
-                    value={{
-                        isLoggedIn: false,
-                        login: vi.fn(),
-                        logout: vi.fn(),
-                    }}
-                >
-                    <QueryClientProvider client={queryClient}>
-                        <UserRegistration/>
-                    </QueryClientProvider>
-                </PechaAuthProvider>
+                <QueryClientProvider client={queryClient}>
+                    <UserRegistration/>
+                </QueryClientProvider>
             </Router>
         );
     };
@@ -34,21 +26,17 @@ describe("UserRegistration Component", () => {
     test("renders the registration form with all fields and buttons", () => {
         setup();
 
-        // Check form title
         const title = screen.getByTestId("signup-title");
         expect(title).toBeInTheDocument();
         expect(title).toHaveTextContent("Sign Up");
 
-        // Check all input fields
         expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("First Name")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Last Name")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
 
-        // Check signup button
         expect(screen.getByRole("button", {name: "Sign Up"})).toBeInTheDocument();
 
-        // Check login link
         expect(screen.getByText("Already have an account?")).toBeInTheDocument();
         expect(screen.getByRole("link", {name: "Log In"})).toHaveAttribute(
             "href",
@@ -64,7 +52,6 @@ describe("UserRegistration Component", () => {
         const passwordInput = screen.getByPlaceholderText("Password");
         const confirmPasswordInput = screen.getByPlaceholderText("Confirm password")
 
-        // with invalid inputs
         await userEvent.type(emailInput, "test@example");
         expect(emailInput).toHaveValue("test@example");
 
