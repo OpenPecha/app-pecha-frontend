@@ -14,5 +14,6 @@ server {
 
   location /api {
       proxy_pass $VITE_BACKEND_BASE_URL;
+      proxy_ssl_server_name on;
   }
 }
