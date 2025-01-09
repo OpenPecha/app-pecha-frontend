@@ -59,7 +59,6 @@ $error-color: red;
     }
   }
 
-
   .register-links {
     margin-top: 1rem;
 
@@ -73,8 +72,11 @@ $error-color: red;
     }
   }
 
-  // Password error message
   .text-danger {
     color: $error-color;
+  }
+
+  .registration-error{
+    color:red;
   }
 }

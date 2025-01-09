@@ -21,7 +21,7 @@ const UserRegistration = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [registrationError, setRegistrationError] = useState("");
+    const [registrationError, setRegistrationError] = useState("User unable to register");
     const {login} = useAuth();
     const { loginWithRedirect, getAccessTokenSilently  } = useAuth0();
 
@@ -265,9 +265,6 @@ const UserRegistration = () => {
                         <Button type="submit" className="register-button w-100">
                             {t("signup")}
                         </Button>
-                        {registrationError && <div>
-                            {registrationError}
-                        </div>}
 
                         {/* Link to Login */}
                         <div className="register-links text-center mt-3">
@@ -282,6 +279,9 @@ const UserRegistration = () => {
                                 {t("socialLogins")}
                             </Button>
                         </div>
+                        {registrationError && <div className="registration-error">
+                            {registrationError}
+                        </div>}
                     </Form>
                 </Col>
             </Row>
