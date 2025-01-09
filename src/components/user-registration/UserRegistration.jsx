@@ -21,7 +21,7 @@ const UserRegistration = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [registrationError, setRegistrationError] = useState("User unable to register");
+    const [registrationError, setRegistrationError] = useState("");
     const {login} = useAuth();
     const { loginWithRedirect, getAccessTokenSilently  } = useAuth0();
 
