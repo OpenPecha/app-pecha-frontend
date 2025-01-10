@@ -14,7 +14,7 @@ const HomePage = () => {
             <Row className="justify-content-center">
                 <Col lg={7} md={8} className="left-section">
                     <div className="section-1 d-flex justify-content-between align-items-center">
-                        <h2 className="browse-library-text">{t("browseLibrary")}</h2>
+                        <h2 className="title browse-library-text">{t("browseLibrary")}</h2>
                         <Button className="browse-button">
                             {t("explore")}
                         </Button>
