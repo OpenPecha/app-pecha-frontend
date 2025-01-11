@@ -93,7 +93,7 @@ const ResetPassword = () => {
 
     // Reusable Field Component
     const renderInputField = (label, name) => (
-        <Form.Group className="mb-3 reset-password-form" controlId={name}>
+        <Form.Group className="content mb-3 reset-password-form" controlId={name}>
             <Form.Label>{label}</Form.Label>
             <div className="password-input-container position-relative">
                 <Form.Control

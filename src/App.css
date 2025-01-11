@@ -12,22 +12,22 @@
 }
 
 @font-face {
-  font-family: 'title-font';
+  font-family: 'Monlam-bodyig-bold-ttf';
   src: url("./assets/fonts/Monlam-bodyig bold.ttf");
 }
 
 @font-face {
-  font-family: 'sub-title-font';
+  font-family: 'Monlam-bodyig-semi-bold-italic-ttf';
   src: url("./assets/fonts/Monlam-bodyig Semi Bold Italic.ttf");
 }
 
 @font-face {
-  font-family: 'content-font';
+  font-family: 'Monlam-bodyig-semi-bold-ttf';
   src: url("./assets/fonts/Monlam-bodyig Semi Bold.ttf");
 }
 
 @font-face {
-  font-family: 'sub-content-font';
+  font-family: 'Monlam-bodyig-regular-ttf';
   src: url("./assets/fonts/Monlam-bodyig Regular.ttf");
 }
 

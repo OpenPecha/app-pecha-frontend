@@ -100,8 +100,7 @@ const UserLogin = () => {
         >
             <Row>
                 <Col xs={12} md={18} lg={25} className="login-box">
-                    <h2 className="text-center login-title">{t("loginToPecha")}</h2>
-                    { errors.error && <span className={ "text-danger" }>{ errors.error }</span> }
+                    <h2 className="title text-center login-title">{t("loginToPecha")}</h2>
                     <Form onSubmit={handleSubmit}>
                         {/* Email Field */}
                         <Form.Group className="mb-3" controlId="formEmail">
@@ -172,11 +171,11 @@ const UserLogin = () => {
 
                         {/* Links */}
                         <div className="login-links text-center mt-3">
-                            <Link to="/forgot-password" className="forgot-password">
+                            <Link to="/forgot-password" className="content forgot-password">
                                 {t("forgotPassword")}
                             </Link>
                             <br/>
-                            <Link to="/register" className="create-account">
+                            <Link to="/register" className="content create-account">
                                 {t("createAccount")}
                             </Link>
                             <hr/>
@@ -186,6 +185,8 @@ const UserLogin = () => {
                                 </Button>
                             </div>
                         </div>
+                        { errors.error && <span className={ "content text-danger" }>{ errors.error }</span> }
+
                     </Form>
                 </Col>
             </Row>

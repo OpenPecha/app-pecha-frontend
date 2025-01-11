@@ -45,7 +45,7 @@ const ForgotPassword = () => {
     return (
         <div className="forgot-password-container">
             <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="email">
+                <Form.Group className="content mb-3" controlId="email">
                     <Form.Label>{t("emailAddress")}</Form.Label>
                     <Form.Control
                         type="email"

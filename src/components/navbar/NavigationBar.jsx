@@ -38,7 +38,7 @@ const NavigationBar = () => {
 
                 <Navbar.Toggle aria-controls="navbar-links"/>
                 <Navbar.Collapse id="navbar-links">
-                    <Nav className="me-auto">
+                    <Nav className="content me-auto">
                         <Nav.Link as={Link} to="/texts">
                             {t("texts")}
                         </Nav.Link>

@@ -125,7 +125,7 @@ const UserRegistration = () => {
         >
             <Row>
                 <Col xs={12} md={18} lg={25} className="register-box">
-                    <h2 className="text-center register-title" data-testid="signup-title">
+                    <h2 className="title text-center register-title" data-testid="signup-title">
                         {t("signup")}
                     </h2>
 
@@ -267,7 +267,7 @@ const UserRegistration = () => {
                         </Button>
 
                         {/* Link to Login */}
-                        <div className="register-links text-center mt-3">
+                        <div className="content register-links text-center mt-3">
                             <span>{t("alreadyHaveAccount")} </span>
                             <Link to="/login" className="login-link">
                                 {t("login")}
@@ -279,7 +279,7 @@ const UserRegistration = () => {
                                 {t("socialLogins")}
                             </Button>
                         </div>
-                        {registrationError && <div className="registration-error">
+                        {registrationError && <div className="content registration-error">
                             {registrationError}
                         </div>}
                     </Form>
