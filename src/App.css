@@ -1,20 +1,41 @@
+
 #root {
   text-align: center;
   --title-font-size: 16px;
-  --title-font-family: Arial;
+  --title-font-family: 'title-font',"Roboto";
   --subtitle-font-size: 16px;
-  --subtitle-font-family: Arial;
+  --subtitle-font-family: 'sub-title-font',"Roboto";
   --content-font-size: 16px;
-  --content-font-family: Arial;
+  --content-font-family: 'content-font',"Roboto";
   --subcontent-font-size: 11px;
-  --subcontent-font-family: Arial;
+  --subcontent-font-family: 'sub-content-font',"Roboto";
+}
 
+@font-face {
+  font-family: 'title-font';
+  src: url("./assets/fonts/Monlam-bodyig bold.ttf");
+}
+
+@font-face {
+  font-family: 'sub-title-font';
+  src: url("./assets/fonts/Monlam-bodyig Semi Bold Italic.ttf");
+}
+
+@font-face {
+  font-family: 'content-font';
+  src: url("./assets/fonts/Monlam-bodyig Semi Bold.ttf");
+}
+
+@font-face {
+  font-family: 'sub-content-font';
+  src: url("./assets/fonts/Monlam-bodyig Regular.ttf");
 }
 
 .title {
   font-size: var(--title-font-size);
   font-family: var(--title-font-family);
 }
+
 .subtitle {
   font-size: var(--subtitle-font-size);
   font-family: var(--subtitle-font-family);
@@ -24,6 +45,7 @@
   font-size: var(--content-font-size);
   font-family: var(--content-font-family);
 }
+
 .subcontent {
   font-size: var(--subcontent-font-size);
   font-family: var(--subcontent-font-family);

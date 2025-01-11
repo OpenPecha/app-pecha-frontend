@@ -115,19 +115,19 @@ const fontConfig = {
     bo: {
         title: {
             fontSize: "14px",
-            fontFamily: "Helvetica",
+            fontFamily: "title-font",
         },
         subtitle: {
             fontSize: "12px",
-            fontFamily: "Helvetica",
+            fontFamily: "sub-title-font",
         },
         content: {
             fontSize: "9px",
-            fontFamily: "Helvetica",
+            fontFamily: "content-font",
         },
         subcontent: {
             fontSize: "7px",
-            fontFamily: "Helvetica",
+            fontFamily: "sub-content-font",
         },
     },
 };
