@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Trigger Render Deployment
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&imgURL=ghcr.io/openpecha/pecha-frontend:${{ env.IMAGE_TAG }}"
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
 
   sonarQube:
     if: github.event_name == 'workflow_dispatch'
