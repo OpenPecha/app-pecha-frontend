@@ -96,38 +96,38 @@ export const resources = {
 const fontConfig = {
     en: {
         title: {
-            fontSize: "14px",
+            fontSize: "30px",
             fontFamily: "Roboto",
         },
         subtitle: {
-            fontSize: "12px",
+            fontSize: "20px",
             fontFamily: "Roboto",
         },
         content: {
-            fontSize: "9px",
+            fontSize: "17px",
             fontFamily: "Roboto",
         },
         subcontent: {
-            fontSize: "7px",
+            fontSize: "14px",
             fontFamily: "Roboto",
         },
     },
     bo: {
         title: {
-            fontSize: "14px",
-            fontFamily: "title-font",
+            fontSize: "30px",
+            fontFamily: "Monlam-bodyig-bold-ttf",
         },
         subtitle: {
-            fontSize: "12px",
-            fontFamily: "sub-title-font",
+            fontSize: "20px",
+            fontFamily: "Monlam-bodyig-semi-bold-italic-ttf",
         },
         content: {
-            fontSize: "9px",
-            fontFamily: "content-font",
+            fontSize: "17px",
+            fontFamily: "Monlam-bodyig-semi-bold-ttf",
         },
         subcontent: {
-            fontSize: "7px",
-            fontFamily: "sub-content-font",
+            fontSize: "14px",
+            fontFamily: "Monlam-bodyig-regular-ttf",
         },
     },
 };
