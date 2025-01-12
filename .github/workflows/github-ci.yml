@@ -60,7 +60,8 @@ jobs:
       - name: Trigger Render Deployment
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        run: |      
+        run: |   
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
           encoded_url=$(python -c "import urllib.parse; print(urllib.parse.quote('${image_url}'))")
           echo "Encoded URL: $encoded_url"
@@ -70,6 +71,7 @@ jobs:
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
           echo "Encoded complete: ${deploy_url}?imgURL=${image_url}"
           curl "${deploy_url}?imgURL=${image_url}"
