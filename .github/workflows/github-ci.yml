@@ -57,24 +57,21 @@ jobs:
         run: |
           lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           docker push ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }}
+
+  deploy:
+    name: Deploy the image
+    runs-on: ubuntu-latest
+    needs: [buildDockerImage]
+    if: success()
+    env:
+      deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+    steps:
       - name: Trigger Render Deployment
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        run: |   
-          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
-          encoded_url=$(python -c "import urllib.parse; print(urllib.parse.quote('${image_url}'))")
-          echo "Encoded URL: $encoded_url"
-          echo "Encoded complete: https://api.render.com/deploy/srv-ctprhq52ng1s73du7ob0?key=Y9HLog7dS8I&imgUrl=${encoded_url}"
-          curl -X POST "https://api.render.com/deploy/srv-ctprhq52ng1s73du7ob0?key=Y9HLog7dS8I&imgURL=${encoded_url}"
-      - name: Trigger Render Deployment - 2
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
-          echo "Encoded complete: https://api.render.com/deploy/srv-ctprhq52ng1s73du7ob0?key=Y9HLog7dS8I&imgUrl=${image_url}"
-          curl -X POST "https://api.render.com/deploy/srv-ctprhq52ng1s73du7ob0?key=Y9HLog7dS8I&imgURL=${image_url}"
+          image_url=ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }}
+          curl -X POST "${ deploy_url }&imgURL=${encoded_url}"
+
   sonarQube:
     if: github.event_name == 'workflow_dispatch'
     name: SonarQube Scan
