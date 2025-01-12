@@ -59,6 +59,7 @@ jobs:
           docker push ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }}
       - name: Trigger Render Deployment
         run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           image_url=ghcr.io/$lower_owner/pecha-frontend:${{ env.IMAGE_TAG }}
           encoded_url=$(python -c "import urllib.parse; print(urllib.parse.quote('${image_url}'))")
           echo "Encoded URL: $encoded_url"
