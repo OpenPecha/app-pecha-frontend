@@ -65,7 +65,14 @@ jobs:
           encoded_url=$(python -c "import urllib.parse; print(urllib.parse.quote('${image_url}'))")
           echo "Encoded URL: $encoded_url"
           echo "Encoded complete: ${deploy_url}?imgURL=${encoded_url}"
-          curl "$deploy_url?imgURL=$$encoded_url"
+          curl "${deploy_url}?imgURL=${encoded_url}"
+      - name: Trigger Render Deployment - 2
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
+          echo "Encoded complete: ${deploy_url}?imgURL=${image_url}"
+          curl "${deploy_url}?imgURL=${image_url}"
   sonarQube:
     if: github.event_name == 'workflow_dispatch'
     name: SonarQube Scan
