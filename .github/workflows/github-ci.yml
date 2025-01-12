@@ -63,7 +63,7 @@ jobs:
           image_url=ghcr.io/$lower_owner/pecha-frontend:pecha-frontend:12732320595-945a6f7
           encoded_url=$(python -c "import urllib.parse; print(urllib.parse.quote('${image_url}'))")
           echo "Encoded URL: $encoded_url"
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}?imgURL=${encoded_url}"
+          curl -X GET "${{ secrets.RENDER_DEPLOY_HOOK_URL }}?imgURL=${encoded_url}"
 
   sonarQube:
     if: github.event_name == 'workflow_dispatch'
