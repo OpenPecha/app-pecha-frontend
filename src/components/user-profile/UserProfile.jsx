@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PechaUserProfile from "./pecha-user-profile/PechaUserProfile.jsx";
 
 function UserProfile() {
     const {user, isAuthenticated} = useAuth0();
@@ -33,27 +34,16 @@ function UserProfile() {
         )
     }
 
-    function renderProfileViaPechaLogin(){
+    function renderProfileViaPechaLogin() {
         return (
-            <Card className="profile-card">
-                <Card.Body>
-                    <div className="profile-header">
-                        <img  className="profile-picture" />
-                        <h2>To be implemented</h2>
-                    </div>
-                    <Card.Text>
-                        <strong>Email:</strong>randomEmail@mail.com<br />
-
-                    </Card.Text>
-                </Card.Body>
-            </Card>
+          <PechaUserProfile/>
         )
     }
 
     return (
         <div className="user-profile">
             {
-                isAuthenticated ? renderProfileViaSocialLogin() : renderProfileViaPechaLogin()
+                false ? renderProfileViaSocialLogin() : renderProfileViaPechaLogin()
             }
         </div>
     );
