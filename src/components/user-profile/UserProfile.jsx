@@ -14,36 +14,20 @@ function UserProfile() {
 
     function renderProfileViaSocialLogin() {
         return (
-            <Card className="profile-card">
-                <Card.Body>
-                    <div className="profile-header">
-                        <img src={user.picture} alt={`${user.name}'s profile`} className="profile-picture"/>
-                        <h2>{user.given_name} {user.family_name}</h2>
-                        <h5>Nickname: {user.nickname}</h5>
-                    </div>
-                    <Card.Text>
-                        <strong>Email:</strong> {user.email}<br/>
-                        <strong>Email Verified:</strong> {user.email_verified ? 'Yes' : 'No'}<br/>
-                        <strong>Last Updated:</strong> {new Date(user.updated_at).toLocaleString()}<br/>
-                        <Link to="/reset-password" className="reset-password">
-                            {t("resetPassword")}
-                        </Link>
-                    </Card.Text>
-                </Card.Body>
-            </Card>
+            <PechaUserProfile userInfo ={user}/>
         )
     }
 
     function renderProfileViaPechaLogin() {
         return (
-          <PechaUserProfile/>
+          <PechaUserProfile userInfo = {user}/>
         )
     }
 
     return (
         <div className="user-profile">
             {
-                false ? renderProfileViaSocialLogin() : renderProfileViaPechaLogin()
+                isAuthenticated ? renderProfileViaSocialLogin() : renderProfileViaPechaLogin()
             }
         </div>
     );

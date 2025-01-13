@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "./components/config/axios-config.js";
 import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js";
 import { useAuth } from "./components/config/AuthContext.jsx";
+import EditUserProfile from "./components/user-profile/edit-user-profile/EditUserProfile.jsx";
 
 const tokenExpiryTime = import.meta.env.VITE_TOKEN_EXPIRY_TIME_SEC;
 
@@ -70,6 +71,7 @@ function App() {
                 <Route path="/" element={ <HomePage /> } />
                 <Route path="/texts" element={ <HomePage /> } />
                 <Route path="/profile" element={ <AuthenticationGuard component={ UserProfile } /> } />
+                <Route path="/edit-profile" element={ <AuthenticationGuard component={ EditUserProfile } /> } />
                 <Route path="/reset-password" element={ < ResetPassword /> } />
                 <Route path="/forgot-password" element={ <ForgotPassword /> } />
                 <Route path="/register" element={ <UserRegistration /> } />

@@ -1,112 +1,147 @@
 .pecha-user-profile {
   display: flex;
-  justify-content: center; // Center horizontally
-  align-items: flex-start; // Align to the top vertically
-  gap: 2rem;
-  padding: 2rem;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 
-  .profile-left {
+  .section1 {
     display: flex;
-    flex-direction: column;
-    max-width: 300px;
-    text-align: left;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
 
-    .profile-name {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+    .profile-left {
+      flex: 4;
+      padding-right: 20px;
+      text-align: left;
 
-    .profile-job-title {
-      font-weight: bold;
-      font-size: 1rem;
-      color: #555;
-    }
-
-    .profile-details {
-      font-size: 0.9rem;
-      color: #777;
-
-      .separator {
-        margin: 0 0.5rem;
+      .profile-name {
+        font-size: 24px;
+        font-weight: bold;
       }
-    }
 
-    .actions-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      .profile-job-title {
+        font-size: 18px;
+        color: #666;
+      }
 
-      .edit-profile-btn,
-      .settings-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: all 0.3s ease;
+      .profile-details {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #888;
 
-        &:hover {
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .separator {
+          margin: 0 5px;
         }
       }
 
-      .logout-text {
-        font-size: 0.8rem;
-        color: grey;
-        cursor: pointer;
-        transition: color 0.3s ease;
-        margin-bottom: 0;
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        button {
+          padding: 10px 20px;
+          font-size: 14px;
+          background-color: white;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+        }
 
-        &:hover {
-          color: black;
+        .logout-text {
+          font-size: 14px;
+          color: #888;
+          cursor: pointer;
+          margin-top: 1rem;
+
+          &:hover {
+            color: #000;
+          }
+        }
+      }
+
+      .followers{
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        .number-followers, .number-following{
+          font-size: 14px;
+          color: #888;
+          cursor: pointer;
+          &:hover {
+            color: #000;
+          }
+        }
+      }
+    }
+
+    .profile-right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .profile-picture {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .profile-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .add-picture-btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+          text-align: center;
+          background-color: #f5f5f5;
+          color: #666;
+          border-radius: 50%;
         }
       }
     }
   }
 
-  .profile-right {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .section2 {
+    width: 100%;
+    margin-top: 2rem;
 
-    .profile-picture {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f5f5f5;
-      border: 2px dashed #ccc;
+    .nav-tabs {
+      border-bottom: 2px solid #ddd;
 
-      .profile-image {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-      }
+      .nav-item {
+        .nav-link {
+          color: #666;
+          font-size: 16px;
 
-      .add-picture-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        font-size: 0.9rem;
-        color: #555;
-        text-align: center;
-        cursor: pointer;
-        border-radius: 50%;
-        transition: background-color 0.3s ease;
+          &.active {
+            font-weight: bold;
+            border-color: #007bff #007bff #fff;
+            color: #007bff;
+          }
 
-        &:hover {
-          background-color: #e0e0e0;
+          i {
+            margin-right: 5px;
+          }
         }
       }
+    }
+
+    .tab-content {
+      padding: 20px;
+      font-size: 16px;
     }
   }
 }
