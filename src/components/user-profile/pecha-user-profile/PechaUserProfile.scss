@@ -1,0 +1,147 @@
+.pecha-user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  .section1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+
+    .profile-left {
+      flex: 4;
+      padding-right: 20px;
+      text-align: left;
+
+      .profile-name {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .profile-job-title {
+        font-size: 18px;
+        color: #666;
+      }
+
+      .profile-details {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #888;
+
+        .separator {
+          margin: 0 5px;
+        }
+      }
+
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        button {
+          padding: 10px 20px;
+          font-size: 14px;
+          background-color: white;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+        }
+
+        .logout-text {
+          font-size: 14px;
+          color: #888;
+          cursor: pointer;
+          margin-top: 1rem;
+
+          &:hover {
+            color: #000;
+          }
+        }
+      }
+
+      .followers{
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        .number-followers, .number-following{
+          font-size: 14px;
+          color: #888;
+          cursor: pointer;
+          &:hover {
+            color: #000;
+          }
+        }
+      }
+    }
+
+    .profile-right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .profile-picture {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .profile-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .add-picture-btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+          text-align: center;
+          background-color: #f5f5f5;
+          color: #666;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+
+  .section2 {
+    width: 100%;
+    margin-top: 2rem;
+
+    .nav-tabs {
+      border-bottom: 2px solid #ddd;
+
+      .nav-item {
+        .nav-link {
+          color: #666;
+          font-size: 16px;
+
+          &.active {
+            font-weight: bold;
+            border-color: #007bff #007bff #fff;
+            color: #007bff;
+          }
+
+          i {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 20px;
+      font-size: 16px;
+    }
+  }
+}

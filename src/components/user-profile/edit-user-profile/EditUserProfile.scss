@@ -1,0 +1,54 @@
+.edit-user-profile {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    button {
+      width: 48%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .btn-secondary {
+      color: #ff4d4f; /* Light red */
+      border: 2px solid #ff4d4f;
+      background-color: transparent;
+
+      &:hover {
+        background-color: rgba(255, 77, 79, 0.1);
+      }
+    }
+
+    .btn-primary {
+      color: #fff;
+      border: none;
+      background-color: #52c41a;
+
+      &:hover {
+        background-color: #389e0d;
+      }
+    }
+
+  }
+}
