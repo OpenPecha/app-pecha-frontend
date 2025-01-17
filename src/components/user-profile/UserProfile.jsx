@@ -27,7 +27,7 @@ function UserProfile() {
     }
 
     return (
-        <div className="user-profile">
+        <div className="user-profile" data-testid="user-profile">
             {
                 isAuthenticated ? renderProfileViaSocialLogin() : renderProfileViaPechaLogin()
             }
