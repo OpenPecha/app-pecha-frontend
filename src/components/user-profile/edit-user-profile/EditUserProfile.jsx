@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import "./EditUserProfile.scss";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const EditUserProfile = () => {
 
@@ -23,6 +23,7 @@ const EditUserProfile = () => {
     facebook: userInfo.facebook || "",
     youtubeChannel: userInfo.youtubeChannel || "",
   });
+  const navigate = useNavigate()
   console.log(userInfo)
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -269,7 +270,7 @@ const EditUserProfile = () => {
         </Row>
 
         <div className="form-buttons">
-          <Button variant="secondary" type="button">
+          <Button variant="secondary" type="button" onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button variant="primary" type="submit">
