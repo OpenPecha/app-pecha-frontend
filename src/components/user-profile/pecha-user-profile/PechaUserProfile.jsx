@@ -44,6 +44,21 @@ const PechaUserProfile = ({userInfo}) => {
             <span className="number-followers">0 Followers</span>
             <span className="number-following">0 Following</span>
           </div>
+          {/* Social Media Icons */}
+          <div className="social-links" style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+            <a href="https://twitter.com/dummy" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <i className="bi bi-twitter" style={{ fontSize: '20px', color: '#1DA1F2' }}></i>
+            </a>
+            <a href="https://youtube.com/dummy" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
+              <i className="bi bi-youtube" style={{ fontSize: '20px', color: '#333' }}></i>
+            </a>
+            <a href="https://linkedin.com/in/dummy" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i className="bi bi-linkedin" style={{ fontSize: '20px', color: '#0A66C2' }}></i>
+            </a>
+            <a href="https://facebook.com/dummy" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <i className="bi bi-facebook" style={{ fontSize: '20px', color: '#4267B2' }}></i>
+            </a>
+          </div>
         </div>
         <div className="profile-right">
           <div className="profile-picture">
