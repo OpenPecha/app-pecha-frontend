@@ -16,12 +16,14 @@ const EditUserProfile = () => {
     location: userInfo.location || "",
     education: userInfo.education || [""],
     aboutMe: userInfo.aboutMe || "",
-    email: userInfo.email || "",
-    profileUrl: userInfo.profileUrl || "",
-    twitterHandle: userInfo.twitterHandle || "",
+    public_email: userInfo.public_email || "",
+    profile_pic_url: userInfo.profile_pic_url || "",
+    twitter: userInfo.twitter || "",
     linkedIn: userInfo.linkedIn || "",
     facebook: userInfo.facebook || "",
-    youtubeChannel: userInfo.youtubeChannel || "",
+    youtube: userInfo.youtube || "",
+    followees : userInfo.followees || [],
+    followers: userInfo.followers || []
   });
   const navigate = useNavigate()
   console.log(userInfo)
@@ -195,7 +197,7 @@ const EditUserProfile = () => {
               <Form.Control
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.public_email}
                 onChange={handleChange}
                 placeholder="Enter your email"
               />
@@ -207,7 +209,7 @@ const EditUserProfile = () => {
               <Form.Control
                 type="text"
                 name="profileUrl"
-                value={formData.profileUrl}
+                value={formData.profile_pic_url}
                 onChange={handleChange}
                 placeholder="Enter your profile URL"
               />
@@ -222,7 +224,7 @@ const EditUserProfile = () => {
               <Form.Control
                 type="text"
                 name="twitterHandle"
-                value={formData.twitterHandle}
+                value={formData.twitter}
                 onChange={handleChange}
                 placeholder="Enter your Twitter handle"
               />
@@ -261,7 +263,7 @@ const EditUserProfile = () => {
               <Form.Control
                 type="text"
                 name="youtubeChannel"
-                value={formData.youtubeChannel}
+                value={formData.youtube}
                 onChange={handleChange}
                 placeholder="Enter your YouTube channel"
               />
