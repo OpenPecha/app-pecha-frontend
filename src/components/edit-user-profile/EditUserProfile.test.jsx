@@ -1,9 +1,9 @@
 import React from "react";
 import {render, screen, fireEvent, waitFor} from "@testing-library/react";
 import {BrowserRouter as Router, MemoryRouter, useNavigate} from "react-router-dom";
-import EditUserProfile from "./EditUserProfile";
+import EditUserProfile from "./EditUserProfile.jsx";
 import {QueryClient, QueryClientProvider} from "react-query";
-import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../../test-utils/CommonMocks.js";
+import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
 import "@testing-library/jest-dom";
 
 

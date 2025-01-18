@@ -6,14 +6,14 @@ import UserLogin from "./components/user-login/UserLogin.jsx";
 import NavigationBar from "./components/navbar/NavigationBar.jsx";
 import { useMutation } from "react-query";
 import { AuthenticationGuard } from "./components/config/AuthenticationGuard.jsx";
-import UserProfile from "./components/user-profile/UserProfile.jsx";
 import ResetPassword from "./components/reset-password/ResetPassword.jsx";
 import ForgotPassword from "./components/forgot-password/ForgotPassword.jsx";
 import { useEffect, useState } from "react";
 import axiosInstance from "./components/config/axios-config.js";
 import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js";
 import { useAuth } from "./components/config/AuthContext.jsx";
-import EditUserProfile from "./components/user-profile/edit-user-profile/EditUserProfile.jsx";
+import EditUserProfile from "./components/edit-user-profile/EditUserProfile.jsx";
+import UserProfile from "./components/user-profile/UserProfile.jsx";
 
 const tokenExpiryTime = import.meta.env.VITE_TOKEN_EXPIRY_TIME_SEC;
 
