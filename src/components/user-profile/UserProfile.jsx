@@ -89,7 +89,7 @@ const UserProfile = () => {
                   <span className="number-following">0 Following</span>
                 </div>
                 {/* Social Media Icons */}
-                {userInfo?.social_profiles.length > 0 && renderSocialLinks(userInfo.social_profiles)}
+                { userInfo?.social_profiles?.length > 0 && renderSocialLinks(userInfo?.social_profiles) }
               </div>
               <div className="profile-right">
                 <div className="profile-picture">
