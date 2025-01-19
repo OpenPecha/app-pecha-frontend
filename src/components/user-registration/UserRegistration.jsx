@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -22,8 +22,12 @@ const UserRegistration = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [registrationError, setRegistrationError] = useState("");
-    const {login} = useAuth();
-    const { loginWithRedirect, getAccessTokenSilently  } = useAuth0();
+    const { login, isLoggedIn } = useAuth();
+    const { loginWithRedirect, isAuthenticated } = useAuth0();
+
+    if (isLoggedIn || isAuthenticated) {
+        navigate("/texts")
+    }
 
     const registerMutation = useMutation(
         async (registerData) => {
@@ -269,7 +273,7 @@ const UserRegistration = () => {
                         {/* Link to Login */}
                         <div className="content register-links text-center mt-3">
                             <span>{t("alreadyHaveAccount")} </span>
-                            <Link to="/login" className="login-link">
+                            <Link to={ "/login" } className="login-link">
                                 {t("login")}
                             </Link>
                         </div>

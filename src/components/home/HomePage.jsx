@@ -1,8 +1,7 @@
-import React from "react";
-import {Container, Row, Col, Button} from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import "./HomePage.scss";
-import {useTranslation} from "react-i18next";
-import {useAuth0} from "@auth0/auth0-react";
+import { useTranslation } from "react-i18next";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const HomePage = () => {
     const {t} = useTranslation();

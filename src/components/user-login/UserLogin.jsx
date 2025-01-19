@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
@@ -16,10 +16,13 @@ const UserLogin = () => {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
-    const {loginWithRedirect} = useAuth0();
-    const { login } = useAuth();
+    const { loginWithRedirect, isAuthenticated } = useAuth0();
+    const { login, isLoggedIn } = useAuth();
     const navigate = useNavigate();
-//todo - after logging this page shouldn't be accessible (/login)
+
+    if (isLoggedIn || isAuthenticated) {
+        navigate("/texts")
+    }
     const loginMutation = useMutation(
         async (loginData) => {
             const response = await axiosInstance.post(
@@ -171,11 +174,11 @@ const UserLogin = () => {
 
                         {/* Links */}
                         <div className="login-links text-center mt-3">
-                            <Link to="/forgot-password" className="content forgot-password">
+                            <Link to={ "/forgot-password" } className="content forgot-password">
                                 {t("forgotPassword")}
                             </Link>
                             <br/>
-                            <Link to="/register" className="content create-account">
+                            <Link to={ "/register" } className="content create-account">
                                 {t("createAccount")}
                             </Link>
                             <hr/>

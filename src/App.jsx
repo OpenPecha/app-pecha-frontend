@@ -76,6 +76,7 @@ function App() {
                 <Route path="/forgot-password" element={ <ForgotPassword /> } />
                 <Route path="/register" element={ <UserRegistration /> } />
                 <Route path="/login" element={ <UserLogin /> } />
+                <Route path="*" element={ <HomePage /> } />
             </Routes>
         </>
     );

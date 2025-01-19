@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Container, Dropdown, Form, InputGroup, Nav, Navbar, } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
@@ -39,13 +38,13 @@ const NavigationBar = () => {
                 <Navbar.Toggle aria-controls="navbar-links"/>
                 <Navbar.Collapse id="navbar-links">
                     <Nav className="content me-auto">
-                        <Nav.Link as={Link} to="/texts">
+                        <Nav.Link as={ Link } to={ "/texts" }>
                             {t("texts")}
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/topics">
+                        <Nav.Link as={ Link } to={ "/topics" }>
                             {t("topics")}
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/community">
+                        <Nav.Link as={ Link } to={ "/community" }>
                             {t("community")}
                         </Nav.Link>
                     </Nav>
@@ -110,7 +109,7 @@ const NavigationBar = () => {
 
                         <Nav.Link
                             as={Link}
-                            to="/help"
+                            to={ "/help" }
                             className="d-flex align-items-center"
                         >
                             <FaQuestionCircle size={20}/>

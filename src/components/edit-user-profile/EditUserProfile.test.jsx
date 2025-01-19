@@ -1,4 +1,3 @@
-import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import EditUserProfile from "./EditUserProfile.jsx";
@@ -6,8 +5,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import "@testing-library/jest-dom";
 
-
-// Mock `useNavigate`
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom"); // Import the actual module for non-mocked exports
   return {
