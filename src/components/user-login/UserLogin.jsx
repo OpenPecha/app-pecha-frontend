@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Toast, ToastContainer } from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../../config/axios-config";
 import { Link, useNavigate } from "react-router-dom";
@@ -101,6 +101,14 @@ const UserLogin = () => {
             fluid
             className="login-container d-flex align-items-center justify-content-center"
         >
+            { errors.error && <ToastContainer position="top-end">
+                <Toast bg={ "danger" } onClose={ () => setErrors({ error: null }) }>
+                    <Toast.Header>
+                        <strong className="me-auto">Error!</strong>
+                    </Toast.Header>
+                    <Toast.Body>{ errors.error }</Toast.Body>
+                </Toast>
+            </ToastContainer> }
             <Row>
                 <Col xs={12} md={18} lg={25} className="login-box">
                     <h2 className="title text-center login-title">{t("loginToPecha")}</h2>
@@ -188,8 +196,6 @@ const UserLogin = () => {
                                 </Button>
                             </div>
                         </div>
-                        { errors.error && <span className={ "content text-danger" }>{ errors.error }</span> }
-
                     </Form>
                 </Col>
             </Row>

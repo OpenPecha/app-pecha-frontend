@@ -33,5 +33,5 @@ export const AuthenticationGuard = ({component}) => {
 };
 
 AuthenticationGuard.propTypes = {
-    component: PropTypes.element,
+    component: PropTypes.func,
 };
