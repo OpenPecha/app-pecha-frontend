@@ -1,11 +1,11 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
-import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
+import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
 
-mockReactI18Nest();
+mockReactI18Next();
 mockUseAuth();
 mockAxios();
 

@@ -1,13 +1,13 @@
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {BrowserRouter as Router} from "react-router-dom";
-import {expect} from "vitest";
+import { BrowserRouter as Router } from "react-router-dom";
+import { expect } from "vitest";
 import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
-import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
-import {QueryClient, QueryClientProvider} from "react-query";
+import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-mockReactI18Nest();
+mockReactI18Next();
 mockAxios();
 mockUseAuth()
 describe("UserRegistration Component", () => {

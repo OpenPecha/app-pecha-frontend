@@ -1,9 +1,9 @@
 import React from "react";
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
-import {BrowserRouter as Router, MemoryRouter, useNavigate} from "react-router-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import EditUserProfile from "./EditUserProfile.jsx";
-import {QueryClient, QueryClientProvider} from "react-query";
-import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import "@testing-library/jest-dom";
 
 
@@ -24,7 +24,7 @@ vi.mock("react-router-dom", async () => {
           location: "New York",
           education: ["B.Sc. Computer Science"],
           aboutMe: "Software Engineer with 5 years of experience.",
-          email: "john.doe@example.com",
+          public_email: "john.doe@example.com",
           profileUrl: "https://profile.example.com",
           twitterHandle: "@johndoe",
           linkedIn: "https://linkedin.com/in/johndoe",
@@ -36,9 +36,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-const mockNavigate = useNavigate();
-
-mockReactI18Nest();
+mockReactI18Next();
 mockAxios();
 mockUseAuth()
 

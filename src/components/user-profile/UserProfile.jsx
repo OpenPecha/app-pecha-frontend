@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import "./UserProfile.scss";
-import { Tabs, Tab } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import {useNavigate} from "react-router-dom";
-import {useQuery} from "react-query";
-import axiosInstance from "../config/axios-config.js";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import axiosInstance from "../../config/axios-config.js";
 
 const UserProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
   const {data: userInfo, isLoading: userInfoIsLoading} = useQuery("userInfo",async () => {
-    return await axiosInstance.get("/api/v1/users/info");
-  })
+    const { data } = await axiosInstance.get("/api/v1/users/info");
+    return data;
+  });
+
   const handlePictureUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -26,9 +28,10 @@ const UserProfile = () => {
   function renderSocialLinks(socialProfiles) {
     const socialIcons = {
       linkedin: { class: "bi bi-linkedin", color: "#0A66C2" },
-      twitter: { class: "bi bi-twitter", color: "#1DA1F2" },
+      "x.com": { class: "bi bi-twitter", color: "#1DA1F2" },
       facebook: { class: "bi bi-facebook", color: "#4267B2" },
       youtube: { class: "bi bi-youtube", color: "#FF0000" },
+      email: { class: "bi bi-envelope", color: "#FF0000" },
     };
 
     return (
@@ -45,7 +48,7 @@ const UserProfile = () => {
           return (
             <a
               key={profile.account}
-              href={profile.url}
+              href={ profile.account === "email" ? "mailto:" + profile.url : profile.url }
               target="_blank"
               rel="noopener noreferrer"
               aria-label={profile.account}
@@ -63,19 +66,19 @@ const UserProfile = () => {
 
   return (
     <>
-      {!userInfoIsLoading ? // NOTE : to be change to "userInfoIsLoading"
+      { !userInfoIsLoading ?
         <div className="user-profile">
           <div className="pecha-user-profile">
             <div className="section1">
               <div className="profile-left">
-                <h2 className="profile-name">John Doe</h2>
-                <p className="profile-job-title">Senior Software Engineer</p>
+                <h2 className="profile-name">{ userInfo?.firstname + " " + userInfo?.lastname }</h2>
+                <p className="profile-job-title">{ userInfo?.title }</p>
                 <p className="profile-details">
-                  <span className="location">Bangalore</span>
-                  <span className="separator">·</span>
-                  <span className="degree">Master of Computer Application (MCA)</span>
-                  <span className="separator">·</span>
-                  <span className="bachelor">Bachelor of Science, Physics</span>
+                  { userInfo?.location && <><span className="location">{ userInfo?.location }</span> <span
+                      className="separator">·</span></> }
+                  { userInfo?.educations?.length ? <><span
+                      className="degree">{ userInfo.educations.reduce((acc, curr) => acc + " " + curr) }</span> <span
+                      className="separator">·</span></> : <></> }
                 </p>
                 <div className="actions-row">
                   <button className="edit-profile-btn" onClick={handleEditProfile}>Edit Profile</button>
@@ -85,10 +88,9 @@ const UserProfile = () => {
                   <p className="logout-text">Logout</p>
                 </div>
                 <div className="followers">
-                  <span className="number-followers">0 Followers</span>
-                  <span className="number-following">0 Following</span>
+                  <span className="number-followers">{ userInfo?.followers } Followers</span>
+                  <span className="number-following">{ userInfo?.following } Following</span>
                 </div>
-                {/* Social Media Icons */}
                 { userInfo?.social_profiles?.length > 0 && renderSocialLinks(userInfo?.social_profiles) }
               </div>
               <div className="profile-right">

@@ -5,13 +5,13 @@ import HomePage from "./components/home/HomePage.jsx";
 import UserLogin from "./components/user-login/UserLogin.jsx";
 import NavigationBar from "./components/navbar/NavigationBar.jsx";
 import { useMutation } from "react-query";
-import { AuthenticationGuard } from "./components/config/AuthenticationGuard.jsx";
+import { AuthenticationGuard } from "./config/AuthenticationGuard.jsx";
 import ResetPassword from "./components/reset-password/ResetPassword.jsx";
 import ForgotPassword from "./components/forgot-password/ForgotPassword.jsx";
 import { useEffect, useState } from "react";
-import axiosInstance from "./components/config/axios-config.js";
+import axiosInstance from "./config/axios-config.js";
 import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js";
-import { useAuth } from "./components/config/AuthContext.jsx";
+import { useAuth } from "./config/AuthContext.jsx";
 import EditUserProfile from "./components/edit-user-profile/EditUserProfile.jsx";
 import UserProfile from "./components/user-profile/UserProfile.jsx";
 

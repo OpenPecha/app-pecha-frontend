@@ -2,7 +2,7 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import React from "react";
 import { useAuth } from "./AuthContext.jsx";
 import { Navigate } from "react-router-dom";
-import { LOGGED_IN_VIA } from "../../utils/Constants.js";
+import { LOGGED_IN_VIA } from "../utils/Constants.js";
 
 export const AuthenticationGuard = ({component}) => {
     const {isLoggedIn} = useAuth();

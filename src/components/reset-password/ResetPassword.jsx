@@ -1,13 +1,13 @@
-import React, {useState} from "react";
-import {Form, Button} from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import "./ResetPassword.scss";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
-import {useMutation} from "react-query";
-import axiosInstance from "../config/axios-config.js";
-import {useLocation} from "react-router-dom";
-import {RESET_PASSWORD_TOKEN} from "../../utils/Constants.js";
+import { useMutation } from "react-query";
+import axiosInstance from "../../config/axios-config.js";
+import { useLocation } from "react-router-dom";
+import { RESET_PASSWORD_TOKEN } from "../../utils/Constants.js";
 
 const ResetPassword = () => {
     const {t} = useTranslation();

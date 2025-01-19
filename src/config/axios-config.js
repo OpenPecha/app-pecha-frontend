@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACCESS_TOKEN, RESET_PASSWORD, RESET_PASSWORD_TOKEN } from "../../utils/Constants.js";
+import { ACCESS_TOKEN, RESET_PASSWORD, RESET_PASSWORD_TOKEN } from "../utils/Constants.js";
 
 const axiosInstance = axios.create({});
 axiosInstance.interceptors.request.use(

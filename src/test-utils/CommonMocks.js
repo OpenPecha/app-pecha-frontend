@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import { resources } from "../components/i18next/i18n.js";
 
-export const mockReactI18Nest = () => {
+export const mockReactI18Next = () => {
   vi.mock("react-i18next", async () => {
     const actual = await vi.importActual("react-i18next");
     return {
@@ -30,7 +30,7 @@ export const mockAxios = () => {
 };
 
 export const mockUseAuth = () => {
-  vi.mock("../components/config/AuthContext.jsx", () => ({
+  vi.mock("../config/AuthContext.jsx", () => ({
     useAuth: () => ({
       isLoggedIn: false,
       login: vi.fn(),

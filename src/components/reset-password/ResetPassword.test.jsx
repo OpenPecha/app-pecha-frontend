@@ -1,13 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import {expect} from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { expect } from "vitest";
 import "@testing-library/jest-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ResetPassword from "./ResetPassword.jsx";
-import {BrowserRouter as Router} from "react-router-dom";
-import {mockAxios, mockReactI18Nest, mockUseAuth} from "../../test-utils/CommonMocks.js";
-import userEvent from "@testing-library/user-event";
+import { BrowserRouter as Router } from "react-router-dom";
+import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
 
-mockReactI18Nest();
+mockReactI18Next();
 mockAxios();
 mockUseAuth()
 

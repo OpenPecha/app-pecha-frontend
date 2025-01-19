@@ -1,13 +1,13 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { LOGGED_IN_VIA } from "../../utils/Constants.js";
+import { LOGGED_IN_VIA } from "../utils/Constants.js";
 
 export const Auth0ProviderWithNavigate = ({ children }) => {
     const navigate = useNavigate();
 
-    const domain = "dev-ovhxzolnkcvpsbjb.us.auth0.com"
-    const clientId = "w35y5jZBshmBFXJi2q3YLjzZzRSn53PJ"
+    const domain = import.meta.env.VITE_DOMAIN;
+    const clientId = import.meta.env.VITE_CLIENT_ID;
     const redirectUri =  window.location.origin
 
     const onRedirectCallback = (appState) => {

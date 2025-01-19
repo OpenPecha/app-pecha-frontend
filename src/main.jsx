@@ -4,9 +4,9 @@ import App from './App.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './components/i18next/i18n'
 import { BrowserRouter as Router } from "react-router-dom";
-import { Auth0ProviderWithNavigate } from "./components/config/Auth0ProviderWithNavigate.jsx";
+import { Auth0ProviderWithNavigate } from "./config/Auth0ProviderWithNavigate.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { PechaAuthProvider } from "./components/config/AuthContext.jsx";
+import { PechaAuthProvider } from "./config/AuthContext.jsx";
 
 const queryClient = new QueryClient();
 
