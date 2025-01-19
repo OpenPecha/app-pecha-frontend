@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "./EditUserProfile.scss";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const EditUserProfile = () => {
 
@@ -26,7 +26,6 @@ const EditUserProfile = () => {
     followers: userInfo.followers || []
   });
   const navigate = useNavigate()
-  console.log(userInfo)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -44,7 +43,6 @@ const EditUserProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
   };
 
   return (

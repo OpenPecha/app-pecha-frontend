@@ -1,10 +1,10 @@
-import React, {useState} from "react";
-import {Form, Button} from "react-bootstrap";
-import {useTranslation} from "react-i18next";
+import React, { useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import "./ForgotPassword.scss";
-import {useMutation} from "react-query";
-import axiosInstance from "../config/axios-config.js";
-import {useNavigate} from "react-router-dom";
+import { useMutation } from "react-query";
+import axiosInstance from "../../config/axios-config.js";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
     const {t} = useTranslation();

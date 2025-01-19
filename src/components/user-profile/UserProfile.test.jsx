@@ -1,13 +1,13 @@
 import React from "react";
-import {render, screen} from "@testing-library/react";
-import {BrowserRouter as Router} from "react-router-dom";
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import "@testing-library/jest-dom";
 import UserProfile from "./UserProfile.jsx";
-import {QueryClient, QueryClientProvider, useQuery} from "react-query";
-import {mockAxios, mockReactI18Nest, mockUseAuth, mockUseQuery} from "../../test-utils/CommonMocks.js";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { mockAxios, mockReactI18Next, mockUseAuth, mockUseQuery } from "../../test-utils/CommonMocks.js";
 
 
-mockReactI18Nest();
+mockReactI18Next();
 mockAxios();
 mockUseAuth()
 mockUseQuery()
@@ -15,13 +15,21 @@ mockUseQuery()
 describe("UserProfile Component", () => {
   const queryClient = new QueryClient();
   const mockUserInfo = {
-    name: "John Doe",
-    jobTitle: "Senior Software Engineer",
+    firstname: "John",
+    lastname: "Doe",
+    title: "Senior Software Engineer",
     location: "Bangalore",
-    education: {
-      degree: "Master of Computer Application (MCA)",
-      bachelor: "Bachelor of Science, Physics",
-    },
+    educations: ["Master of Computer Application (MCA)", "Bachelor of Science, Physics",],
+    organization: "pecha org",
+    following: 1,
+    followers: 1,
+    social_profiles: [
+      { account: "x.com", url: "https://x.com" },
+      { account: "email", url: "test@pecha.com" },
+      { account: "linkedin", url: "https://linkedin.com" },
+      { account: "facebook", url: "https://facebook.com" },
+      { account: "youtube", url: "https://youtube.com" },
+    ]
   };
 
   beforeEach(() => {
@@ -50,8 +58,7 @@ describe("UserProfile Component", () => {
 
     // Check if location and education details are rendered
     expect(screen.getByText("Bangalore")).toBeInTheDocument();
-    expect(screen.getByText("Master of Computer Application (MCA)")).toBeInTheDocument();
-    expect(screen.getByText("Bachelor of Science, Physics")).toBeInTheDocument();
+    expect(screen.getByText("Master of Computer Application (MCA) Bachelor of Science, Physics")).toBeInTheDocument();
   });
 
   test("Edit profile button", () => {
@@ -63,22 +70,26 @@ describe("UserProfile Component", () => {
     setup();
 
     // Check social media links
-    const twitterLink = screen.getByLabelText("Twitter");
-    const youtubeLink = screen.getByLabelText("Youtube");
-    const linkedInLink = screen.getByLabelText("LinkedIn");
-    const facebookLink = screen.getByLabelText("Facebook");
+    const twitterLink = screen.getByLabelText("x.com");
+    const youtubeLink = screen.getByLabelText("youtube");
+    const linkedInLink = screen.getByLabelText("linkedin");
+    const facebookLink = screen.getByLabelText("facebook");
+    const email = screen.getByLabelText("email");
 
     expect(twitterLink).toBeInTheDocument();
-    expect(twitterLink).toHaveAttribute("href", "https://twitter.com/dummy");
+    expect(twitterLink).toHaveAttribute("href", "https://x.com");
 
     expect(youtubeLink).toBeInTheDocument();
-    expect(youtubeLink).toHaveAttribute("href", "https://youtube.com/dummy");
+    expect(youtubeLink).toHaveAttribute("href", "https://youtube.com");
 
     expect(linkedInLink).toBeInTheDocument();
-    expect(linkedInLink).toHaveAttribute("href", "https://linkedin.com/in/dummy");
+    expect(linkedInLink).toHaveAttribute("href", "https://linkedin.com");
 
     expect(facebookLink).toBeInTheDocument();
-    expect(facebookLink).toHaveAttribute("href", "https://facebook.com/dummy");
+    expect(facebookLink).toHaveAttribute("href", "https://facebook.com");
+
+    expect(email).toBeInTheDocument();
+    expect(email).toHaveAttribute("href", "mailto:test@pecha.com");
   });
 
   test("renders tab components and displays their content", () => {

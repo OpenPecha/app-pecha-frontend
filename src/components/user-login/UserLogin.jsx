@@ -3,12 +3,12 @@ import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "./UserLogin.scss";
-import axiosInstance from "../config/axios-config";
+import axiosInstance from "../../config/axios-config";
 import { Link, useNavigate } from "react-router-dom";
 import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useAuth } from "../config/AuthContext.jsx";
+import { useAuth } from "../../config/AuthContext.jsx";
 
 const UserLogin = () => {
     const {t} = useTranslation();

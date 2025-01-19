@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
 import "./NavigationBar.scss";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../config/AuthContext.jsx";
+import { useAuth } from "../../config/AuthContext.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LOGGED_IN_VIA } from "../../utils/Constants.js";
 

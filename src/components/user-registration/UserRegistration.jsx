@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {Link, useNavigate} from "react-router-dom";
-import {useTranslation} from "react-i18next";
+import React, { useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./UserRegistration.scss";
-import axiosInstance from "../config/axios-config.js";
-import {useMutation} from "react-query";
+import axiosInstance from "../../config/axios-config.js";
+import { useMutation } from "react-query";
 import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
-import {useAuth} from "../config/AuthContext.jsx";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth } from "../../config/AuthContext.jsx";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const UserRegistration = () => {
     const {t} = useTranslation();
