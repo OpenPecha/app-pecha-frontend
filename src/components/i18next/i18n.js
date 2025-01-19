@@ -84,7 +84,7 @@ export const resources = {
             invalidPassword: "bo - Invalid password",
             confirmPassword: "bo - Confirm password",
             passwordsDoNotMatch: "bo - Passwords do not match",
-            go: "bo - Go",
+            go: "bo - Gos",
             logout: "bo - Logout",
             socialLogins: "bo - Continue with Google/Apple",
             profile:"bo - Profile",
