@@ -39,6 +39,9 @@ function App() {
                 }
             },
             onError: () => {
+                sessionStorage.removeItem(ACCESS_TOKEN);
+                localStorage.removeItem(LOGGED_IN_VIA);
+                localStorage.removeItem(REFRESH_TOKEN);
                 navigate("/login")
             },
         }
