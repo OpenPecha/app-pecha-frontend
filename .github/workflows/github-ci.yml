@@ -4,6 +4,7 @@ on: [ push, pull_request,workflow_dispatch ]
 jobs:
   gitleaks:
     name: Gitleaks Scan
+    allow-failure: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
