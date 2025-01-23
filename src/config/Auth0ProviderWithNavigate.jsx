@@ -15,7 +15,7 @@ export const Auth0ProviderWithNavigate = ({children}) => {
   const {data: auth0Provider, isLoading: auth0ProvideIsLoading} = useQuery(
     ["auth0Provider"],
     async () => {
-      const {data} = await axiosInstance.get("/api/props");
+      const {data} = await axiosInstance.get("/api/v1/props");
       return data;
     },
     {
