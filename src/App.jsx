@@ -14,7 +14,7 @@ import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js
 import { useAuth } from "./config/AuthContext.jsx";
 import EditUserProfile from "./components/edit-user-profile/EditUserProfile.jsx";
 import UserProfile from "./components/user-profile/UserProfile.jsx";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const tokenExpiryTime = import.meta.env.VITE_TOKEN_EXPIRY_TIME_SEC;
 
@@ -22,27 +22,22 @@ function App() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [intervalId, setIntervalId] = useState(null);
-    const { getIdTokenClaims, getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+    const { getIdTokenClaims, isAuthenticated } = useAuth0();
 
     useEffect(() => {
-
         if (isAuthenticated) {
             const getToken = async () => {
                 try {
-                    const token = await getAccessTokenSilently();
                     const claims = await getIdTokenClaims();
-                    const idToken = claims.__raw; // The raw id_token
-                    console.log("Id Token: ",idToken)
-                    console.log("Access Token:", token);
-                    sessionStorage.setItem(ACCESS_TOKEN,token)
+                    const idToken = claims.__raw;
+                    sessionStorage.setItem(ACCESS_TOKEN, idToken)
                 } catch (error) {
                     console.error("Error fetching token:", error);
                 }
             };
-            getToken().then()
+            getToken().then();
         }
     }, [isAuthenticated]);
-
 
     const loginMutation = useMutation(
         async (refreshToken) => {
