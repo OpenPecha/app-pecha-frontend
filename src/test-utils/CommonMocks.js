@@ -50,6 +50,7 @@ export const mockUseQuery = () => {
     };
   });
 }
+
 export const mockTolgee = Tolgee()
   .init({
     language: 'en',
