@@ -1,5 +1,7 @@
 import { vi } from "vitest";
 import { resources } from "../components/i18next/i18n.js";
+import { Tolgee } from "@tolgee/react";
+import localeEn from "../i18n/en.json";
 
 export const mockReactI18Next = () => {
   vi.mock("react-i18next", async () => {
@@ -48,3 +50,11 @@ export const mockUseQuery = () => {
     };
   });
 }
+export const mockTolgee = Tolgee()
+  .init({
+    language: 'en',
+    fallbackLanguage: 'en',
+    staticData: {
+      en: localeEn
+    }
+  });

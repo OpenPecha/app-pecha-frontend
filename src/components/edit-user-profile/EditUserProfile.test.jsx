@@ -2,8 +2,9 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import EditUserProfile from "./EditUserProfile.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { mockAxios, mockReactI18Next, mockUseAuth } from "../../test-utils/CommonMocks.js";
+import { mockAxios, mockReactI18Next, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import "@testing-library/jest-dom";
+import { TolgeeProvider } from "@tolgee/react";
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom"); // Import the actual module for non-mocked exports
@@ -13,16 +14,16 @@ vi.mock("react-router-dom", async () => {
     useLocation: vi.fn(() => ({
       state: {
         userInfo: {
-          firstName: "John",
-          lastName: "Doe",
+          firstname: "John",
+          lastname: "Doe",
           title: "Developer",
           organization: "Tech Corp",
           website: "https://example.com",
           location: "New York",
-          education: ["B.Sc. Computer Science"],
-          aboutMe: "Software Engineer with 5 years of experience.",
-          public_email: "john.doe@example.com",
-          profileUrl: "https://profile.example.com",
+          educations: ["B.Sc. Computer Science"],
+          about_me: "Software Engineer with 5 years of experience.",
+          email: "john.doe@example.com",
+          avatar_url: "https://profile.example.com",
           twitterHandle: "@johndoe",
           linkedIn: "https://linkedin.com/in/johndoe",
           facebook: "https://facebook.com/johndoe",
@@ -43,8 +44,10 @@ describe("EditUserProfile Component", () => {
   const setup = () => {
     render(
       <Router>
-        <QueryClientProvider client={queryClient}>
-          <EditUserProfile/>
+        <QueryClientProvider client={ queryClient }>
+          <TolgeeProvider fallback={ "Loading tolgee..." } tolgee={ mockTolgee }>
+            <EditUserProfile />
+          </TolgeeProvider>
         </QueryClientProvider>
       </Router>
     );
@@ -83,7 +86,6 @@ describe("EditUserProfile Component", () => {
     const educationFields = screen.getAllByPlaceholderText("Enter your education");
     expect(educationFields).toHaveLength(2);
   });
-
 
 
   it("Cancel button", () => {

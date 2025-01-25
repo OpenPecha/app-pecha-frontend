@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "./EditUserProfile.scss";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,22 +7,23 @@ const EditUserProfile = () => {
 
   const location = useLocation();
   const userInfo = location.state?.userInfo || {};
+  console.log(userInfo);
   const [formData, setFormData] = useState({
-    firstName: userInfo.firstName || userInfo.given_name|| "",
-    lastName: userInfo.lastName || userInfo.family_name || "",
+    firstname: userInfo.firstname || "",
+    lastname: userInfo.lastname || "",
     title: userInfo.title || "",
     organization: userInfo.organization || "",
     website: userInfo.website || "",
     location: userInfo.location || "",
-    education: userInfo.education || [""],
-    aboutMe: userInfo.aboutMe || "",
-    public_email: userInfo.public_email || "",
-    profile_pic_url: userInfo.profile_pic_url || "",
+    educations: userInfo.educations || [""],
+    about_me: userInfo.about_me || "",
+    email: userInfo.email || "",
+    avatar_url: userInfo.avatar_url || "",
     twitter: userInfo.twitter || "",
     linkedIn: userInfo.linkedIn || "",
     facebook: userInfo.facebook || "",
     youtube: userInfo.youtube || "",
-    followees : userInfo.followees || [],
+    following: userInfo.following || [],
     followers: userInfo.followers || []
   });
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ const EditUserProfile = () => {
   };
 
   const addEducation = () => {
-    setFormData({ ...formData, education: [...formData.education, ""] });
+    setFormData({ ...formData, educations: [...formData.educations, ""] });
   };
 
   const handleSubmit = (e) => {
@@ -49,30 +50,30 @@ const EditUserProfile = () => {
     <div className="edit-user-profile">
       <h2>Edit Your Profile</h2>
       <hr />
-      <Form onSubmit={handleSubmit}>
-        {/* Personal Details Section */}
+      <Form onSubmit={ handleSubmit }>
+        {/* Personal Details Section */ }
         <h4>Personal Details</h4>
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formFirstName">
-              <Form.Label>First Name</Form.Label>
+              <Form.Label>First Name</Form.Label>{/*todo - translation*/ }
               <Form.Control
                 type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
+                name="firstname"
+                value={ formData.firstname }
+                onChange={ handleChange }
                 placeholder="Enter your first name"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formLastName">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
                 name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
+                value={ formData.lastname }
+                onChange={ handleChange }
                 placeholder="Enter your last name"
               />
             </Form.Group>
@@ -80,26 +81,26 @@ const EditUserProfile = () => {
         </Row>
 
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formTitle">
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
                 name="title"
-                value={formData.title}
-                onChange={handleChange}
+                value={ formData.title }
+                onChange={ handleChange }
                 placeholder="Enter your title"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formOrganization">
               <Form.Label>Organization</Form.Label>
               <Form.Control
                 type="text"
                 name="organization"
-                value={formData.organization}
-                onChange={handleChange}
+                value={ formData.organization }
+                onChange={ handleChange }
                 placeholder="Enter your organization"
               />
             </Form.Group>
@@ -107,26 +108,26 @@ const EditUserProfile = () => {
         </Row>
 
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formWebsite">
               <Form.Label>Website</Form.Label>
               <Form.Control
                 type="text"
                 name="website"
-                value={formData.website}
-                onChange={handleChange}
+                value={ formData.website }
+                onChange={ handleChange }
                 placeholder="Enter your website"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formLocation">
               <Form.Label>Location</Form.Label>
               <Form.Control
                 type="text"
                 name="location"
-                value={formData.location}
-                onChange={handleChange}
+                value={ formData.location }
+                onChange={ handleChange }
                 placeholder="Enter your location"
               />
             </Form.Group>
@@ -135,80 +136,80 @@ const EditUserProfile = () => {
 
         <Form.Group controlId="formEducation">
           <Form.Label>Education</Form.Label>
-          {formData.education.map((edu, index) => (
-            <Row key={index} className="mb-2 align-items-center">
-              <Col md={10}>
+          { formData.educations.map((edu, index) => (
+            <Row key={ index } className="mb-2 align-items-center">
+              <Col md={ 10 }>
                 <Form.Control
                   type="text"
-                  value={edu}
-                  onChange={(e) => handleEducationChange(index, e.target.value)}
+                  value={ edu }
+                  onChange={ (e) => handleEducationChange(index, e.target.value) }
                   placeholder="Enter your education"
                 />
               </Col>
-              <Col md={2} className="d-flex justify-content-between">
+              <Col md={ 2 } className="d-flex justify-content-between">
                 <Button
                   variant="outline-dark"
                   size="sm"
-                  onClick={addEducation}
+                  onClick={ addEducation }
                   className="me-2"
                 >
                   +
                 </Button>
-                {index !== 0 && <Button
+                { index !== 0 && <Button
                   variant="outline-danger"
                   size="sm"
-                  onClick={() => {
+                  onClick={ () => {
                     const updatedEducation = formData.education.filter(
                       (_, i) => i !== index
                     );
-                    setFormData({...formData, education: updatedEducation});
-                  }}
+                    setFormData({ ...formData, education: updatedEducation });
+                  } }
                 >
                   ×
-                </Button>}
+                </Button> }
               </Col>
             </Row>
-          ))}
+          )) }
         </Form.Group>
 
         <Form.Group controlId="formAboutMe">
           <Form.Label>About Me</Form.Label>
           <Form.Control
             as="textarea"
-            rows={3}
+            rows={ 3 }
             name="aboutMe"
-            value={formData.aboutMe}
-            onChange={handleChange}
+            value={ formData.aboutMe }
+            onChange={ handleChange }
             placeholder="Tell us about yourself"
-            className= "text-area"
+            className="text-area"
           />
         </Form.Group>
 
         <hr />
 
-        {/* Contact Section */}
+        {/* Contact Section */ }
         <h4>Contact</h4>
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
-                value={formData.public_email}
-                onChange={handleChange}
+                value={ formData.email }
+                onChange={ handleChange }
                 placeholder="Enter your email"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formProfileUrl">
               <Form.Label>Profile URL</Form.Label>
               <Form.Control
                 type="text"
                 name="profileUrl"
-                value={formData.profile_pic_url}
-                onChange={handleChange}
+                value={ formData.avatar_url }
+                onChange={ handleChange }
                 placeholder="Enter your profile URL"
               />
             </Form.Group>
@@ -216,26 +217,26 @@ const EditUserProfile = () => {
         </Row>
 
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formTwitterHandle">
               <Form.Label>Twitter Handle</Form.Label>
               <Form.Control
                 type="text"
                 name="twitterHandle"
-                value={formData.twitter}
-                onChange={handleChange}
+                value={ formData.twitter }
+                onChange={ handleChange }
                 placeholder="Enter your Twitter handle"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formLinkedIn">
               <Form.Label>LinkedIn</Form.Label>
               <Form.Control
                 type="text"
                 name="linkedIn"
-                value={formData.linkedIn}
-                onChange={handleChange}
+                value={ formData.linkedIn }
+                onChange={ handleChange }
                 placeholder="Enter your LinkedIn profile"
               />
             </Form.Group>
@@ -243,26 +244,26 @@ const EditUserProfile = () => {
         </Row>
 
         <Row>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formFacebook">
               <Form.Label>Facebook</Form.Label>
               <Form.Control
                 type="text"
                 name="facebook"
-                value={formData.facebook}
-                onChange={handleChange}
+                value={ formData.facebook }
+                onChange={ handleChange }
                 placeholder="Enter your Facebook profile"
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={ 6 }>
             <Form.Group controlId="formYoutubeChannel">
               <Form.Label>YouTube Channel</Form.Label>
               <Form.Control
                 type="text"
                 name="youtubeChannel"
-                value={formData.youtube}
-                onChange={handleChange}
+                value={ formData.youtube }
+                onChange={ handleChange }
                 placeholder="Enter your YouTube channel"
               />
             </Form.Group>
@@ -270,7 +271,7 @@ const EditUserProfile = () => {
         </Row>
 
         <div className="form-buttons">
-          <Button variant="secondary" type="button" onClick={() => navigate(-1)}>
+          <Button variant="secondary" type="button" onClick={ () => navigate(-1) }>
             Cancel
           </Button>
           <Button variant="primary" type="submit">

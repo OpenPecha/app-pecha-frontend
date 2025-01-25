@@ -1,21 +1,25 @@
-import React, {useState} from "react";
+import { useState } from "react";
 import "./UserProfile.scss";
-import {Tab, Tabs} from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import {useNavigate} from "react-router-dom";
-import {useMutation, useQuery} from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
 import axiosInstance from "../../config/axios-config.js";
+import { useTranslate } from "@tolgee/react";
+import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "../../utils/Constants.js";
+import { useAuth } from "../../config/AuthContext.jsx";
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 const fetchUserInfo = async () => {
-  const {data} = await axiosInstance.get("/api/v1/users/info");
+  const { data } = await axiosInstance.get("/api/v1/users/info");
   return data;
 };
 
 const uploadProfileImage = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
-  const {data} = await axiosInstance.post("api/v1/users/upload", formData);
+  const { data } = await axiosInstance.post("api/v1/users/upload", formData);
   return data
 }
 
@@ -23,7 +27,14 @@ const uploadProfileImage = async (file) => {
 const UserProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
-  const {data: userInfo, isLoading: userInfoIsLoading} = useQuery("userInfo", fetchUserInfo, {refetchOnWindowFocus: false});
+  const {
+    data: userInfo,
+    isLoading: userInfoIsLoading
+  } = useQuery("userInfo", fetchUserInfo, { refetchOnWindowFocus: false });
+  const { t } = useTranslate();
+  const { isLoggedIn, logout: pechaLogout } = useAuth();
+  const { isAuthenticated, logout } = useAuth0();
+
   const uploadProfileImageMutation = useMutation(uploadProfileImage, {
     onSuccess: (data) => {
       alert("Image uploaded successfully!");
@@ -63,92 +74,106 @@ const UserProfile = () => {
 
 
   const handleEditProfile = () => {
-    navigate("/edit-profile", {state: {userInfo}});
+    navigate("/edit-profile", { state: { userInfo } });
   };
+
+  function handleLogout(e) {
+    e.preventDefault()
+    localStorage.removeItem(LOGGED_IN_VIA);
+    sessionStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN)
+    isLoggedIn && pechaLogout()
+    isAuthenticated && logout({
+      logoutParams: {
+        returnTo: window.location.origin + "/texts",
+      },
+    });
+  }
 
   function renderSocialLinks(socialProfiles) {
     const socialIcons = {
-      linkedin: {class: "bi bi-linkedin", color: "#0A66C2"},
-      "x.com": {class: "bi bi-twitter", color: "#1DA1F2"},
-      facebook: {class: "bi bi-facebook", color: "#4267B2"},
-      youtube: {class: "bi bi-youtube", color: "#FF0000"},
-      email: {class: "bi bi-envelope", color: "#FF0000"},
+      linkedin: { class: "bi bi-linkedin", color: "#0A66C2" },
+      "x.com": { class: "bi bi-twitter", color: "#1DA1F2" },
+      facebook: { class: "bi bi-facebook", color: "#4267B2" },
+      youtube: { class: "bi bi-youtube", color: "#FF0000" },
+      email: { class: "bi bi-envelope", color: "#FF0000" },
     };
 
     return (
       <div
         className="social-links"
-        style={{
+        style={ {
           marginTop: "15px",
           display: "flex",
           gap: "10px",
-        }}
+        } }
       >
-        {socialProfiles.map((profile) => {
+        { socialProfiles.map((profile) => {
           const icon = socialIcons[profile.account] || {};
           return (
             <a
-              key={profile.account}
-              href={profile.account === "email" ? "mailto:" + profile.url : profile.url}
+              key={ profile.account }
+              href={ profile.account === "email" ? "mailto:" + profile.url : profile.url }
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={profile.account}
+              aria-label={ profile.account }
             >
               <i
-                className={icon.class}
-                style={{fontSize: "20px", color: icon.color}}
+                className={ icon.class }
+                style={ { fontSize: "20px", color: icon.color } }
               ></i>
             </a>
           );
-        })}
+        }) }
       </div>
     );
   }
 
   return (
     <>
-      {!userInfoIsLoading ?
+      { !userInfoIsLoading ?
         <div className="user-profile">
           <div className="pecha-user-profile">
             <div className="section1">
               <div className="profile-left">
-                <h2 className="profile-name">{userInfo?.firstname + " " + userInfo?.lastname}</h2>
-                <p className="profile-job-title">{userInfo?.title}</p>
+                <h2 className="profile-name">{ userInfo?.firstname + " " + userInfo?.lastname }</h2>
+                <p className="profile-job-title">{ userInfo?.title }</p>
                 <p className="profile-details">
-                  {userInfo?.location && <><span className="location">{userInfo?.location}</span> <span
-                    className="separator">·</span></>}
-                  {userInfo?.educations?.length ? <><span
-                    className="degree">{userInfo.educations.reduce((acc, curr) => acc + " " + curr)}</span> <span
-                    className="separator">·</span></> : <></>}
+                  { userInfo?.location && <><span className="location">{ userInfo?.location }</span> <span
+                    className="separator">·</span></> }
+                  { userInfo?.educations?.length ? <><span
+                    className="degree">{ userInfo.educations.reduce((acc, curr) => acc + " " + curr) }</span> <span
+                    className="separator">·</span></> : <></> }
                 </p>
                 <div className="actions-row">
-                  <button className="edit-profile-btn" onClick={handleEditProfile}>Edit Profile</button>
+                  <button className="edit-profile-btn"
+                          onClick={ handleEditProfile }>{ t("profile.edit_profile") }</button>
                   <button className="settings-btn">
-                    <span className="icon">⚙️</span> Settings
+                    <span className="icon">⚙️</span> { t("profile.setting") }
                   </button>
-                  <p className="logout-text">Logout</p>
+                  <p onClick={ handleLogout } className="logout-text">{ t("profile.log_out") }</p>
                 </div>
                 <div className="followers">
-                  <span className="number-followers">{userInfo?.followers} Followers</span>
-                  <span className="number-following">{userInfo?.following} Following</span>
+                  <span className="number-followers">{ userInfo?.followers } { t("common.followers") }</span>
+                  <span className="number-following">{ userInfo?.following } { t("common.following") }</span>
                 </div>
-                {userInfo?.social_profiles?.length > 0 && renderSocialLinks(userInfo?.social_profiles)}
+                { userInfo?.social_profiles?.length > 0 && renderSocialLinks(userInfo?.social_profiles) }
               </div>
               <div className="profile-right">
                 <div className="profile-picture">
-                  {profilePicture ? (
-                    <img src={profilePicture} alt="Profile" className="profile-image"/>
+                  { profilePicture ? (
+                    <img src={ profilePicture } alt="Profile" className="profile-image" />
                   ) : (
                     <label className="add-picture-btn">
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={handlePictureUpload}
-                        style={{display: "none"}}
+                        onChange={ handlePictureUpload }
+                        style={ { display: "none" } }
                       />
-                      Add Picture
+                      { t("profile.picture.add_picture") }
                     </label>
-                  )}
+                  ) }
                 </div>
               </div>
             </div>
@@ -159,59 +184,59 @@ const UserProfile = () => {
                   eventKey="sheets"
                   title={
                     <>
-                      <i className="bi bi-file-earmark"></i> Sheets
+                      <i className="bi bi-file-earmark"></i> { t("profile.sheets.title") }
                     </>
                   }
                 >
                   <div className="tab-content">
-                    <h3>Sheets</h3>
-                    <p>Manage your sheets and documents here.</p>
+                    <h3>{ t("profile.sheets.title") }</h3>
+                    <p>{ t("profile.sheets.description") }</p>
                   </div>
                 </Tab>
                 <Tab
                   eventKey="collections"
                   title={
                     <>
-                      <i className="bi bi-stack"></i> Collections
+                      <i className="bi bi-stack"></i> { t("profile.collections.title") }
                     </>
                   }
                 >
                   <div className="tab-content">
-                    <h3>Collections</h3>
-                    <p>Manage your data collections here.</p>
+                    <h3>{ t("profile.collections.title") }</h3>
+                    <p>{ t("profile.collections.description") }</p>
                   </div>
                 </Tab>
                 <Tab
                   eventKey="notes"
                   title={
                     <>
-                      <i className="bi bi-pencil"></i> Notes
+                      <i className="bi bi-pencil"></i> { t("profile.notes.title") }
                     </>
                   }
                 >
                   <div className="tab-content">
-                    <h3>Notes</h3>
-                    <p>Write and manage your notes here.</p>
+                    <h3>{ t("profile.notes.title") }</h3>
+                    <p>{ t("profile.notes.description") }</p>
                   </div>
                 </Tab>
                 <Tab
                   eventKey="tracker"
                   title={
                     <>
-                      <i className="bi bi-reception-4"></i> Buddhist Text Tracker
+                      <i className="bi bi-reception-4"></i> { t("profile.text_tracker.title") }
                     </>
                   }
                 >
                   <div className="tab-content">
-                    <h3>Buddhist Text Tracker</h3>
-                    <p>Track your progress in Buddhist texts here.</p>
+                    <h3>{ t("profile.text_tracker.title") }</h3>
+                    <p>{ t("profile.text_tracker.descriptions") }</p>
                   </div>
                 </Tab>
               </Tabs>
             </div>
           </div>
         </div>
-        : <p>Loading...</p>}
+        : <p>Loading...</p> }
     </>
   );
 };

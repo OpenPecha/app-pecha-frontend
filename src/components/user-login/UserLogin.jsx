@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
-import { useTranslation } from "react-i18next";
 import { Button, Col, Container, Form, Row, Toast, ToastContainer } from "react-bootstrap";
 import "./UserLogin.scss";
 import axiosInstance from "../../config/axios-config";
@@ -9,9 +8,10 @@ import eyeOpen from "../../assets/icons/eye-open.svg";
 import eyeClose from "../../assets/icons/eye-closed.svg";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "../../config/AuthContext.jsx";
+import { useTranslate } from "@tolgee/react";
 
 const UserLogin = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
@@ -58,15 +58,15 @@ const UserLogin = () => {
         const validationErrors = {};
 
         if (!email) {
-            validationErrors.email = t("required");
+            validationErrors.email = t("user.validation.required");
         } else if (!validateEmail(email)) {
-            validationErrors.email = t("invalidEmail");
+            validationErrors.email = t("user.validation.invalid_email");
         }
 
         if (!password) {
-            validationErrors.password = t("required");
+            validationErrors.password = t("user.validation.required");
         } else if (!validatePassword(password)) {
-            validationErrors.password = t("invalidPassword");
+            validationErrors.password = t("user.validation.invalid_password");
         }
 
         return validationErrors;
@@ -111,13 +111,13 @@ const UserLogin = () => {
             </ToastContainer> }
             <Row>
                 <Col xs={12} md={18} lg={25} className="login-box">
-                    <h2 className="title text-center login-title">{t("loginToPecha")}</h2>
+                    <h2 className="title text-center login-title">{ t("login.form.button.login_in") }</h2>
                     <Form onSubmit={handleSubmit}>
                         {/* Email Field */}
                         <Form.Group className="mb-3" controlId="formEmail">
                             <Form.Control
                                 type="email"
-                                placeholder={t("emailAddress")}
+                                placeholder={ t("common.email") }
                                 className="form-input"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -135,7 +135,7 @@ const UserLogin = () => {
                         >
                             <Form.Control
                                 type={showPassword ? "text" : "password"}
-                                placeholder={t("password")}
+                                placeholder={ t("common.password") }
                                 className="form-input"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -177,22 +177,22 @@ const UserLogin = () => {
                             className="login-button w-100"
                             // disabled={loginMutation.isLoading}
                         >
-                            {t("login")}
+                            { t("login.form.button.login_in") }
                         </Button>
 
                         {/* Links */}
                         <div className="login-links text-center mt-3">
                             <Link to={ "/forgot-password" } className="content forgot-password">
-                                {t("forgotPassword")}
+                                { t("login.forget_password") }
                             </Link>
                             <br/>
                             <Link to={ "/register" } className="content create-account">
-                                {t("createAccount")}
+                                { t("login.create_account") }
                             </Link>
                             <hr/>
                             <div className="social-login-buttons">
                                 <Button variant="outline-dark" className="w-100 mb-2" onClick={loginWithSocial}>
-                                    {t("socialLogins")}
+                                    { t("login.social_logins") }
                                 </Button>
                             </div>
                         </div>
