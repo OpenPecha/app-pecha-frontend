@@ -7,9 +7,6 @@ import axiosInstance from "./axios-config.js";
 
 export const Auth0ProviderWithNavigate = ({children}) => {
   const navigate = useNavigate();
-
-  const domain = import.meta.env.VITE_DOMAIN;
-  const clientId = import.meta.env.VITE_CLIENT_ID;
   const redirectUri = window.location.origin
 
   const {data: auth0Provider, isLoading: auth0ProvideIsLoading} = useQuery(
@@ -31,10 +28,6 @@ export const Auth0ProviderWithNavigate = ({children}) => {
     localStorage.setItem(LOGGED_IN_VIA, "okta");
     navigate(appState?.returnTo || window.location.pathname);
   };
-
-  if (!(domain && clientId && redirectUri)) {
-    return null;
-  }
 
   return (
     <>

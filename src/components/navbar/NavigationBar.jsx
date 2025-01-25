@@ -5,7 +5,7 @@ import "./NavigationBar.scss";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../config/AuthContext.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
-import { LOGGED_IN_VIA } from "../../utils/Constants.js";
+import {ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN} from "../../utils/Constants.js";
 
 const NavigationBar = () => {
     const {t, i18n} = useTranslation();
@@ -20,6 +20,8 @@ const NavigationBar = () => {
     function handleLogout(e) {
         e.preventDefault()
         localStorage.removeItem(LOGGED_IN_VIA);
+        sessionStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN)
         isLoggedIn && pechaLogout()
         isAuthenticated && logout({
             logoutParams: {
@@ -80,33 +82,6 @@ const NavigationBar = () => {
                                     {t("logout")}
                                 </Button>
                         }
-                        {/*
-                        {
-                            !isAuthenticated ? <><Button
-                                // as={ Link }
-                                // to="/login"
-                                onClick={() => loginWithRedirect()}
-                                variant="outline-dark"
-                                className="me-2"
-                            >
-                                { t("login") }
-                            </Button>
-                                <Button as={ Link } to="/register" variant="dark" className="me-3">
-                                    { t("signup") }
-                                </Button>
-                            </>:
-                                <Button
-                                    // as={ Link }
-                                    // to="/login"
-                                    onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-                                    variant="outline-dark"
-                                    className="me-2"
-                                >
-                                    { t("logout") }
-                                </Button>
-                        }
-                        */}
-
                         <Nav.Link
                             as={Link}
                             to={ "/help" }
