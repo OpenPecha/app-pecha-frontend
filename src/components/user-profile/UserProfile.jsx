@@ -35,10 +35,9 @@ const UserProfile = () => {
   const { isAuthenticated, logout } = useAuth0();
 
   const uploadProfileImageMutation = useMutation(uploadProfileImage, {
-    onSuccess: (data) => {
+    onSuccess: async () => {
       alert("Image uploaded successfully!");
-      console.log("Server response:", data);
-      userInfoRefetch()
+      await userInfoRefetch()
 
     },
     onError: (error) => {
