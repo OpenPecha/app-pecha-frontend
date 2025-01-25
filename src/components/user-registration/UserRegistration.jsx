@@ -40,7 +40,7 @@ const UserRegistration = () => {
     {
       onSuccess: (data) => {
         setRegistrationError("");
-        const { access_token, refresh_token } = data;
+        const { access_token, refresh_token } = data.auth;
         login(access_token, refresh_token);
         navigate('/texts')
       },

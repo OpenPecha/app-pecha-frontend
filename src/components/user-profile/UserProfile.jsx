@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./UserProfile.scss";
 import { Tab, Tabs } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -25,11 +24,11 @@ const uploadProfileImage = async (file) => {
 
 
 const UserProfile = () => {
-  const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
   const {
     data: userInfo,
-    isLoading: userInfoIsLoading
+    isLoading: userInfoIsLoading,
+    refetch: userInfoRefetch
   } = useQuery("userInfo", fetchUserInfo, { refetchOnWindowFocus: false });
   const { t } = useTranslate();
   const { isLoggedIn, logout: pechaLogout } = useAuth();
@@ -39,6 +38,8 @@ const UserProfile = () => {
     onSuccess: (data) => {
       alert("Image uploaded successfully!");
       console.log("Server response:", data);
+      userInfoRefetch()
+
     },
     onError: (error) => {
       alert("Failed to upload image. Please try again.");
@@ -46,7 +47,7 @@ const UserProfile = () => {
     }
   })
 
-  const handlePictureUpload = (event) => {
+  const handlePictureUpload = async (event) => {
     const fileInput = event.target;
     const file = fileInput.files[0];
     const maxSizeInBytes = 1024 * 1024;
@@ -66,9 +67,8 @@ const UserProfile = () => {
       }
 
       const reader = new FileReader();
-      reader.onload = () => setProfilePicture(reader.result);
       reader.readAsDataURL(file);
-      uploadProfileImageMutation.mutateAsync(file);
+      uploadProfileImageMutation.mutateAsync(file)
     }
   };
 
@@ -161,8 +161,8 @@ const UserProfile = () => {
               </div>
               <div className="profile-right">
                 <div className="profile-picture">
-                  { profilePicture ? (
-                    <img src={ profilePicture } alt="Profile" className="profile-image" />
+                  { userInfo?.avatar_url ? (
+                    <img src={ userInfo.avatar_url } alt="Profile" className="profile-image" />
                   ) : (
                     <label className="add-picture-btn">
                       <input
