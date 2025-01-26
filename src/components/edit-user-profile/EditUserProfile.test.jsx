@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import EditUserProfile from "./EditUserProfile.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { mockAxios, mockReactI18Next, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
+import { mockAxios, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import "@testing-library/jest-dom";
 import { TolgeeProvider } from "@tolgee/react";
 
@@ -34,7 +34,6 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-mockReactI18Next();
 mockAxios();
 mockUseAuth()
 

@@ -4,11 +4,10 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { expect } from "vitest";
 import UserRegistration from "./UserRegistration.jsx";
 import "@testing-library/jest-dom";
-import { mockAxios, mockReactI18Next, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
+import { mockAxios, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { TolgeeProvider } from "@tolgee/react";
 
-mockReactI18Next();
 mockAxios();
 mockUseAuth()
 describe("UserRegistration Component", () => {
