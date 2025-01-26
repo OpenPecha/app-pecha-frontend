@@ -10,11 +10,12 @@ import ResetPassword from "./components/reset-password/ResetPassword.jsx";
 import ForgotPassword from "./components/forgot-password/ForgotPassword.jsx";
 import { useEffect, useState } from "react";
 import axiosInstance from "./config/axios-config.js";
-import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js";
+import { ACCESS_TOKEN, LANGUAGE, LOGGED_IN_VIA, REFRESH_TOKEN } from "./utils/Constants.js";
 import { useAuth } from "./config/AuthContext.jsx";
 import EditUserProfile from "./components/edit-user-profile/EditUserProfile.jsx";
 import UserProfile from "./components/user-profile/UserProfile.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
+import { setFontVariables } from "./config/commonConfigs.js";
 
 const tokenExpiryTime = import.meta.env.VITE_TOKEN_EXPIRY_TIME_SEC;
 
@@ -82,6 +83,8 @@ function App() {
                 loginMutation.mutate(refreshToken);
             }
         }
+
+        setFontVariables(localStorage.getItem(LANGUAGE) || "bo-IN");
     }, []);
 
     return (

@@ -4,8 +4,9 @@ import { FaGlobe, FaQuestionCircle } from "react-icons/fa";
 import "./NavigationBar.scss";
 import { useAuth } from "../../config/AuthContext.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
-import { ACCESS_TOKEN, LOGGED_IN_VIA, REFRESH_TOKEN } from "../../utils/Constants.js";
+import { ACCESS_TOKEN, LANGUAGE, LOGGED_IN_VIA, REFRESH_TOKEN } from "../../utils/Constants.js";
 import { useTolgee, useTranslate } from "@tolgee/react";
+import { setFontVariables } from "../../config/commonConfigs.js";
 
 const NavigationBar = () => {
   const { t } = useTranslate();
@@ -15,7 +16,8 @@ const NavigationBar = () => {
 
   const changeLanguage = async (lng) => {
     await tolgee.changeLanguage(lng);
-    localStorage.setItem("language", lng);
+    localStorage.setItem(LANGUAGE, lng);
+    setFontVariables(lng);
   };
 
   function handleLogout(e) {

@@ -10,9 +10,10 @@ import { PechaAuthProvider } from "./config/AuthContext.jsx";
 import { BackendFetch, DevTools, FormatSimple, Tolgee, TolgeeProvider } from "@tolgee/react";
 import localeEn from "./i18n/en.json";
 import localeBoIn from "./i18n/bo-IN.json";
+import { LANGUAGE } from "./utils/Constants.js";
 
 const queryClient = new QueryClient();
-const defaultLanguage = import.meta.env.VITE_DEFAULT_LANGUAGE || "en";
+const defaultLanguage = import.meta.env.VITE_DEFAULT_LANGUAGE || "bo-IN";
 const tolgee = Tolgee()
   .use(DevTools())
   .use(FormatSimple())
@@ -22,7 +23,7 @@ const tolgee = Tolgee()
     fallbackOnFail: true
   }))
   .init({
-    language: localStorage.getItem("language") || defaultLanguage,
+    language: localStorage.getItem(LANGUAGE) || defaultLanguage,
     fallbackLanguage: 'en',
     staticData: {
       en: async () => localeEn,

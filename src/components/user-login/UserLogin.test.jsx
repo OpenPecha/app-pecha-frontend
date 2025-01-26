@@ -3,10 +3,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import UserLogin from "./UserLogin";
 import "@testing-library/jest-dom";
-import { mockAxios, mockReactI18Next, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
+import { mockAxios, mockTolgee, mockUseAuth } from "../../test-utils/CommonMocks.js";
 import { TolgeeProvider } from "@tolgee/react";
 
-mockReactI18Next();
 mockUseAuth();
 mockAxios();
 
