@@ -4,10 +4,13 @@ import {useLocation, useNavigate} from "react-router-dom";
 import "./EditUserProfile.scss";
 import {useMutation} from "react-query";
 import axiosInstance from "../../config/axios-config.js";
+import {useTranslate} from "@tolgee/react";
 
 const EditUserProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslate();
+
 
   const userInfo = location.state?.userInfo || {};
   const updateProfileMutation = useMutation(async (updateProfileData) => {
@@ -84,25 +87,25 @@ const EditUserProfile = () => {
             <Row>
               <Col md={6}>
                 <Form.Group controlId="formFirstName">
-                  <Form.Label>First Name</Form.Label>
+                  <Form.Label>{t("profile.first_name")}</Form.Label>
                   <Form.Control
                     type="text"
                     name="firstname"
                     value={formData.firstname}
                     onChange={handleChange}
-                    placeholder="Enter your first name"
+                    placeholder={ t("profile.enter-your-first-name") }
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group controlId="formLastName">
-                  <Form.Label>Last Name</Form.Label>
+                  <Form.Label>{ t("profile.last_name") }</Form.Label>
                   <Form.Control
                     type="text"
                     name="lastname"
                     value={formData.lastname}
                     onChange={handleChange}
-                    placeholder="Enter your last name"
+                    placeholder={ t("profile.enter-your-last-name") }
                   />
                 </Form.Group>
               </Col>
@@ -111,25 +114,25 @@ const EditUserProfile = () => {
             <Row>
               <Col md={6}>
                 <Form.Group controlId="formTitle">
-                  <Form.Label>Title</Form.Label>
+                  <Form.Label>{ t("profile.title") }</Form.Label>
                   <Form.Control
                     type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="Enter your title"
+                    placeholder={ t("profile.enter-your-title") }
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group controlId="formOrganization">
-                  <Form.Label>Organization</Form.Label>
+                  <Form.Label>{ t("profile.organization") }</Form.Label>
                   <Form.Control
                     type="text"
                     name="organization"
                     value={formData.organization}
                     onChange={handleChange}
-                    placeholder="Enter your organization"
+                    placeholder={ t("profile.enter-your-organization") }
                   />
                 </Form.Group>
               </Col>
@@ -138,20 +141,20 @@ const EditUserProfile = () => {
             <Row>
               <Col md={6}>
                 <Form.Group controlId="formLocation">
-                  <Form.Label>Location</Form.Label>
+                  <Form.Label>{ t("profile.enter-your-location") }</Form.Label>
                   <Form.Control
                     type="text"
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    placeholder="Enter your location"
+                    placeholder={ t("profile.enter-your-location") }
                   />
                 </Form.Group>
               </Col>
             </Row>
 
             <Form.Group controlId="formEducation">
-              <Form.Label>Education</Form.Label>
+              <Form.Label>{ t("profile.education") }</Form.Label>
               {formData.educations.map((edu, index) => (
                 <Row key={index} className="mb-2 align-items-center">
                   <Col md={10}>
@@ -159,7 +162,7 @@ const EditUserProfile = () => {
                       type="text"
                       value={edu}
                       onChange={(e) => handleEducationChange(index, e.target.value)}
-                      placeholder="Enter your education"
+                      placeholder={ t("profile.enter-your-education") }
                     />
                   </Col>
                   <Col md={2} className="d-flex justify-content-between">
@@ -190,14 +193,14 @@ const EditUserProfile = () => {
 
             <Row>
               <Form.Group controlId="formAboutMe">
-                <Form.Label>About Me</Form.Label>
+                <Form.Label>{ t("profile.about-me") }</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
                   name="about_me"
                   value={formData.about_me}
                   onChange={handleChange}
-                  placeholder="Tell us about yourself"
+                  placeholder={ t("profile.tell-us-about-yourself") }
                 />
               </Form.Group>
             </Row>
@@ -209,7 +212,7 @@ const EditUserProfile = () => {
               {formData.social_profiles.map((profile) => (
                 <Col md={6} key={profile.account}>
                   <Form.Group controlId={`form${profile.account}`}>
-                    <Form.Label>{profile.account.charAt(0).toUpperCase() + profile.account.slice(1)}</Form.Label>
+                    <Form.Label>{t(`profile.${profile.account}`)}</Form.Label>
                     <Form.Control
                       type="text"
                       value={profile.url}
@@ -225,10 +228,10 @@ const EditUserProfile = () => {
 
         <div className="form-buttons">
           <Button variant="outline-danger" type="button" onClick={() => navigate(-1)}>
-            Cancel
+            { t("profile.cancel") }
           </Button>
           <Button variant="outline-success" type="submit">
-            Submit
+            { t("profile.submit") }
           </Button>
         </div>
       </Form>
