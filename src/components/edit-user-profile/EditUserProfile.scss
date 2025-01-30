@@ -1,54 +1,49 @@
 .edit-user-profile {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  margin: 1rem 3rem 1rem 3rem;
   h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  .row{
+    margin: 0!important;
+  }
+
+  hr {
+    margin-bottom: 2rem;
+  }
+
+  .nav-tabs {
+    margin-bottom: 1rem;
   }
 
   .form-buttons {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    justify-content: flex-start;
     margin-top: 2rem;
+    gap: 1rem;
+    margin-left: 1rem;
 
     button {
-      width: 48%;
-      padding: 0.75rem;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 4px;
-      transition: all 0.3s ease-in-out;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-
-      &:hover {
-        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
-      }
+      padding: 0.6rem 1.5rem;
     }
+  }
 
-    .btn-secondary {
-      color: #ff4d4f; /* Light red */
-      border: 2px solid #ff4d4f;
-      background-color: transparent;
+  .form-control {
+    margin-bottom: 1rem;
+  }
 
-      &:hover {
-        background-color: rgba(255, 77, 79, 0.1);
-      }
+  .btn-outline-dark {
+    &:hover {
+      background-color: #343a40;
+      color: white;
     }
+  }
 
-    .btn-primary {
-      color: #fff;
-      border: none;
-      background-color: #52c41a;
-
-      &:hover {
-        background-color: #389e0d;
-      }
+  .btn-outline-danger {
+    &:hover {
+      background-color: #dc3545;
+      color: white;
     }
-
   }
 }
