@@ -217,7 +217,7 @@ const EditUserProfile = () => {
                       type="text"
                       value={profile.url}
                       onChange={(e) => handleSocialProfileChange(profile.account, e.target.value)}
-                      placeholder={`Enter your ${profile.account}`}
+                      placeholder={t(`profile.enter-your-${profile.account}`)}
                     />
                   </Form.Group>
                 </Col>
