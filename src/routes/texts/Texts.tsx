@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import {
+  buildChapterUrl,
   getLanguageClass,
   mapLanguageCode,
 } from "../../utils/helperFunctions.tsx";
@@ -246,7 +247,10 @@ const Texts = (props: any) => {
           </button>
         ) : (
           <Link
-            to={`/chapter?text_id=${textId}&content_id=${tableOfContents?.contents[0]?.id}&versionId=&contentIndex=${0}`}
+            to={buildChapterUrl({
+              text_id: textId,
+              content_id: tableOfContents?.contents[0]?.id,
+            })}
             className="text-left"
           >
             <h1
@@ -273,7 +277,10 @@ const Texts = (props: any) => {
             />
             <Breadcrumbs items={breadcrumbItems} />
             <Link
-              to={`/chapter?text_id=${textId}&content_id=${tableOfContents?.contents[0]?.id}&versionId=&contentIndex=${0}`}
+              to={buildChapterUrl({
+                text_id: textId,
+                content_id: tableOfContents?.contents[0]?.id,
+              })}
               className="text-left"
             >
               <p

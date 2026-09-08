@@ -44,7 +44,8 @@ vi.mock("./commentaries/Commentaries.tsx", () => ({
   ),
 }));
 
-vi.mock("../../utils/helperFunctions.tsx", () => ({
+vi.mock("../../utils/helperFunctions.tsx", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   mapLanguageCode: (code: string) => (code === "bo-IN" ? "bo" : code),
   getLanguageClass: () => "language-class",
   getEarlyReturn: () => "",

@@ -18,7 +18,8 @@ vi.mock("@tolgee/react", async () => {
   };
 });
 
-vi.mock("../../../utils/helperFunctions.jsx", () => ({
+vi.mock("../../../utils/helperFunctions.jsx", async (importOriginal) => ({
+  ...(await importOriginal()),
   getLanguageClass: (lang) => `language-${lang}`,
   getEarlyReturn: ({ isLoading, error, t }) => {
     if (isLoading) return <div>Loading...</div>;
@@ -225,6 +226,25 @@ describe("Versions Component", () => {
       expect(links[0]).toHaveAttribute(
         "href",
         "/chapter?text_id=version1&content_id=content1",
+      );
+    });
+
+    test("omits content_id when the version has no table of contents", () => {
+      setup({
+        versions: {
+          versions: [
+            {
+              id: "version1",
+              title: "Version 1 Title",
+              language: "bo",
+            },
+          ],
+        },
+      });
+
+      expect(screen.getByRole("link")).toHaveAttribute(
+        "href",
+        "/chapter?text_id=version1",
       );
     });
   });

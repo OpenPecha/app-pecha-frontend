@@ -8,6 +8,7 @@ import {
   getFirstSegmentId,
   getLastSegmentId,
   mergeSections,
+  buildChapterUrl,
 } from "./helperFunctions";
 
 describe("mapLanguageCode", () => {
@@ -298,5 +299,34 @@ describe("mergeSections", () => {
 
     expect(result[0].segments).toHaveLength(1);
     expect(result[0].segments[0].segment_id).toBe("seg-1");
+  });
+});
+
+describe("buildChapterUrl", () => {
+  test("includes every param that has a value", () => {
+    expect(
+      buildChapterUrl({ text_id: "text-1", content_id: "content-1" }),
+    ).toBe("/chapter?text_id=text-1&content_id=content-1");
+  });
+
+  test("drops undefined, null and empty params", () => {
+    expect(
+      buildChapterUrl({
+        text_id: "text-1",
+        content_id: undefined,
+        segment_id: null,
+        version_id: "",
+      }),
+    ).toBe("/chapter?text_id=text-1");
+  });
+
+  test("returns a bare path when nothing has a value", () => {
+    expect(buildChapterUrl({ text_id: undefined })).toBe("/chapter");
+  });
+
+  test("encodes values", () => {
+    expect(buildChapterUrl({ text_id: "a b&c" })).toBe(
+      "/chapter?text_id=a+b%26c",
+    );
   });
 });
