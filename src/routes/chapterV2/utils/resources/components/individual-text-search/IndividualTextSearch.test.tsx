@@ -144,7 +144,7 @@ describe("fetchTextSearchResults", () => {
         params: {
           query: mockQuery,
           search_type: "exact",
-          text_id: mockTextId,
+          edition_id: mockTextId,
           limit: mockPagination.limit,
           skip: mockSkip,
         },
@@ -184,7 +184,7 @@ describe("fetchTextSearchResults", () => {
         params: {
           query: "",
           search_type: "exact",
-          text_id: "",
+          edition_id: "",
           limit: 10,
           skip: 0,
         },
@@ -287,7 +287,7 @@ describe("fetchTextSearchResults", () => {
         params: {
           query: mockQuery,
           search_type: "exact",
-          text_id: mockTextId,
+          edition_id: mockTextId,
           limit: pagination.limit,
           skip: skip,
         },

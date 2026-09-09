@@ -25,7 +25,10 @@ export const fetchTextSearchResults = async (
     params: {
       query,
       search_type: "exact",
-      text_id: textId,
+      // This is an edition id, not a genuine OpenPecha text id (the reader's
+      // "text_id" fields are edition ids throughout the v2 API), so it must
+      // scope the search via edition_id rather than text_id.
+      edition_id: textId,
       limit: pagination.limit,
       skip: skip,
     },
