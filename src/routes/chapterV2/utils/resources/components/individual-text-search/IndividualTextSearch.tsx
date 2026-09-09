@@ -84,10 +84,16 @@ const IndividualTextSearch = ({
   const earlyReturn = getEarlyReturn({ isLoading, error, t });
 
   const hasSearchQuery = debouncedSearchQuery.trim() !== "";
-  const source = searchResults?.sources?.[0];
-  const segments = source?.segment_matches || [];
-  const totalSegments = segments.length;
-  const totalPages = Math.ceil(totalSegments / pagination.limit);
+  // A text can have several editions, so a page of results may span more than
+  // one source; flatten them and carry each source's language onto its matches.
+  const segments = (searchResults?.sources ?? []).flatMap((source: any) =>
+    (source.segment_matches ?? []).map((segment: any) => ({
+      ...segment,
+      language: source.text?.language,
+    })),
+  );
+  // `total` counts every match, not just this page, so it is what drives paging.
+  const totalPages = Math.ceil((searchResults?.total ?? 0) / pagination.limit);
   const highlightClassNames = "bg-yellow-200 px-1 rounded-sm";
 
   return (
@@ -136,7 +142,7 @@ const IndividualTextSearch = ({
                     openResourcesPanel();
                   }}
                   className={`w-full rounded border cursor-pointer border-gray-200 bg-white p-3 text-left  transition hover:border-gray-300 hover:bg-gray-50 ${getLanguageClass(
-                    source.text.language,
+                    segment.language,
                   )}`}
                 >
                   <p

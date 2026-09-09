@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  buildChapterUrl,
   getEarlyReturn,
   getLanguageClass,
 } from "../../../utils/helperFunctions.tsx";
@@ -78,7 +79,7 @@ const CommonCard = ({
     }
     return (
       <Link
-        to={`/chapter?text_id=${version.id}&content_id=${contentId}`}
+        to={buildChapterUrl({ text_id: version.id, content_id: contentId })}
         className="text-left"
       >
         <div

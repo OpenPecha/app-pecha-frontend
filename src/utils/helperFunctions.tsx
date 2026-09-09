@@ -230,3 +230,15 @@ export const isSocialUrl = (account: string, url: string): boolean => {
   if (!pattern) return true;
   return pattern.test(url);
 };
+
+export const buildChapterUrl = (
+  params: Record<string, string | number | null | undefined>,
+): string => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === null || value === undefined || value === "") return;
+    searchParams.set(key, String(value));
+  });
+  const query = searchParams.toString();
+  return query ? `/chapter?${query}` : "/chapter";
+};
