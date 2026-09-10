@@ -53,7 +53,7 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
 
   const renderRun = (ariaHidden: boolean) => (
     <ul
-      className="flex shrink-0 items-center gap-8 pr-8 sm:gap-12 sm:pr-12"
+      className="flex shrink-0 items-center gap-6 pr-6 sm:gap-10 sm:pr-10"
       aria-hidden={ariaHidden || undefined}
     >
       {groups.map((group) => {
@@ -61,7 +61,7 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
         return (
           <li key={group.id} className="shrink-0">
             <Avatar
-              className="size-14 ring-1 ring-white/25 sm:size-16"
+              className="size-12 ring-1 ring-white/25 sm:size-14"
               title={title}
             >
               {group.avatar_url && (
@@ -82,10 +82,10 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
 
   return (
     <section
-      className="flex min-h-32 flex-1 flex-col justify-center gap-6 bg-[#0a1729] py-8 lg:pb-20"
+      className="flex min-h-28 flex-[0_0_20%] flex-col justify-center gap-3 overflow-hidden bg-[#0a1729] py-3 lg:pb-14"
       aria-label={t("home.partners_label", "Groups practising with us")}
     >
-      <p className="px-4 text-center text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-white/40 sm:px-6">
+      <p className="px-4 mb-4 text-center text-[0.65rem] font-semibold uppercase  tracking-[0.24em] text-white/40 sm:px-6">
         {t("home.partners_label", "Groups practising with us")}
       </p>
 

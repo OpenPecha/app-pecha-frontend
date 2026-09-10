@@ -78,7 +78,7 @@ const Home = () => {
           the rest, so the first screen ends on the community instead of on a
           band of empty background.
         */}
-        <div className="flex min-h-dvh flex-col">
+        <div className="flex min-h-dvh flex-col lg:h-dvh">
           <HomeHero apiLanguage={apiLanguage} />
           <PartnerMarquee apiLanguage={apiLanguage} language={planLanguage} />
         </div>

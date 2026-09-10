@@ -33,7 +33,7 @@ const HomeHero = ({ apiLanguage }: HomeHeroProps) => {
   const imageUrl = data?.verse_of_day?.image_url;
 
   return (
-    <header className="relative isolate overflow-hidden bg-[#102544]">
+    <header className="relative isolate flex flex-1 flex-col overflow-hidden bg-[#102544]">
       {imageUrl && (
         <img
           src={imageUrl}
@@ -47,7 +47,7 @@ const HomeHero = ({ apiLanguage }: HomeHeroProps) => {
       */}
       <div className="absolute inset-0 bg-gradient-to-tr from-[#0a1729]/95 via-[#0a1729]/70 to-[#0a1729]/30" />
 
-      <div className="relative mx-auto flex min-h-[clamp(26rem,68vh,40rem)] w-full max-w-6xl flex-col justify-end gap-10 px-4 pb-12 pt-24 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-16 lg:pb-16">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end gap-10 px-4 pb-12 pt-24 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-16 lg:pb-16">
         <div className="max-w-3xl">
           {/*
             No wordmark here: the bar above is transparent over this image, so
