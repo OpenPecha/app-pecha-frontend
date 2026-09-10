@@ -205,6 +205,25 @@ describe("Sources Component", () => {
     fireEvent.click(paginationComponent);
   });
 
+  test("pages through every match, not just the sources on this page", () => {
+    // What one page of an exact search actually looks like: the API ranks and
+    // slices the matches, then groups them, so a page of 10 matches can arrive
+    // as only two sources while `total` reports far more matches overall.
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { ...mockSourceData, skip: 0, limit: 10, total: 74 },
+      isLoading: false,
+      error: null,
+    }));
+
+    renderWithProviders(<Sources query="test" />);
+
+    // 74 matches at 10 per page. Dividing the two grouped sources by the limit
+    // gave a single page and stranded every match after the tenth.
+    expect(screen.getByTestId("pagination-component")).toHaveTextContent(
+      "Page 1 of 8",
+    );
+  });
+
   test("navigates correctly when segment is clicked", () => {
     vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
       data: mockSourceData,

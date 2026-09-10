@@ -89,8 +89,12 @@ const Sources = (query: any) => {
       </div>
     );
   }
-  const totalVersions = sourceData.sources?.length || 0;
-  const totalPages = Math.ceil(totalVersions / pagination.limit);
+  // Paging is by segment match, not by source: the API slices the ranked list of
+  // matches and only then groups them under their texts. Dividing the grouped
+  // sources on this page by the limit gave 1 whenever a page held fewer than
+  // `limit` groups - which is almost always - so later matches were unreachable
+  // even though the total above reported them. `total` counts every match.
+  const totalPages = Math.ceil((sourceData.total ?? 0) / pagination.limit);
   const handlePageChange = (pageNumber: number) => {
     setPagination((prev) => ({ ...prev, currentPage: pageNumber }));
   };

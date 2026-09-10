@@ -5,11 +5,30 @@ import path from "path";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, "./env");
+
+  /**
+   * Proxy target, with a fallback for an unset or empty variable.
+   *
+   * Vite quietly substitutes `base.invalid` for an empty target, so every
+   * proxied request fails with an opaque DNS error rather than anything that
+   * points at the missing configuration. Fall back to the documented default
+   * and say so instead.
+   */
+  const target = (name: string, fallback: string): string => {
+    const value = env[name]?.trim();
+    if (value) return value;
+    console.warn(
+      `[vite] ${name} is not set; proxying to ${fallback}. ` +
+        `Set it in env/.env.${mode} to use a different service.`,
+    );
+    return fallback;
+  };
+
   // One proxy definition, shared by `vite dev` and `vite preview`, so a built
   // bundle behaves the same as the dev server. In production nginx does this.
   const proxy = {
     "/api": {
-      target: env.VITE_BACKEND_BASE_URL,
+      target: target("VITE_BACKEND_BASE_URL", "http://127.0.0.1:8000"),
       changeOrigin: true,
       secure: true,
     },
@@ -17,22 +36,22 @@ export default defineConfig(({ mode }) => {
     // a browser request and the X-Application header is added server-side
     // rather than shipped in the bundle.
     "/library": {
-      target: env.VITE_LIBRARY_BASE_URL,
+      target: target("VITE_LIBRARY_BASE_URL", "https://library.webuddhist.com"),
       changeOrigin: true,
       secure: true,
       rewrite: (path: string) => path.replace(/^\/library/, ""),
       headers: {
-        "X-Application": env.VITE_LIBRARY_APP_NAME || "webuddhist",
+        "X-Application": env.VITE_LIBRARY_APP_NAME?.trim() || "webuddhist",
       },
     },
     "/chats": {
-      target: env.VITE_CHAT_API_URL,
+      target: target("VITE_CHAT_API_URL", "http://127.0.0.1:8001"),
       changeOrigin: true,
       secure: true,
       rewrite: (path: string) => path,
     },
     "/threads": {
-      target: env.VITE_CHAT_API_URL,
+      target: target("VITE_CHAT_API_URL", "http://127.0.0.1:8001"),
       changeOrigin: true,
       secure: true,
     },
