@@ -209,11 +209,19 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
     }
   }, [currentChapter.segmentId]);
 
+  // Select the segment this reader is anchored on: when it first opens, and
+  // again whenever the resources panel navigates it somewhere else.
+  //
+  // Both of these must depend on the anchor alone. This one also depended on
+  // selectedSegmentId (and compared against it), so it re-ran after every click
+  // and put the highlight straight back on the anchor - meaning a reader opened
+  // *on* a segment could never select a different one. That is every pane after
+  // the first, since those are opened by following a link from a segment.
   useEffect(() => {
-    if (currentSegmentId && currentSegmentId !== selectedSegmentId) {
+    if (currentSegmentId) {
       setSelectedSegmentId(currentSegmentId);
     }
-  }, [currentSegmentId, selectedSegmentId]);
+  }, [currentSegmentId]);
 
   useEffect(() => {
     const container = contentsContainerRef.current;

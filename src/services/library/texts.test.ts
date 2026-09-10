@@ -90,7 +90,7 @@ describe("getTextVersions precedence", () => {
     expect(result.versions.map((v) => v.id)).toEqual(["fr"]);
   });
 
-  test("climbs to the parent for siblings only when it has none of its own", async () => {
+  test("climbs to the parent, and the parent is a version too", async () => {
     graph([
       text({ id: "mid", translation_of: "source", translations: [] }),
       text({ id: "source", translations: ["mid", "zh"] }),
@@ -99,8 +99,22 @@ describe("getTextVersions precedence", () => {
 
     const result = await getTextVersions({ textId: "mid" });
 
-    // Its own entry is excluded from its list of versions.
-    expect(result.versions.map((v) => v.id)).toEqual(["zh"]);
+    // The text being read is excluded; the one it translates is not - without it
+    // there is no way back to the root from any of its translations.
+    expect(result.versions.map((v) => v.id)).toEqual(["source", "zh"]);
+  });
+
+  test("a commentary offers the versions of the text it comments on", async () => {
+    graph([
+      text({ id: "comm", commentary_of: "root" }),
+      text({ id: "root", translations: ["fr", "zh"], commentaries: ["comm"] }),
+      text({ id: "fr", language: "fr" }),
+      text({ id: "zh", language: "zh" }),
+    ]);
+
+    const result = await getTextVersions({ textId: "comm" });
+
+    expect(result.versions.map((v) => v.id)).toEqual(["root", "fr", "zh"]);
   });
 
   test("borrows from a related commentary only when it has no translations", async () => {
@@ -187,7 +201,21 @@ describe("getTextCommentaries precedence", () => {
 
     const result = await getTextCommentaries({ textId: "comm" });
 
-    expect(result.map((c) => c.id)).toEqual(["comm", "comm2"]);
+    // Its own entry in the family's list is not a commentary on itself.
+    expect(result.map((c) => c.id)).toEqual(["comm2"]);
+  });
+
+  test("a translation reports the commentaries of the text it translates", async () => {
+    graph([
+      text({ id: "fr", translation_of: "root", commentaries: [] }),
+      text({ id: "root", commentaries: ["c1", "c2"] }),
+      text({ id: "c1" }),
+      text({ id: "c2" }),
+    ]);
+
+    const result = await getTextCommentaries({ textId: "fr" });
+
+    expect(result.map((c) => c.id)).toEqual(["c1", "c2"]);
   });
 
   test("a root text with related texts reads through the first of them", async () => {

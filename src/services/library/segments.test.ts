@@ -7,7 +7,8 @@ vi.mock("./api.ts", () => ({
   fetchTextById: vi.fn(),
 }));
 
-vi.mock("./texts.ts", () => ({
+vi.mock("./texts.ts", async (importOriginal) => ({
+  ...((await importOriginal()) as object),
   fetchTextSourceLink: vi.fn(async () => null),
 }));
 
@@ -17,7 +18,11 @@ import {
   fetchSegmentDetail,
   fetchTextById,
 } from "./api.ts";
-import { getSegmentById, getSegmentTranslations } from "./segments.ts";
+import {
+  getSegmentById,
+  getSegmentInfo,
+  getSegmentTranslations,
+} from "./segments.ts";
 
 const mocked = (fn: unknown) => fn as ReturnType<typeof vi.fn>;
 
@@ -109,7 +114,7 @@ describe("segment line breaks", () => {
       ]),
     );
     mocked(fetchRelatedSegments).mockResolvedValue({
-      items: [{ id: "rel-1", text_id: "text-1" }],
+      items: [{ id: "rel-1", text_id: "text-2" }],
       has_more: false,
       offset: 0,
       limit: 10,
@@ -119,5 +124,95 @@ describe("segment line breaks", () => {
 
     expect(result.parent_segment.content).toBe("oneXX\ntwoYY");
     expect(result.translations[0].segments[0].content).toBe("oneXX\ntwoYY");
+  });
+});
+
+describe("relations from anywhere in a family", () => {
+  /**
+   * The relationship lists live only on the root: a translation carries an empty
+   * `translations`/`commentaries` and just a pointer back to what it translates.
+   */
+  const family = {
+    root: {
+      id: "root",
+      title: { bo: "Root" },
+      language: "bo",
+      category_id: "cat-1",
+      translations: ["fr", "zh"],
+      commentaries: ["comm"],
+      translation_of: null,
+      commentary_of: null,
+    },
+    fr: {
+      id: "fr",
+      title: { fr: "French" },
+      language: "fr",
+      category_id: "cat-1",
+      translations: [],
+      commentaries: [],
+      translation_of: "root",
+      commentary_of: null,
+    },
+    zh: {
+      id: "zh",
+      title: { zh: "Chinese" },
+      language: "zh",
+      category_id: "cat-1",
+      translations: [],
+      commentaries: [],
+      translation_of: "root",
+      commentary_of: null,
+    },
+  };
+
+  beforeEach(() => {
+    mocked(fetchTextById).mockImplementation(
+      async (id: string) => (family as Record<string, unknown>)[id] ?? null,
+    );
+  });
+
+  test("the panel counts a translation's whole family, not its empty lists", async () => {
+    mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 5]], "fr"));
+
+    const result = await getSegmentInfo("seg-1");
+
+    // Was 0/0 before, which hid both panel buttons even though the related
+    // lookup behind them had the root, the sibling and the commentary to show.
+    expect(result.segment_info).toMatchObject({
+      text_id: "fr",
+      translations: 2, // the root it translates, plus the zh sibling
+      related_text: { commentaries: 1, root_text: 1 },
+    });
+  });
+
+  test("the root counts its own family without counting itself", async () => {
+    mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 5]], "root"));
+
+    const result = await getSegmentInfo("seg-1");
+
+    expect(result.segment_info).toMatchObject({
+      translations: 2,
+      related_text: { commentaries: 1, root_text: 0 },
+    });
+  });
+
+  test("the text being read is not listed among its own relations", async () => {
+    mocked(fetchSegmentContent).mockResolvedValue("text");
+    mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 4]], "fr"));
+    mocked(fetchRelatedSegments).mockResolvedValue({
+      items: [
+        // Another segment of the very text being read, which the related
+        // lookup also returns.
+        { id: "own-2", text_id: "fr" },
+        { id: "rel-1", text_id: "zh" },
+      ],
+      has_more: false,
+      offset: 0,
+      limit: 10,
+    });
+
+    const result = await getSegmentTranslations({ segmentId: "seg-1" });
+
+    expect(result.translations.map((g) => g.text_id)).toEqual(["zh"]);
   });
 });

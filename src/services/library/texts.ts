@@ -298,6 +298,18 @@ export const getTextVersions = async (params: {
     );
   }
 
+  // A commentary has no versions of its own either. The ones a reader can switch
+  // to are the versions of the text it comments on, so climb the same way.
+  if (translationIds.length === 0 && textData.commentary_of) {
+    return versionsFromParent(
+      textData.commentary_of,
+      rootText,
+      language,
+      skip,
+      limit,
+    );
+  }
+
   // Likewise only borrow versions from a related commentary when this text has
   // no translations of its own, so this and getTextLanguages (which counts the
   // same list) cannot disagree about what a text's versions are.
@@ -399,9 +411,13 @@ const commentariesFromIds = async (
   commentaryIds: string[],
   skip: number,
   limit: number,
+  excludeId: string,
 ): Promise<TextDTO[]> => {
-  if (commentaryIds.length === 0) return [];
-  const details = await fetchTextsDetails(commentaryIds);
+  // Reading a commentary, its own entry in the family's list is not a
+  // commentary *on* it, so leave it out.
+  const ids = commentaryIds.filter((id) => id !== excludeId);
+  if (ids.length === 0) return [];
+  const details = await fetchTextsDetails(ids);
   return details
     .map((item) => mapTextToDTO(item, item.language))
     .slice(skip, skip + limit);
@@ -411,10 +427,11 @@ const commentariesFromParent = async (
   parentId: string,
   skip: number,
   limit: number,
+  excludeId: string,
 ): Promise<TextDTO[]> => {
   const parent = await fetchTextById(parentId).catch(() => null);
   return parent
-    ? commentariesFromIds(parent.commentaries ?? [], skip, limit)
+    ? commentariesFromIds(parent.commentaries ?? [], skip, limit, excludeId)
     : [];
 };
 
@@ -422,13 +439,24 @@ const commentariesFromRelated = async (
   relatedId: string,
   skip: number,
   limit: number,
+  excludeId: string,
 ): Promise<TextDTO[]> => {
   const related = await fetchTextById(relatedId).catch(() => null);
   if (!related) return [];
   if (related.commentary_of) {
-    return commentariesFromParent(related.commentary_of, skip, limit);
+    return commentariesFromParent(
+      related.commentary_of,
+      skip,
+      limit,
+      excludeId,
+    );
   }
-  return commentariesFromIds(related.commentaries ?? [], skip, limit);
+  return commentariesFromIds(
+    related.commentaries ?? [],
+    skip,
+    limit,
+    excludeId,
+  );
 };
 
 export const getTextCommentaries = async (params: {
@@ -445,14 +473,24 @@ export const getTextCommentaries = async (params: {
   }
 
   if (textData.commentary_of) {
-    return commentariesFromParent(textData.commentary_of, skip, limit);
+    return commentariesFromParent(
+      textData.commentary_of,
+      skip,
+      limit,
+      params.textId,
+    );
   }
 
   // A translation carries no commentaries of its own - they hang off the text it
   // translates - but a reader looking at the translation still expects to find
   // them.
   if ((textData.commentaries ?? []).length === 0 && textData.translation_of) {
-    return commentariesFromParent(textData.translation_of, skip, limit);
+    return commentariesFromParent(
+      textData.translation_of,
+      skip,
+      limit,
+      params.textId,
+    );
   }
 
   if (!textData.translation_of) {
@@ -461,11 +499,16 @@ export const getTextCommentaries = async (params: {
       ...(textData.commentaries ?? []),
     ];
     if (relatedIds.length > 0) {
-      return commentariesFromRelated(relatedIds[0], skip, limit);
+      return commentariesFromRelated(relatedIds[0], skip, limit, params.textId);
     }
   }
 
-  return commentariesFromIds(textData.commentaries ?? [], skip, limit);
+  return commentariesFromIds(
+    textData.commentaries ?? [],
+    skip,
+    limit,
+    params.textId,
+  );
 };
 
 export const getTextCommentariesByEdition = async (params: {

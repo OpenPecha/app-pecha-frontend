@@ -6,7 +6,7 @@ import {
 } from "./api.ts";
 import { LibraryError } from "./client.ts";
 import { extractTitle } from "./mappers.ts";
-import { fetchTextSourceLink } from "./texts.ts";
+import { fetchTextSourceLink, resolveRelationHub } from "./texts.ts";
 import type {
   LibraryRelatedSegment,
   LibraryText,
@@ -86,6 +86,26 @@ const fetchContentSafe = async (segmentId: string): Promise<string | null> => {
   }
 };
 
+/** The segment being viewed, plus the id of the text it belongs to. */
+const fetchParentSegmentWithText = async (
+  segmentId: string,
+): Promise<{ parent: ParentSegment; textId: string | null }> => {
+  const [content, detail] = await Promise.all([
+    fetchSegmentContent(segmentId).catch(() => null),
+    fetchSegmentDetail(segmentId).catch(() => null),
+  ]);
+  if (content === null || content === undefined) {
+    throw new LibraryError(`Segment with id '${segmentId}' not found`, 404);
+  }
+  return {
+    parent: {
+      segment_id: segmentId,
+      content: splitIntoLines(content, detail?.lines ?? []),
+    },
+    textId: detail?.text_id ?? null,
+  };
+};
+
 const fetchParentSegment = async (
   segmentId: string,
 ): Promise<ParentSegment> => {
@@ -114,13 +134,14 @@ const relatedSegmentsGroupedByType = async (args: {
   groups: V2SegmentTextGroup[];
   hasMore: boolean;
 }> => {
-  const [parentSegment, relatedPage] = await Promise.all([
-    fetchParentSegment(args.segmentId),
-    fetchRelatedSegments(args.segmentId, {
-      limit: args.limit,
-      offset: args.skip,
-    }),
-  ]);
+  const [{ parent: parentSegment, textId: ownTextId }, relatedPage] =
+    await Promise.all([
+      fetchParentSegmentWithText(args.segmentId),
+      fetchRelatedSegments(args.segmentId, {
+        limit: args.limit,
+        offset: args.skip,
+      }),
+    ]);
 
   const items = relatedPage.items ?? [];
   const hasMore = Boolean(relatedPage.has_more);
@@ -138,6 +159,10 @@ const relatedSegmentsGroupedByType = async (args: {
 
   const filtered = items.filter(
     (item) =>
+      // The related lookup also returns other segments of the text being read.
+      // Listing the open text as its own translation or commentary is noise, so
+      // drop it - a commentary was otherwise shown as a commentary on itself.
+      item.text_id !== ownTextId &&
       classifyText(textById.get(item.text_id ?? "")) === args.relatedType,
   );
   if (filtered.length === 0) return { parentSegment, groups: [], hasMore };
@@ -343,13 +368,24 @@ export const getSegmentInfo = async (
     throw new LibraryError(`Text with id '${textId}' not found`, 404);
   }
 
+  // These counts decide which buttons the resources panel renders at all, so
+  // they have to describe the whole family rather than this text's own pointers.
+  // A translation has empty lists of its own; counting those reported zero and
+  // hid the panel's translations and commentaries entirely, even though the
+  // related-segment lookup behind them had plenty to show.
+  const hub = await resolveRelationHub(text);
+  const isHub = hub.id === textId;
+  const siblings = (hub.translations ?? []).filter((id) => id !== textId);
+
   return {
     segment_info: {
       segment_id: segmentId,
       text_id: textId,
-      translations: (text.translations ?? []).length,
+      // Reading a translation, the text it translates is a version too.
+      translations: siblings.length + (isHub ? 0 : 1),
       related_text: {
-        commentaries: (text.commentaries ?? []).length,
+        commentaries: (hub.commentaries ?? []).filter((id) => id !== textId)
+          .length,
         root_text: text.commentary_of || text.translation_of ? 1 : 0,
       },
       resources: { sheets: 0 },
