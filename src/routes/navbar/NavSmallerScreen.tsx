@@ -58,7 +58,11 @@ const NavSmallerScreen = ({
       <SheetContent side="top" className="p-0 w-full h-screen overflow-y-auto">
         <div className="flex items-center h-[60px] bg-navbar px-4 py-3 border-b-2">
           <Link to="/" className="flex items-center">
-            <img className="h-[30px]" src="/img/logo.png" alt="Webuddhist" />
+            <img
+              className="h-[30px]"
+              src="/img/light_mode_logo.svg"
+              alt="Webuddhist"
+            />
           </Link>
         </div>
         <div className="px-2">

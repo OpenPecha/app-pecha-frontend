@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as reactQuery from "react-query";
 import "@testing-library/jest-dom";
@@ -13,7 +13,7 @@ import {
 import { vi, beforeEach, afterEach, test, expect, describe } from "vitest";
 import { QueryClient, QueryClientProvider } from "react-query";
 import axiosInstance from "../../config/axios-config.js";
-import Works from "./Works.js";
+import Works, { getWorksTotalPages } from "./Works.js";
 import { BrowserRouter as Router, useParams } from "react-router-dom";
 import { TolgeeProvider } from "@tolgee/react";
 
@@ -193,7 +193,7 @@ describe("Works Component", () => {
 
     expect(reactQuery.useQuery).toHaveBeenCalled();
     const queryKey = reactQuery.useQuery.mock.calls[0][0];
-    expect(queryKey).toEqual(["works", "works-id", 0, 12]);
+    expect(queryKey).toEqual(["works", "works-id", "en", 0, 12]);
   });
 
   test("uses pagination parameters correctly", () => {
@@ -413,5 +413,126 @@ describe("Works Component", () => {
     await user.click(button);
 
     expect(mockSetRendererInfo).toHaveBeenCalled();
+  });
+
+  test("shows next page when has_more is true", () => {
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { ...mockTextCategoryData, has_more: true },
+      isLoading: false,
+    }));
+
+    setup();
+
+    expect(screen.getByLabelText("pagination")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByLabelText("Go to next page")).toHaveAttribute(
+      "aria-disabled",
+      "false",
+    );
+  });
+
+  test("shows pagination on the last page when texts are present", () => {
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { ...mockTextCategoryData, has_more: false },
+      isLoading: false,
+    }));
+
+    setup();
+
+    expect(screen.getByLabelText("pagination")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.queryByText("2")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Go to next page")).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  test("hides pagination when there are no texts and has_more is false", () => {
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { texts: [], has_more: false },
+      isLoading: false,
+    }));
+
+    setup();
+
+    expect(screen.queryByLabelText("pagination")).not.toBeInTheDocument();
+  });
+
+  test("getWorksTotalPages uses total when present and has_more otherwise", () => {
+    expect(
+      getWorksTotalPages({
+        total: 25,
+        hasMore: true,
+        currentPage: 1,
+        limit: 12,
+        textCount: 12,
+      }),
+    ).toBe(3);
+
+    expect(
+      getWorksTotalPages({
+        hasMore: true,
+        currentPage: 1,
+        limit: 12,
+        textCount: 12,
+      }),
+    ).toBe(2);
+
+    expect(
+      getWorksTotalPages({
+        hasMore: false,
+        currentPage: 1,
+        limit: 12,
+        textCount: 3,
+      }),
+    ).toBe(1);
+
+    expect(
+      getWorksTotalPages({
+        hasMore: false,
+        currentPage: 1,
+        limit: 12,
+        textCount: 0,
+      }),
+    ).toBe(0);
+  });
+
+  test("resets to first page when collection id changes", async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { ...mockTextCategoryData, has_more: true },
+      isLoading: false,
+    }));
+
+    const renderWorks = () => (
+      <Router>
+        <QueryClientProvider client={queryClient}>
+          <TolgeeProvider fallback={"Loading tolgee..."} tolgee={mockTolgee}>
+            <Works />
+          </TolgeeProvider>
+        </QueryClientProvider>
+      </Router>
+    );
+
+    const { rerender } = render(renderWorks());
+
+    await user.click(screen.getByRole("link", { name: "2" }));
+    expect(
+      reactQuery.useQuery.mock.calls.some(
+        ([queryKey]) =>
+          Array.isArray(queryKey) &&
+          queryKey[1] === "works-id" &&
+          queryKey[3] === 12,
+      ),
+    ).toBe(true);
+
+    useParams.mockReturnValue({ id: "other-id" });
+    rerender(renderWorks());
+
+    await waitFor(() => {
+      const lastKey = reactQuery.useQuery.mock.calls.at(-1)[0];
+      expect(lastKey).toEqual(["works", "other-id", "en", 0, 12]);
+    });
   });
 });

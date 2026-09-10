@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../config/axios-config.ts";
 import { LANGUAGE, siteName } from "../../utils/constants.ts";
-import { useTranslate } from "@tolgee/react";
+import { useTolgee, useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -35,16 +35,48 @@ type TextItem = {
   language: string;
 };
 
+type WorksResponse = {
+  collection?: { id?: string; title?: string };
+  texts: TextItem[];
+  has_more?: boolean;
+  total?: number;
+};
+
 type WorksProps = {
   setRendererInfo?: (updater: any) => void;
   collection_id?: string;
   isCompactView?: boolean;
 };
 
+export const getWorksTotalPages = ({
+  total,
+  hasMore,
+  currentPage,
+  limit,
+  textCount,
+}: {
+  total?: number;
+  hasMore?: boolean;
+  currentPage: number;
+  limit: number;
+  textCount: number;
+}): number => {
+  if (total != null) {
+    return Math.ceil(total / limit);
+  }
+  const hasResults = textCount > 0 || Boolean(hasMore);
+  if (!hasResults && currentPage <= 1) {
+    return 0;
+  }
+  return currentPage + (hasMore ? 1 : 0);
+};
+
 const Works = (props?: WorksProps) => {
   const { collection_id, setRendererInfo, isCompactView = false } = props || {};
   const { id: paramId } = useParams();
   const { t } = useTranslate();
+  const tolgee = useTolgee(["language"]);
+  const language = tolgee.getLanguage() || "en";
   const id = collection_id || paramId || "";
 
   const [pagination, setPagination] = useState<{
@@ -56,17 +88,23 @@ const Works = (props?: WorksProps) => {
     [pagination],
   );
 
+  useEffect(() => {
+    setPagination((prev) =>
+      prev.currentPage === 1 ? prev : { ...prev, currentPage: 1 },
+    );
+  }, [id, language]);
+
   const {
     data: worksData,
     isLoading: worksDataIsLoading,
     error: worksDataIsError,
-  } = useQuery(
-    ["works", id, skip, pagination.limit],
+  } = useQuery<WorksResponse>(
+    ["works", id, language, skip, pagination.limit],
     () => fetchWorks(id, pagination.limit, skip),
     { refetchOnWindowFocus: false },
   );
 
-  const texts: TextItem[] = (worksData?.texts as TextItem[]) || [];
+  const texts: TextItem[] = worksData?.texts || [];
 
   const siteBaseUrl = window.location.origin;
   const canonicalUrl = `${siteBaseUrl}${window.location.pathname}`;
@@ -80,7 +118,13 @@ const Works = (props?: WorksProps) => {
   });
   if (earlyReturn) return earlyReturn;
 
-  const totalPages = Math.ceil((worksData?.total || 0) / pagination.limit);
+  const totalPages = getWorksTotalPages({
+    total: worksData?.total,
+    hasMore: worksData?.has_more,
+    currentPage: pagination.currentPage,
+    limit: pagination.limit,
+    textCount: texts.length,
+  });
   const handlePageChange = (pageNumber: number) => {
     setPagination((prev: { currentPage: number; limit: number }) => ({
       ...prev,
