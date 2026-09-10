@@ -6,6 +6,7 @@ import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
 import { useLanguageLabel } from "@/context/LanguagesContext.tsx";
 import TextExpand from "../../../../../commons/expandtext/TextExpand.tsx";
 import ResourceHeader from "../common/ResourceHeader.tsx";
+import ResourceState from "../common/ResourceState.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { getSegmentTranslations } from "@/services/library";
@@ -38,7 +39,11 @@ const TranslationView = ({
     closeResourcesPanel();
   };
 
-  const { data: sidePanelTranslationsData } = useQuery(
+  const {
+    data: sidePanelTranslationsData,
+    isLoading,
+    error,
+  } = useQuery(
     ["sidePanelTranslations", segmentId],
     () => fetchTranslationsData(segmentId),
     {
@@ -135,24 +140,30 @@ const TranslationView = ({
       />
 
       <div className=" flex-1 overflow-y-auto p-4 text-left text-black">
-        <div className="space-y-4">
-          {groupedTranslations &&
-            Object.entries(groupedTranslations).map(
-              ([language, translations]: any) => (
-                <div key={language}>
-                  <h3 className="overalltext mb-3 flex items-center gap-1 border-b-2 border-[#C74444] text-[#7d7d7d]">
-                    {languageLabel(language)}
-                    <span className="ml-1 text-sm text-[#718096]">
-                      ({translations.length})
-                    </span>
-                  </h3>
-                  {translations.map((translation: any, index: number) =>
-                    renderTranslationItem(translation, language, index),
-                  )}
-                </div>
-              ),
-            )}
-        </div>
+        <ResourceState
+          isLoading={isLoading}
+          isError={error}
+          isEmpty={Object.keys(groupedTranslations ?? {}).length === 0}
+        >
+          <div className="space-y-4">
+            {groupedTranslations &&
+              Object.entries(groupedTranslations).map(
+                ([language, translations]: any) => (
+                  <div key={language}>
+                    <h3 className="overalltext mb-3 flex items-center gap-1 border-b-2 border-[#C74444] text-[#7d7d7d]">
+                      {languageLabel(language)}
+                      <span className="ml-1 text-sm text-[#718096]">
+                        ({translations.length})
+                      </span>
+                    </h3>
+                    {translations.map((translation: any, index: number) =>
+                      renderTranslationItem(translation, language, index),
+                    )}
+                  </div>
+                ),
+              )}
+          </div>
+        </ResourceState>
       </div>
     </div>
   );

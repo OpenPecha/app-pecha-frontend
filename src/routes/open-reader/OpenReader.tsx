@@ -56,6 +56,10 @@ type Segment = {
   segment_id: string;
   segment_number?: number;
   content: string;
+  /** The edition's structural role for this segment, e.g. "verse", "title". */
+  type?: string | null;
+  /** The edition's own citation for this segment, e.g. "2-57". */
+  reference?: string | null;
   translation?: { language: string; content: string } | null;
 };
 
@@ -141,10 +145,13 @@ const OpenReader = () => {
         className={`flex items-baseline mt-2.5 w-[700px] max-w-full gap-4 ${
           !isShared ? "blur-sm select-none pointer-events-none" : ""
         }`}
+        title={`#${segment.reference}_${segment.type}`}
       >
-        <p className="md:mr-4 text-xs text-gray-700">
-          {segment.segment_number}
-        </p>
+        <div className="md:mr-4 flex shrink-0 flex-col items-start text-gray-700">
+          <p className="text-xs" title={`#${segment.segment_number}`}>
+            {segment.segment_number}
+          </p>
+        </div>
         <div className="flex flex-col items-start text-lg w-full text-justify">
           {(viewMode === VIEW_MODES.SOURCE ||
             viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (

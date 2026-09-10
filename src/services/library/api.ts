@@ -34,8 +34,34 @@ export const fetchTexts = (params: {
     "texts",
   );
 
-export const fetchTextById = (textId: string) =>
-  libraryGetOrNull<LibraryText>(`/v2/texts/${textId}`, undefined, "text");
+/**
+ * Text metadata, cached for the session.
+ *
+ * The same handful of texts is looked up over and over - every related segment
+ * has to be classified by the text it belongs to, and the resources panel does
+ * that again for every segment the reader selects. The metadata does not change
+ * under us, so fetch each one once.
+ */
+const textCache = new Map<string, Promise<LibraryText | null>>();
+
+export const fetchTextById = (textId: string): Promise<LibraryText | null> => {
+  const cached = textCache.get(textId);
+  if (cached) return cached;
+
+  const pending = libraryGetOrNull<LibraryText>(
+    `/v2/texts/${textId}`,
+    undefined,
+    "text",
+  ).catch((error) => {
+    textCache.delete(textId);
+    throw error;
+  });
+  textCache.set(textId, pending);
+  return pending;
+};
+
+/** Exposed for tests. */
+export const clearTextCache = () => textCache.clear();
 
 export const fetchTextEditions = (textId: string, editionType = "critical") =>
   libraryGet<LibraryEdition[]>(

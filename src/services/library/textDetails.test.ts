@@ -108,12 +108,16 @@ describe("getTextDetails windowing", () => {
         segment_id: "s3",
         segment_number: 3,
         content: "CCCC",
+        type: null,
+        reference: null,
         translation: null,
       },
       {
         segment_id: "s4",
         segment_number: 4,
         content: "DDDD",
+        type: null,
+        reference: null,
         translation: null,
       },
     ]);
@@ -202,6 +206,35 @@ describe("getTextDetails windowing", () => {
     // Anchoring by id scans the edition, so the count is known from then on.
     const scanned = await getTextDetails(EDITION, { segment_id: "s4" });
     expect(scanned.total_segments).toBe(5);
+  });
+
+  test("carries the edition's own type and reference for each segment", async () => {
+    mocked(fetchSegmentationSegments).mockResolvedValue({
+      items: [
+        {
+          id: "s1",
+          lines: [{ start: 0, end: 4 }],
+          type: "verse",
+          reference: "2-57",
+        },
+        {
+          id: "s2",
+          lines: [{ start: 4, end: 8 }],
+          type: "front_matter",
+          reference: "I-1",
+        },
+      ],
+      has_more: false,
+      offset: 0,
+      limit: 20,
+    });
+
+    const result = await getTextDetails(EDITION, { size: 2 });
+
+    expect(contentsOf(result).map((s: any) => [s.type, s.reference])).toEqual([
+      ["verse", "2-57"],
+      ["front_matter", "I-1"],
+    ]);
   });
 
   test("a segment's lines become line breaks in its content", async () => {

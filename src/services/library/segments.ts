@@ -6,7 +6,7 @@ import {
 } from "./api.ts";
 import { LibraryError } from "./client.ts";
 import { extractTitle } from "./mappers.ts";
-import { fetchTextSourceLink, resolveRelationHub } from "./texts.ts";
+import { fetchTextSourceLink } from "./texts.ts";
 import type {
   LibraryRelatedSegment,
   LibraryText,
@@ -363,30 +363,42 @@ export const getSegmentInfo = async (
     throw new LibraryError(`Text ID not found for segment '${segmentId}'`, 404);
   }
 
-  const text = await fetchTextById(textId);
+  const [text, relatedPage] = await Promise.all([
+    fetchTextById(textId),
+    // Count what the panel's lists will actually contain. These are the numbers
+    // on the panel buttons, and they used to come from the text's relationships
+    // instead: a commentary's front matter reported "root text (1)" because its
+    // *text* comments on a root, then opened empty because that *segment* has
+    // nothing aligned to it. Relationships are text-level; the lists are
+    // segment-level, and the buttons describe the lists.
+    fetchRelatedSegments(segmentId, { limit: MAX_LIMIT, offset: 0 }).catch(
+      () => null,
+    ),
+  ]);
   if (!text) {
     throw new LibraryError(`Text with id '${textId}' not found`, 404);
   }
 
-  // These counts decide which buttons the resources panel renders at all, so
-  // they have to describe the whole family rather than this text's own pointers.
-  // A translation has empty lists of its own; counting those reported zero and
-  // hid the panel's translations and commentaries entirely, even though the
-  // related-segment lookup behind them had plenty to show.
-  const hub = await resolveRelationHub(text);
-  const isHub = hub.id === textId;
-  const siblings = (hub.translations ?? []).filter((id) => id !== textId);
+  const rootTextId = text.translation_of ?? text.commentary_of ?? null;
+  const items = (relatedPage?.items ?? []).filter(
+    (item) => item.text_id && item.text_id !== textId,
+  );
+  const relatedTextIds = [...new Set(items.map((item) => item.text_id!))];
+  const relatedTexts = await Promise.all(
+    relatedTextIds.map((id) => fetchTextSafe(id)),
+  );
+
+  const countOfType = (type: string) =>
+    relatedTexts.filter((related) => classifyText(related) === type).length;
 
   return {
     segment_info: {
       segment_id: segmentId,
       text_id: textId,
-      // Reading a translation, the text it translates is a version too.
-      translations: siblings.length + (isHub ? 0 : 1),
+      translations: countOfType(TRANSLATION),
       related_text: {
-        commentaries: (hub.commentaries ?? []).filter((id) => id !== textId)
-          .length,
-        root_text: text.commentary_of || text.translation_of ? 1 : 0,
+        commentaries: countOfType(COMMENTARY),
+        root_text: rootTextId && relatedTextIds.includes(rootTextId) ? 1 : 0,
       },
       resources: { sheets: 0 },
     },

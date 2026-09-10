@@ -166,6 +166,11 @@ const buildSegments = (
     segment_id: span.id,
     segment_number: startPosition + index,
     content: joinSegmentLines(span, windowContent, spanStart),
+    // The edition's own structural role and citation for this segment. The
+    // reference is what a reader would actually cite - "2-57" rather than the
+    // segment's position in the file.
+    type: span.type ?? null,
+    reference: span.reference ?? null,
     translation: null,
   }));
 

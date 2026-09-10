@@ -196,6 +196,10 @@ export type SegmentDTO = {
   segment_id: string;
   segment_number: number;
   content: string;
+  /** Structural role, e.g. "verse", "title", "front_matter", "colophon". */
+  type?: string | null;
+  /** The edition's own citation for this segment, e.g. "2-57" or "I-1". */
+  reference?: string | null;
   translation?: SegmentTranslationDTO | null;
 };
 

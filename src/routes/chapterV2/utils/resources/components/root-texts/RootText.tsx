@@ -6,6 +6,7 @@ import { usePanelContext } from "../../../../../../context/PanelContext.tsx";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
 import TextExpand from "../../../../../commons/expandtext/TextExpand.tsx";
 import ResourceHeader from "../common/ResourceHeader.tsx";
+import ResourceState from "../common/ResourceState.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { getSegmentRootText } from "@/services/library";
 
@@ -31,13 +32,13 @@ const RootTextView = ({
     closeResourcesPanel();
   };
 
-  const { data: rootTextData } = useQuery(
-    ["rootTexts", segmentId],
-    () => fetchRootTextData(segmentId),
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  const {
+    data: rootTextData,
+    isLoading,
+    error,
+  } = useQuery(["rootTexts", segmentId], () => fetchRootTextData(segmentId), {
+    refetchOnWindowFocus: false,
+  });
 
   const handleFootnoteClick = (event: any) => {
     if (event.target.classList?.contains("footnote-marker")) {
@@ -76,7 +77,11 @@ const RootTextView = ({
       />
       <div className="flex-1 overflow-y-auto p-4 text-left text-black">
         <div className=" [&_.footnote-marker]:cursor-pointer [&_.footnote-marker]:px-0.5 [&_.footnote-marker]:text-xs [&_.footnote-marker]:font-semibold [&_.footnote-marker]:text-blue-600 [&_.footnote-marker]:transition-colors [&_.footnote-marker]:duration-200 hover:[&_.footnote-marker]:text-blue-800 [&_.footnote]:hidden [&_.footnote]:rounded [&_.footnote]:bg-gray-100 [&_.footnote]:px-1.5 [&_.footnote]:py-0.5 [&_.footnote]:text-[0.9em] [&_.footnote]:italic [&_.footnote]:text-[#8a8a8a] [&_.footnote.active]:inline">
-          {(rootTextData?.root_text?.length ?? 0) > 0 && (
+          <ResourceState
+            isLoading={isLoading}
+            isError={error}
+            isEmpty={(rootTextData?.root_text?.length ?? 0) === 0}
+          >
             <div>
               {rootTextData?.root_text?.map((rootText: any) => {
                 const textId = rootText.text_id;
@@ -121,7 +126,7 @@ const RootTextView = ({
                 );
               })}
             </div>
-          )}
+          </ResourceState>
         </div>
       </div>
     </div>

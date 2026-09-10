@@ -30,6 +30,10 @@ type Segment = {
   segment_id: string;
   segment_number?: number;
   content: string;
+  /** The edition's structural role for this segment, e.g. "verse", "title". */
+  type?: string | null;
+  /** The edition's own citation for this segment, e.g. "2-57". */
+  reference?: string | null;
   translation?: Translation | null;
 };
 
@@ -480,9 +484,14 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
                       handleSegmentClick(segment.segment_id);
                     }
                   }}
+                  title={`#${segment.reference}_${segment.type}`}
                   role="button"
                 >
-                  <p className="md:mr-4 text-xs">{segment.segment_number}</p>
+                  <div className="md:mr-4 flex shrink-0 flex-col items-start">
+                    <p className="text-xs" title={`#${segment.segment_number}`}>
+                      {segment.segment_number}
+                    </p>
+                  </div>
                   <div
                     className={`flex flex-col items-start text-lg w-full text-justify ${isSelected && "bg-blue-50"}`}
                   >

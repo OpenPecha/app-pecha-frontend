@@ -163,7 +163,29 @@ describe("relations from anywhere in a family", () => {
       translation_of: "root",
       commentary_of: null,
     },
+    comm: {
+      id: "comm",
+      title: { bo: "Commentary" },
+      language: "bo",
+      category_id: "cat-1",
+      translations: [],
+      commentaries: [],
+      translation_of: null,
+      commentary_of: "root",
+    },
   };
+
+  /** What /segments/{id}/related returns for the segment under test. */
+  const relatedTo = (textIds: string[]) =>
+    mocked(fetchRelatedSegments).mockResolvedValue({
+      items: textIds.map((textId, index) => ({
+        id: `rel-${index}`,
+        text_id: textId,
+      })),
+      has_more: false,
+      offset: 0,
+      limit: 100,
+    });
 
   beforeEach(() => {
     mocked(fetchTextById).mockImplementation(
@@ -171,27 +193,48 @@ describe("relations from anywhere in a family", () => {
     );
   });
 
-  test("the panel counts a translation's whole family, not its empty lists", async () => {
+  test("the panel counts what its lists will actually show", async () => {
     mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 5]], "fr"));
+    // Reading the French translation, this segment is aligned to the root, the
+    // Chinese sibling and the commentary.
+    relatedTo(["root", "zh", "comm", "fr"]);
 
     const result = await getSegmentInfo("seg-1");
 
-    // Was 0/0 before, which hid both panel buttons even though the related
-    // lookup behind them had the root, the sibling and the commentary to show.
     expect(result.segment_info).toMatchObject({
       text_id: "fr",
-      translations: 2, // the root it translates, plus the zh sibling
+      // `zh` is the only sibling translation. `fr` is the text being read, and
+      // `root` has no ancestor of its own, so it is counted as the root text
+      // rather than as another translation.
+      translations: 1,
       related_text: { commentaries: 1, root_text: 1 },
     });
   });
 
-  test("the root counts its own family without counting itself", async () => {
+  test("a segment with nothing aligned to it offers no buttons", async () => {
+    // Front matter is the usual case: its *text* comments on a root, but the
+    // segment itself has no alignments, so opening the list showed nothing
+    // while the button promised one root text.
+    mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 5]], "fr"));
+    relatedTo([]);
+
+    const result = await getSegmentInfo("seg-1");
+
+    expect(result.segment_info).toMatchObject({
+      translations: 0,
+      related_text: { commentaries: 0, root_text: 0 },
+    });
+  });
+
+  test("the root counts its relations without counting itself", async () => {
     mocked(fetchSegmentDetail).mockResolvedValue(detail([[0, 5]], "root"));
+    relatedTo(["fr", "zh", "comm", "root"]);
 
     const result = await getSegmentInfo("seg-1");
 
     expect(result.segment_info).toMatchObject({
       translations: 2,
+      // The root has no ancestor of its own in this fixture.
       related_text: { commentaries: 1, root_text: 0 },
     });
   });
