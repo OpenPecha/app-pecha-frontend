@@ -48,27 +48,29 @@ const AuthTwoColumnLayout: React.FC<AuthTwoColumnLayoutProps> = ({
             sidebarClassName,
           )}
         >
-          <div className="flex items-start">
-            <Link to="/">
-              <img
-                src={webuddhist_logo}
-                alt="WeBuddhist"
-                className="h-fit w-40"
-              />
-            </Link>
-          </div>
-          <div className="flex w-full flex-col space-y-2 text-start">
-            <div className="flex items-center space-x-2">
-              <p className="text-2xl font-medium en-serif-text">{title}</p>
-              <Badge
-                variant="outline"
-                className="text-sm text-muted-foreground"
-              >
-                {badgeText}
-              </Badge>
+          <div className="flex flex-1 flex-col justify-center space-y-6">
+            <div className="flex items-start">
+              <Link to="/">
+                <img
+                  src={webuddhist_logo}
+                  alt="WeBuddhist"
+                  className="h-fit w-20"
+                />
+              </Link>
             </div>
-            <div className="flex w-full max-w-xl">
-              <p className="text-sm text-muted-foreground">{description}</p>
+            <div className="flex w-full flex-col space-y-2 text-start">
+              <div className="flex items-center space-x-2">
+                <p className="text-2xl font-medium en-serif-text">{title}</p>
+                <Badge
+                  variant="outline"
+                  className="text-sm text-muted-foreground"
+                >
+                  {badgeText}
+                </Badge>
+              </div>
+              <div className="flex w-full max-w-xl">
+                <p className="text-sm text-muted-foreground">{description}</p>
+              </div>
             </div>
           </div>
           <div className="flex w-full flex-wrap items-center gap-2 text-muted-foreground">
