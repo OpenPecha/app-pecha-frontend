@@ -133,7 +133,7 @@ const Works = (props?: WorksProps) => {
   const rootTexts = texts;
 
   const breadcrumbItems = [
-    { label: t("header.text"), path: "/" },
+    { label: t("header.text"), path: "/collections" },
     { label: worksData?.collection?.title || "" },
   ];
 

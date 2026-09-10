@@ -14,7 +14,7 @@ type SeriesCardProps = {
   enrollment?: UserSeriesEnrollmentDTO;
   onSelect: (seriesId: string) => void;
   onViewPlans: (seriesId: string) => void;
-  variant?: "carousel" | "featured";
+  variant?: "carousel" | "featured" | "tile";
 };
 
 const SeriesCard = ({
@@ -34,6 +34,80 @@ const SeriesCard = ({
   const imageUrl = resolveImageUrl(series.image);
   const contentFontClass = getLanguageClass(language);
   const isEnrolled = Boolean(enrollment);
+
+  if (variant === "tile") {
+    return (
+      // Stretched-link pattern: one button covers the tile for "view plans",
+      // the content sits above it and lets clicks through, and only the Start
+      // control takes pointer events back. Nesting a second control inside the
+      // first button would have put it out of reach of the keyboard.
+      <article className="group relative h-full overflow-hidden rounded-3xl">
+        {imageUrl ? (
+          <>
+            <img
+              src={imageUrl}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          </>
+        ) : (
+          // A warm wash rather than flat grey, so a tile without artwork still
+          // carries its weight in the grid.
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-100 via-rose-50 to-[#f4f6f8]" />
+        )}
+
+        <button
+          type="button"
+          onClick={() => onViewPlans(series.id)}
+          aria-label={title}
+          className="absolute inset-0 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#102544]/50 focus-visible:ring-inset"
+        />
+
+        <div className="pointer-events-none relative flex h-full min-h-[11rem] flex-col justify-end p-5">
+          <h2
+            className={`text-balance text-lg font-semibold leading-snug sm:text-xl ${contentFontClass} ${
+              imageUrl ? "text-white" : "text-[#102544]"
+            }`}
+          >
+            {title}
+          </h2>
+          <p
+            className={`mt-1.5 text-xs ${
+              imageUrl ? "text-white/75" : "text-slate-500"
+            }`}
+          >
+            {series.plan_count}{" "}
+            {t(
+              "plans.plan_count_label",
+              series.plan_count === 1 ? "plan" : "plans",
+            )}
+            {series.total_days > 0 && (
+              <>
+                {" · "}
+                {series.total_days} {t("plans.days_label", "days")}
+              </>
+            )}
+          </p>
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => onSelect(series.id)}
+              className={`pointer-events-auto rounded-full px-4 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                imageUrl
+                  ? "bg-white/90 text-[#102544] hover:bg-white focus-visible:ring-white"
+                  : "bg-[#102544] text-white hover:bg-[#0c1c34] focus-visible:ring-[#102544]/50"
+              }`}
+            >
+              {isEnrolled
+                ? t("plans.continue", "Continue")
+                : t("plans.start", "Start")}
+            </button>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   if (variant === "featured") {
     return (

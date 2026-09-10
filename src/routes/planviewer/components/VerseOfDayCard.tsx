@@ -9,6 +9,15 @@ type VerseOfDayCardProps = {
   apiLanguage: string;
 };
 
+/**
+ * The verse of the day, as the note set beside the hero headline.
+ *
+ * It is no longer a card: the hero's background *is* this verse's image, so a
+ * bordered box on top of it would only fight the photograph. Small, light type
+ * set to one side reads as a caption on the image rather than a widget over it.
+ *
+ * Shares its query with HomeHero, which uses the same key for the image.
+ */
 const VerseOfDayCard = ({ apiLanguage }: VerseOfDayCardProps) => {
   const { t } = useTranslate();
   const [copied, setCopied] = useState(false);
@@ -20,15 +29,13 @@ const VerseOfDayCard = ({ apiLanguage }: VerseOfDayCardProps) => {
   );
 
   const verse = data?.verse_of_day;
+
   if (isLoading) {
     return (
-      <div className="animate-pulse bg-[#f4f6f8]">
-        <div className="h-[min(52vh,480px)] w-full bg-slate-200/70" />
-        <div className="mx-auto max-w-3xl space-y-3 px-6 py-10">
-          <div className="mx-auto h-3 w-40 rounded-full bg-slate-200" />
-          <div className="mx-auto h-5 w-full max-w-xl rounded-full bg-slate-200/80" />
-          <div className="mx-auto h-5 w-4/5 max-w-lg rounded-full bg-slate-200/70" />
-        </div>
+      <div className="w-full animate-pulse space-y-2 lg:w-64 lg:shrink-0">
+        <div className="h-2.5 w-28 rounded-full bg-white/25" />
+        <div className="h-3 w-full rounded-full bg-white/20" />
+        <div className="h-3 w-4/5 rounded-full bg-white/15" />
       </div>
     );
   }
@@ -59,48 +66,40 @@ const VerseOfDayCard = ({ apiLanguage }: VerseOfDayCardProps) => {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#f4f6f8]"
+      className="w-full lg:w-64 lg:shrink-0"
       aria-label={t("plans.verse_of_day", "Verse of the day")}
     >
-      {verse.image_url && (
-        <div className="relative h-[min(52vh,480px)] w-full overflow-hidden">
-          <img
-            src={verse.image_url}
-            alt=""
-            className="h-full w-full object-cover animate-[fadeInUp_0.7s_ease-out]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#f4f6f8] via-[#f4f6f8]/25 to-transparent" />
-        </div>
-      )}
-
       <button
         type="button"
-        className={`relative z-10 mx-auto block w-full max-w-3xl cursor-pointer px-6 text-left ${verse.image_url ? "-mt-16 pb-12 pt-2" : "py-14"}`}
+        className="block w-full cursor-pointer border-t border-white/25 pt-4 text-left lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0"
         title={t("plans.copy_to_clipboard", "Copy verse to clipboard")}
         onClick={handleCopy}
         onKeyDown={handleKeyDown}
         aria-label={t("plans.copy_to_clipboard", "Copy verse to clipboard")}
       >
-        <p className="mb-5 text-center text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/55">
           {t("plans.verse_of_day", "Verse of the day")}
         </p>
         <blockquote
-          className={`text-center text-2xl leading-relaxed text-slate-800 sm:text-3xl sm:leading-snug ${getLanguageClass(apiLanguage)} ${
-            isTibetan ? "" : "en-serif-text"
-          }`}
+          className={`mt-3 text-sm leading-relaxed text-white/90 ${getLanguageClass(
+            apiLanguage,
+          )} ${isTibetan ? "" : "en-serif-text"}`}
         >
-          “{verseText}”
+          {verseText}
         </blockquote>
         {verseAttribution && (
-          <p className="mt-5 text-center text-sm font-medium tracking-wide text-slate-500 capitalize">
+          <p className="mt-2 text-xs capitalize text-white/55">
             — {verseAttribution}
           </p>
         )}
-        {copied && (
-          <p className="mt-4 text-center text-xs font-medium text-[#102544]/80 transition">
-            {t("plans.copied", "Copied!")}
-          </p>
-        )}
+        <p
+          className={`mt-2 text-xs font-medium text-white transition-opacity ${
+            copied ? "opacity-100" : "opacity-0"
+          }`}
+          aria-live="polite"
+        >
+          {t("plans.copied", "Copied!")}
+        </p>
       </button>
     </section>
   );
