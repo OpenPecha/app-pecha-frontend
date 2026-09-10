@@ -15,11 +15,15 @@ import * as reactRouterDom from "react-router-dom";
 import Collections, { fetchCollections } from "./Collections.tsx";
 import { vi, beforeEach, describe, test, expect } from "vitest";
 import "@testing-library/jest-dom";
-import axiosInstance from "../../config/axios-config.ts";
 
+import { getCollections } from "@/services/library";
 mockAxios();
 mockUseAuth();
 mockReactQuery();
+
+vi.mock("@/services/library", () => ({
+  getCollections: vi.fn(),
+}));
 
 vi.mock("@tolgee/react", async () => {
   const actual = await vi.importActual("@tolgee/react");
@@ -238,15 +242,15 @@ describe("Collections Component", () => {
 
   test("fetches collections with correct parameters", async () => {
     window.localStorage.getItem.mockReturnValue("en");
-    axiosInstance.get.mockResolvedValueOnce({ data: mockCollectionsData });
+    (getCollections as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockCollectionsData,
+    );
     const result = await fetchCollections();
     expect(window.localStorage.getItem).toHaveBeenCalledWith("LANGUAGE");
-    expect(axiosInstance.get).toHaveBeenCalledWith("/api/v1/collections", {
-      params: {
-        language: "en",
-        limit: 50,
-        skip: 0,
-      },
+    expect(getCollections).toHaveBeenCalledWith({
+      language: "en",
+      limit: 50,
+      skip: 0,
     });
     expect(result).toEqual(mockCollectionsData);
   });

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import axiosInstance from "../../config/axios-config.ts";
 import { LANGUAGE, siteName } from "../../utils/constants.ts";
 import { useTolgee, useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
@@ -13,30 +12,29 @@ import Seo from "../commons/seo/Seo.tsx";
 import PaginationComponent from "../commons/pagination/PaginationComponent.tsx";
 import Breadcrumbs from "../commons/breadcrumbs/Breadcrumbs.tsx";
 import TwoColumnLayout from "../../components/layout/TwoColumnLayout";
+import { getTextsByCollection } from "@/services/library";
 
 const fetchWorks = async (bookId: string, limit = 10, skip = 0) => {
   const storedLanguage = localStorage.getItem(LANGUAGE);
   const language = storedLanguage ? mapLanguageCode(storedLanguage) : "en";
 
-  const { data } = await axiosInstance.get("/api/v1/texts", {
-    params: {
-      language,
-      collection_id: bookId,
-      limit,
-      skip,
-    },
+  return getTextsByCollection({
+    collectionId: bookId,
+    language,
+    limit,
+    skip,
   });
-  return data;
 };
 
 type TextItem = {
   id: string;
   title: string;
   language: string;
+  license?: string | null;
 };
 
 type WorksResponse = {
-  collection?: { id?: string; title?: string };
+  collection?: { id?: string; title?: string } | null;
   texts: TextItem[];
   has_more?: boolean;
   total?: number;
@@ -135,7 +133,7 @@ const Works = (props?: WorksProps) => {
   const rootTexts = texts;
 
   const breadcrumbItems = [
-    { label: t("header.text"), path: "/" },
+    { label: t("header.text"), path: "/collections" },
     { label: worksData?.collection?.title || "" },
   ];
 

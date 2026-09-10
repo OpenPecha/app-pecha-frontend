@@ -16,16 +16,28 @@ import {
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter as Router, useParams } from "react-router-dom";
 import * as reactQuery from "react-query";
-import axiosInstance from "../../config/axios-config.ts";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TolgeeProvider } from "@tolgee/react";
-import Texts, { fetchTableOfContents, fetchVersions } from "./Texts.tsx";
+import Texts, { fetchCommentaries, fetchVersions } from "./Texts.tsx";
 
+import {
+  getTableOfContents,
+  getTextVersionsByEdition,
+  getTextCommentariesByEdition,
+  getTextsByCollection,
+} from "@/services/library";
 mockUseAuth();
 mockReactQuery();
 
 const mockCloseResourcesPanel = vi.fn();
+vi.mock("@/services/library", () => ({
+  getTableOfContents: vi.fn(),
+  getTextVersionsByEdition: vi.fn(),
+  getTextCommentariesByEdition: vi.fn(),
+  getTextsByCollection: vi.fn(),
+}));
+
 vi.mock("@/context/PanelContext.tsx", () => ({
   usePanelContext: () => ({
     closeResourcesPanel: mockCloseResourcesPanel,
@@ -77,7 +89,6 @@ describe("Texts Component", () => {
   const commentariesData = { items: [{ id: "commentary-1" }] };
 
   let localStorageMock: any;
-  let axiosGetMock: MockInstance;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -101,9 +112,7 @@ describe("Texts Component", () => {
       }
       return { data: undefined, isLoading: false, error: undefined };
     });
-    axiosGetMock = vi
-      .spyOn(axiosInstance, "get")
-      .mockResolvedValue({ data: tableOfContentsData });
+    (getTableOfContents as Mock).mockResolvedValue(tableOfContentsData);
   });
 
   const setup = () => {
@@ -140,30 +149,32 @@ describe("Texts Component", () => {
     expect(screen.getByTestId("commentaries-component")).toBeInTheDocument();
   });
 
-  test("fetchTableOfContents maps language code", async () => {
-    sessionStorage.setItem("textLanguage", "bo-IN");
-    axiosGetMock.mockResolvedValueOnce({ data: tableOfContentsData });
-
-    const result = await fetchTableOfContents("123", 0, 10);
-
-    expect(axiosGetMock).toHaveBeenCalledWith("/api/v1/texts/123/contents", {
-      params: { language: "bo", limit: 10, skip: 0 },
-    });
-    expect(result).toEqual(tableOfContentsData);
-    sessionStorage.removeItem("textLanguage");
-  });
-
-  test("fetchVersions maps language code", async () => {
-    sessionStorage.setItem("textLanguage", "bo-IN");
-    axiosGetMock.mockResolvedValueOnce({ data: { versions: [] } });
+  test("fetchVersions reads versions straight from the library", async () => {
+    (getTextVersionsByEdition as Mock).mockResolvedValueOnce({ versions: [] });
 
     const result = await fetchVersions("123", 0, 10);
 
-    expect(axiosGetMock).toHaveBeenCalledWith("/api/v1/texts/123/versions", {
-      params: { language: "bo", limit: 10, skip: 0 },
+    expect(getTextVersionsByEdition).toHaveBeenCalledWith({
+      editionId: "123",
+      skip: 0,
+      limit: 10,
     });
     expect(result).toEqual({ versions: [] });
-    sessionStorage.removeItem("textLanguage");
+  });
+
+  test("fetchCommentaries wraps the library result in items", async () => {
+    (getTextCommentariesByEdition as Mock).mockResolvedValueOnce([
+      { id: "commentary-1" },
+    ]);
+
+    const result = await fetchCommentaries("123", 0, 10);
+
+    expect(getTextCommentariesByEdition).toHaveBeenCalledWith({
+      editionId: "123",
+      skip: 0,
+      limit: 10,
+    });
+    expect(result).toEqual({ items: [{ id: "commentary-1" }] });
   });
 
   test("renders parent collection breadcrumb when data is available", () => {

@@ -304,4 +304,78 @@ describe("UseChapterHook", () => {
     expect(screen.getByTestId("resources")).toBeInTheDocument();
     expect(screen.getByText("Resources seg1")).toBeInTheDocument();
   });
+  describe("selecting a segment with a second reader open", () => {
+    /**
+     * Every reader pane after the first is opened by following a link from a
+     * specific segment, so it always mounts with an anchor. The selection sync
+     * used to depend on the selection itself, so it re-ran after every click and
+     * put the highlight straight back on that anchor.
+     */
+    const twoSegments = {
+      sections: [
+        {
+          id: "section-1",
+          title: "Section 1",
+          segments: [
+            {
+              segment_id: "seg1",
+              segment_number: 1,
+              content: "<span>First</span>",
+            },
+            {
+              segment_id: "seg2",
+              segment_number: 2,
+              content: "<span>Second</span>",
+            },
+          ],
+          sections: [],
+        },
+      ],
+    };
+
+    const openReader = (segmentId: string | null) =>
+      setup({
+        viewMode: VIEW_MODES.SOURCE,
+        content: twoSegments,
+        currentChapter: { segmentId },
+        currentSegmentId: segmentId,
+      });
+
+    const clickSegment = (container: HTMLElement, index: number) =>
+      fireEvent.click(container.querySelectorAll(".cursor-pointer")[index]);
+
+    beforeEach(() => {
+      mockState.panelContext.isResourcesPanelOpen = true;
+    });
+
+    test("a reader with no anchor can select a segment", () => {
+      const { container } = openReader(null);
+
+      clickSegment(container, 1);
+
+      expect(screen.getByText("Resources seg2")).toBeInTheDocument();
+    });
+
+    test("a reader anchored on one segment can select another", () => {
+      const { container } = openReader("seg2");
+
+      // Starts on its anchor...
+      expect(screen.getByText("Resources seg2")).toBeInTheDocument();
+
+      // ...and clicking elsewhere moves it, instead of snapping back.
+      clickSegment(container, 0);
+
+      expect(screen.getByText("Resources seg1")).toBeInTheDocument();
+    });
+
+    test("the selection keeps moving across repeated clicks", () => {
+      const { container } = openReader("seg1");
+
+      clickSegment(container, 1);
+      expect(screen.getByText("Resources seg2")).toBeInTheDocument();
+
+      clickSegment(container, 0);
+      expect(screen.getByText("Resources seg1")).toBeInTheDocument();
+    });
+  });
 });

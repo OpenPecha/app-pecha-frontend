@@ -9,6 +9,11 @@ import "@testing-library/jest-dom";
 import { mockTolgee } from "../../../../../../test-utils/CommonMocks";
 import axiosInstance from "../../../../../../config/axios-config";
 
+import { getSegmentTranslations } from "@/services/library";
+vi.mock("@/services/library", () => ({
+  getSegmentTranslations: vi.fn(),
+}));
+
 vi.mock("@tolgee/react", async () => {
   const actual = await vi.importActual("@tolgee/react");
   return {
@@ -19,10 +24,14 @@ vi.mock("@tolgee/react", async () => {
   };
 });
 
-vi.mock("../../../../../../utils/helperFunctions.tsx", () => ({
-  getLanguageClass: (language: string) =>
-    language === "bo" ? "bo-text" : "en-text",
-}));
+vi.mock(
+  "../../../../../../utils/helperFunctions.tsx",
+  async (importOriginal) => ({
+    ...((await importOriginal()) as object),
+    getLanguageClass: (language: string) =>
+      language === "bo" ? "bo-text" : "en-text",
+  }),
+);
 
 vi.mock("../../../../../../config/axios-config", () => ({
   default: {
@@ -179,31 +188,26 @@ describe("TranslationView Component", () => {
   });
 
   test("fetchTranslationsData makes correct API call", async () => {
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      data: mockTranslationData,
-    });
+    (getSegmentTranslations as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockTranslationData,
+    );
 
     const segmentId = "test-segment-id";
     const result = await fetchTranslationsData(segmentId);
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "/api/v1/segments/test-segment-id/translations",
-      {
-        params: {
-          segment_id: "test-segment-id",
-          skip: 0,
-          limit: 10,
-        },
-      },
-    );
+    expect(getSegmentTranslations).toHaveBeenCalledWith({
+      segmentId: "test-segment-id",
+      skip: 0,
+      limit: 10,
+    });
 
     expect(result).toEqual(mockTranslationData);
   });
 
   test("fetchTranslationsData with custom skip and limit", async () => {
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      data: mockTranslationData,
-    });
+    (getSegmentTranslations as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockTranslationData,
+    );
 
     const segmentId = "test-segment-id";
     const skip = 5;
@@ -211,20 +215,15 @@ describe("TranslationView Component", () => {
 
     await fetchTranslationsData(segmentId, skip, limit);
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "/api/v1/segments/test-segment-id/translations",
-      {
-        params: {
-          segment_id: "test-segment-id",
-          skip: 5,
-          limit: 20,
-        },
-      },
-    );
+    expect(getSegmentTranslations).toHaveBeenCalledWith({
+      segmentId: "test-segment-id",
+      skip: 5,
+      limit: 20,
+    });
   });
 
   test("fetchTranslationsData handles errors gracefully", async () => {
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (getSegmentTranslations as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       new Error("API Error"),
     );
 

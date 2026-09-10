@@ -16,7 +16,7 @@ import {
 import { useTolgee, useTranslate } from "@tolgee/react";
 import { setFontVariables } from "../../config/commonConfigs.ts";
 import { useQueryClient } from "react-query";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useCollectionColor } from "../../context/CollectionColorContext.tsx";
 import { Button } from "../../components/ui/button";
 import {
@@ -75,9 +75,32 @@ const Navigation = () => {
   const queryClient = useQueryClient();
   const { collectionColor } = useCollectionColor();
   const [searchTerm, setSearchTerm] = useState("");
-  const [params, setParams] = useSearchParams();
+  const [, setParams] = useSearchParams();
+
+  /**
+   * On the home page the bar floats over the hero image, and its background
+   * fades in once you scroll off it (or point at the bar itself). Everywhere
+   * else it is an ordinary opaque bar in the flow.
+   */
+  // Only the front page has a hero for the bar to float over.
+  const isHome = location.pathname === "/";
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isPointerOver, setIsPointerOver] = useState(false);
+
+  useEffect(() => {
+    if (!isHome) {
+      setIsScrolled(false);
+      return;
+    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
+
+  const isOverHero = isHome && !isScrolled && !isPointerOver;
   const navItems = [
-    { to: "/", label: t("header.plans"), key: "plans" },
+    { to: "/plans", label: t("header.plans"), key: "plans" },
     { to: "/collections", label: t("header.text"), key: "collections" },
     { to: "/about-us", label: t("about.tag"), key: "about" },
   ];
@@ -200,10 +223,27 @@ const Navigation = () => {
 
   return (
     <div
-      className={`${isTibetan && "text-sm"} overalltext bg-navbar h-[60px]  flex justify-between items-center w-full px-4 md:px-7`}
-      style={{
-        borderBottom: `2px solid ${shouldHideColorBorder ? "#E7E5E4" : collectionColor || "#E7E5E4"}`,
-      }}
+      onMouseEnter={() => setIsPointerOver(true)}
+      onMouseLeave={() => setIsPointerOver(false)}
+      className={`${isTibetan && "text-sm"} overalltext bg-navbar h-[60px] flex justify-between items-center w-full px-4 md:px-7 transition-colors duration-300 ${
+        isHome ? "fixed inset-x-0 top-0 z-50" : ""
+      }`}
+      style={
+        {
+          borderBottom: isOverHero
+            ? "2px solid transparent"
+            : `2px solid ${shouldHideColorBorder ? "#E7E5E4" : collectionColor || "#E7E5E4"}`,
+          // The bar's colours are all CSS variables, so rebinding them here
+          // recolours everything inside - including the mobile menu - without
+          // every control needing to know where it is being rendered.
+          ...(isOverHero && {
+            "--navbar": "transparent",
+            "--navbar-foreground": "#ffffff",
+            "--custom-border": "rgba(255,255,255,0.35)",
+            "--search-background": "rgba(255,255,255,0.12)",
+          }),
+        } as React.CSSProperties
+      }
     >
       <div className="flex items-center gap-x-4">
         <Link
@@ -217,7 +257,9 @@ const Navigation = () => {
           }}
         >
           <img
-            className="h-[30px]"
+            className={`h-[30px] transition duration-300 ${
+              isOverHero ? "brightness-0 invert" : ""
+            }`}
             src="/img/light_mode_logo.svg"
             alt="Webuddhist"
           />

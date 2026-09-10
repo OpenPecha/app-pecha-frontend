@@ -2,24 +2,21 @@ import { useMemo, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDebounce } from "use-debounce";
 import { useQuery } from "react-query";
-import axiosInstance from "@/config/axios-config.ts";
 import PaginationComponent from "../../../../commons/pagination/PaginationComponent.tsx";
 import SourceItem from "./SourceItem.tsx";
+import { multilingualSearch } from "@/services/library";
 
 export const fetchSegments = async (
   query: string,
   skip: number,
   pagination: { currentPage: number; limit: number },
 ) => {
-  const { data } = await axiosInstance.get("/api/v1/search/multilingual", {
-    params: {
-      query,
-      search_type: "exact",
-      limit: pagination.limit,
-      skip: skip,
-    },
+  return multilingualSearch({
+    query,
+    searchType: "exact",
+    limit: pagination.limit,
+    skip,
   });
-  return data;
 };
 
 const SheetSegmentModal = ({

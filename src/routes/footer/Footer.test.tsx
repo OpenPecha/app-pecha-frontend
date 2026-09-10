@@ -36,9 +36,9 @@ const expectedSocialLinks: { href: string }[] = [
 ];
 
 describe("Footer", () => {
-  const setup = () =>
+  const setup = (initialEntry = "/") =>
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <Footer />
       </MemoryRouter>,
     );
@@ -108,5 +108,49 @@ describe("Footer", () => {
     expect(translateMock).toHaveBeenCalledWith("footer.about");
     expect(translateMock).toHaveBeenCalledWith("footer.tools");
     expect(translateMock).toHaveBeenCalledWith("footer.developers");
+  });
+  test("pins to the window on the home page, so it needs no scrolling to reach", () => {
+    const { container } = setup("/");
+
+    // In normal flow it sat at the end of the document: you had to scroll the
+    // whole page before there was anything to hover.
+    expect(container.querySelector("footer")?.className).toContain("lg:fixed");
+    expect(container.querySelector("footer")?.className).toContain(
+      "lg:bottom-0",
+    );
+  });
+
+  test("collapses to a peek on the home page, opening on hover or focus", () => {
+    const { container } = setup("/");
+
+    // The columns collapse to nothing and open on hover; the row is only
+    // collapsed from lg up, since a touch device has no hover to open it with.
+    const collapsible = container.querySelector(
+      "[class*='grid-template-rows']",
+    );
+    expect(collapsible?.className).toContain("lg:grid-rows-[0fr]");
+    expect(collapsible?.className).toContain("lg:group-hover:grid-rows-[1fr]");
+    expect(collapsible?.className).toContain(
+      "lg:group-focus-within:grid-rows-[1fr]",
+    );
+  });
+
+  test("keeps the footer open on every other page", () => {
+    const { container } = setup("/collections");
+
+    expect(container.innerHTML).not.toContain("grid-rows-[0fr]");
+    expect(container.querySelector("footer")?.className).not.toContain(
+      "lg:fixed",
+    );
+  });
+
+  test("still renders its links while collapsed, so they stay reachable", () => {
+    setup("/");
+
+    // Collapsed by CSS only - the content is in the document and tabbable,
+    // which is what opens it on focus.
+    expect(
+      screen.getByRole("link", { name: /Privacy Policy/i }),
+    ).toBeInTheDocument();
   });
 });

@@ -254,18 +254,15 @@ describe("Planviewer", () => {
     );
   });
 
-  test("renders verse of the day and public series", async () => {
+  test("renders the public series listing", async () => {
+    // The verse of the day and the masthead belong to the front page now; this
+    // route is the practice listing.
     renderPlanviewer();
 
     expect(
-      await screen.findByLabelText("Verse of the day"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText(/All conditioned things are impermanent\./),
-    ).toBeInTheDocument();
-    expect(
       await screen.findByText("200-Day Road to the ITCC 2026"),
     ).toBeInTheDocument();
+    expect(screen.queryByLabelText("Verse of the day")).not.toBeInTheDocument();
   });
 
   test("opens today's plan when a series is selected", async () => {
@@ -304,8 +301,12 @@ describe("Planviewer", () => {
     renderPlanviewer();
     const user = userEvent.setup();
 
+    // The whole tile is the link through to the chapter list now, labelled with
+    // the series title, rather than a separate "View chapters" button.
     await screen.findByText("200-Day Road to the ITCC 2026");
-    await user.click(screen.getByRole("button", { name: /View chapters/i }));
+    await user.click(
+      screen.getByRole("button", { name: "200-Day Road to the ITCC 2026" }),
+    );
 
     expect(await screen.findByText("ITCC: Days 1-6")).toBeInTheDocument();
     expect(await screen.findByText("Enroll")).toBeInTheDocument();
@@ -375,8 +376,12 @@ describe("Planviewer", () => {
 
     renderPlanviewer();
 
+    // Anchor on the masthead: it renders whatever the series data turns out to
+    // be, unlike the section headings, which depend on how many series there are.
     await waitFor(() => {
-      expect(screen.getByText("Join the Practice")).toBeInTheDocument();
+      // Anchor on the page header, which renders regardless of how many series
+      // come back.
+      expect(screen.getByText("Give the day")).toBeInTheDocument();
     });
   });
 });

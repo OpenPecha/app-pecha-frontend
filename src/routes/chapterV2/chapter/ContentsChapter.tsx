@@ -5,30 +5,32 @@ import {
 } from "@/routes/chapterV2/utils/header/view-selector/ViewSelector.tsx";
 import { LAYOUT_MODE, siteName } from "@/utils/constants.ts";
 import UseChapterHook from "./helpers/UseChapterHook.tsx";
-import axiosInstance from "@/config/axios-config.ts";
 import { useInfiniteQuery } from "react-query";
 import { PanelProvider } from "@/context/PanelContext.tsx";
 import {
   getEarlyReturn,
-  getFirstSegmentId,
-  getLastSegmentId,
+  getFirstSegment,
+  getLastSegment,
   mergeSections,
 } from "@/utils/helperFunctions.tsx";
+import { getTextDetails } from "@/services/library";
 import { useTranslate } from "@tolgee/react";
 import Seo from "@/routes/commons/seo/Seo.tsx";
 
 const fetchContentDetails = async ({ pageParam = null, queryKey }: any) => {
-  const [_, textId, contentId, versionId, size, initialSegmentId] = queryKey;
+  const [_, textId, , versionId, size, initialSegmentId] = queryKey;
   const segmentId = pageParam?.segmentId ?? initialSegmentId;
-  const direction = pageParam?.direction ?? "next";
-  const { data } = await axiosInstance.post(`/api/v1/texts/${textId}/details`, {
-    ...(contentId && { content_id: contentId }),
+  return getTextDetails(textId, {
     ...(segmentId && { segment_id: segmentId }),
+    // Paging already knows where it is, so pass the position too and the
+    // library never has to scan the edition to locate the anchor segment.
+    ...(pageParam?.position != null && {
+      segment_position: pageParam.position,
+    }),
     ...(versionId && { version_id: versionId }),
-    direction,
+    direction: pageParam?.direction ?? "next",
     size,
   });
-  return data;
 };
 
 const transformLineBreaks = (content: string): string => {
@@ -106,19 +108,26 @@ const ContentsChapter = ({
       getNextPageParam: isFromSheet
         ? undefined
         : (lastPage) => {
-            if (lastPage?.current_segment_position === lastPage?.total_segments)
-              return null;
-            const lastSegmentId = getLastSegmentId(lastPage.content.sections);
-            return { segmentId: lastSegmentId, direction: "next" };
+            if (!lastPage?.has_more_down) return null;
+            const last = getLastSegment(lastPage.content.sections);
+            if (!last) return null;
+            return {
+              segmentId: last.segment_id,
+              position: last.segment_number,
+              direction: "next",
+            };
           },
       getPreviousPageParam: isFromSheet
         ? undefined
         : (firstPage) => {
-            if (firstPage?.current_segment_position === 1) return null;
-            const firstSegmentId = getFirstSegmentId(
-              firstPage.content.sections,
-            );
-            return { segmentId: firstSegmentId, direction: "previous" };
+            if (!firstPage?.has_more_up) return null;
+            const first = getFirstSegment(firstPage.content.sections);
+            if (!first) return null;
+            return {
+              segmentId: first.segment_id,
+              position: first.segment_number,
+              direction: "previous",
+            };
           },
       enabled: !!textId,
       refetchOnWindowFocus: false,

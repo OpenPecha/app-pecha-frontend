@@ -59,6 +59,7 @@ const InitialChat = lazy(
     import("./routes/chat/components/molecules/InitialChat/InitialChat.tsx"),
 );
 const Planviewer = lazy(() => import("./routes/planviewer/Planviewer.tsx"));
+const Home = lazy(() => import("./routes/home/Home.tsx"));
 const PrivacyPolicy = lazy(
   () => import("./routes/privacy-policy/PrivacyPolicy.tsx"),
 );
@@ -283,14 +284,16 @@ function App() {
           </Route>
         </Route>
 
+        {/* Full-height readers, where a footer would sit under the fold anyway. */}
         <Route element={<NoFooterLayout />}>
-          <Route path="/" element={<Planviewer />} />
           <Route path="/sheets/:id" element={<Sheets />} />
           <Route path="/chapter" element={<ChaptersV2 />} />
           <Route path="/open/reader/:textId" element={<OpenReader />} />
         </Route>
 
         <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/plans" element={<Planviewer />} />
           <Route path="/collections" element={<Collections />} />
           <Route
             path="/profile"

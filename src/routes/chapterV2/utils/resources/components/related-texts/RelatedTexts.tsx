@@ -1,27 +1,19 @@
 import { GoLinkExternal } from "react-icons/go";
 import { useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
-import axiosInstance from "../../../../../../config/axios-config.ts";
 import { usePanelContext } from "../../../../../../context/PanelContext.tsx";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
 import TextExpand from "../../../../../commons/expandtext/TextExpand.tsx";
 import ResourceHeader from "../common/ResourceHeader.tsx";
+import ResourceState from "../common/ResourceState.tsx";
+import { getSegmentCommentaries } from "@/services/library";
 
 export const fetchCommentaryData = async (
   segment_id: string,
   skip = 0,
   limit = 10,
 ) => {
-  const { data } = await axiosInstance.get(
-    `/api/v1/segments/${segment_id}/commentaries`,
-    {
-      params: {
-        skip,
-        limit,
-      },
-    },
-  );
-  return data;
+  return getSegmentCommentaries({ segmentId: segment_id, skip, limit });
 };
 const CommentaryView = ({
   segmentId,
@@ -41,7 +33,11 @@ const CommentaryView = ({
     closeResourcesPanel();
   };
 
-  const { data: segmentCommentaries } = useQuery(
+  const {
+    data: segmentCommentaries,
+    isLoading,
+    error,
+  } = useQuery(
     ["relatedTexts", segmentId],
     () => fetchCommentaryData(segmentId),
     {
@@ -57,9 +53,13 @@ const CommentaryView = ({
         onClose={() => setIsCommentaryView("main")}
       />
       <div className="flex-1 overflow-y-auto text-left p-4 text-gray-900">
-        {segmentCommentaries?.commentaries?.length > 0 && (
+        <ResourceState
+          isLoading={isLoading}
+          isError={error}
+          isEmpty={(segmentCommentaries?.commentaries?.length ?? 0) === 0}
+        >
           <div className="space-y-4">
-            {segmentCommentaries.commentaries.map((commentary: any) => {
+            {segmentCommentaries?.commentaries?.map((commentary: any) => {
               const textId = commentary.text_id;
               return (
                 <div key={textId}>
@@ -102,7 +102,7 @@ const CommentaryView = ({
               );
             })}
           </div>
-        )}
+        </ResourceState>
       </div>
     </div>
   );

@@ -33,6 +33,22 @@ server {
     proxy_ssl_server_name on;
   }
 
+  # Library (OpenPecha) API. The trailing slash strips the /library/ prefix, so
+  # /library/v2/texts upstream becomes /v2/texts. X-Application is set here
+  # rather than by the browser, keeping the upstream host and its required
+  # header out of the client entirely.
+  location /library/ {
+    proxy_pass ${VITE_LIBRARY_BASE_URL}/;
+    proxy_ssl_server_name on;
+
+    proxy_set_header Host $proxy_host;
+    proxy_set_header X-Application ${VITE_LIBRARY_APP_NAME};
+
+    # Nothing here is user-specific; never forward the caller's credentials.
+    proxy_set_header Authorization "";
+    proxy_set_header Cookie "";
+  }
+
   location ~ ^/(chats|threads)(/|$) {
     proxy_pass ${VITE_CHAT_API_URL};
     proxy_ssl_server_name on;

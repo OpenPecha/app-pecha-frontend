@@ -7,13 +7,13 @@ import ShareView from "./components/share-view/ShareView.tsx";
 import TranslationView from "./components/translation-view/TranslationView.tsx";
 import CommentaryView from "./components/related-texts/RelatedTexts.tsx";
 import RootTextView from "./components/root-texts/RootText.tsx";
-import axiosInstance from "../../../../config/axios-config.ts";
 import { usePanelContext } from "../../../../context/PanelContext.tsx";
 import { MENU_ITEMS } from "../../../../utils/constants.ts";
 import IndividualTextSearch from "./components/individual-text-search/IndividualTextSearch.tsx";
 import { Button } from "@/components/ui/button";
 import ResourceHeader from "./components/common/ResourceHeader.tsx";
 import CompareText from "./components/compare-text/CompareText.tsx";
+import { getSegmentInfo } from "@/services/library";
 
 type PanelContextValue = {
   isResourcesPanelOpen: boolean;
@@ -21,10 +21,7 @@ type PanelContextValue = {
 };
 
 export const fetchSidePanelData = async (segmentId: string) => {
-  const { data } = await axiosInstance.get(
-    `/api/v1/segments/${segmentId}/info`,
-  );
-  return data;
+  return getSegmentInfo(segmentId);
 };
 
 const Resources = ({
@@ -55,8 +52,15 @@ const Resources = ({
     setActiveView("main");
   };
 
+  const counts = {
+    translations: sidePanelData?.segment_info?.translations ?? 0,
+    commentaries: sidePanelData?.segment_info?.related_text?.commentaries ?? 0,
+    rootTexts: sidePanelData?.segment_info?.related_text?.root_text ?? 0,
+    sheets: sidePanelData?.segment_info?.resources?.sheets ?? 0,
+  };
+
   const renderTranslationsSection = () =>
-    sidePanelData?.segment_info?.translations > 0 && (
+    counts.translations > 0 && (
       <Button
         type="button"
         variant="ghost"
@@ -64,12 +68,12 @@ const Resources = ({
         className="w-full flex justify-start gap-1.5"
       >
         <IoLanguage className="text-lg" />
-        {`${t("connection_pannel.translations")} (${sidePanelData.segment_info.translations})`}
+        {`${t("connection_pannel.translations")} (${counts.translations})`}
       </Button>
     );
 
   const renderCommentaryButton = () =>
-    sidePanelData?.segment_info?.related_text?.commentaries > 0 && (
+    counts.commentaries > 0 && (
       <Button
         type="button"
         variant="ghost"
@@ -77,12 +81,12 @@ const Resources = ({
         onClick={() => setActiveView("commentary")}
       >
         <BiBookOpen className="text-lg" />
-        {`${t("text.commentary")} (${sidePanelData.segment_info.related_text.commentaries})`}
+        {`${t("text.commentary")} (${counts.commentaries})`}
       </Button>
     );
 
   const renderRootTextButton = () =>
-    sidePanelData?.segment_info?.related_text?.root_text > 0 && (
+    counts.rootTexts > 0 && (
       <Button
         type="button"
         variant="ghost"
@@ -90,34 +94,25 @@ const Resources = ({
         onClick={() => setActiveView("root_text")}
       >
         <BiBookOpen className="text-lg" />
-        {`${t("text.root_text")} (${sidePanelData.segment_info.related_text.root_text})`}
+        {`${t("text.root_text")} (${counts.rootTexts})`}
       </Button>
     );
 
-  const renderRelatedTextsSection = () => {
-    const hasCommentaries =
-      sidePanelData?.segment_info?.related_text?.commentaries > 0;
-    const hasRootTexts =
-      sidePanelData?.segment_info?.related_text?.root_text > 0;
-
-    return (
-      sidePanelData?.segment_info?.related_text &&
-      (hasCommentaries || hasRootTexts) && (
-        <>
-          <p className="w-full border-b border-[#f0f0f0] text-sm font-medium text-gray-500">
-            {t("text.related_texts")}
-          </p>
-          <div className="flex flex-col gap-2">
-            {renderCommentaryButton()}
-            {renderRootTextButton()}
-          </div>
-        </>
-      )
+  const renderRelatedTextsSection = () =>
+    (counts.commentaries > 0 || counts.rootTexts > 0) && (
+      <>
+        <p className="w-full border-b border-[#f0f0f0] text-sm font-medium text-gray-500">
+          {t("text.related_texts")}
+        </p>
+        <div className="flex flex-col gap-2">
+          {renderCommentaryButton()}
+          {renderRootTextButton()}
+        </div>
+      </>
     );
-  };
 
   const renderResourcesSection = () =>
-    sidePanelData?.segment_info?.resources?.sheets > 0 && (
+    counts.sheets > 0 && (
       <>
         <p className="w-full border-b border-[#f0f0f0] text-sm font-medium text-gray-500">
           {t("panel.resources")}
@@ -126,7 +121,7 @@ const Resources = ({
           className={`flex w-full items-center py-3 text-gray-700 transition hover:text-gray-600 hover:bg-gray-50 justify-start`}
         >
           <IoNewspaperOutline className="text-lg" />
-          {`${t("common.sheets")} (${sidePanelData.segment_info.resources.sheets})`}
+          {`${t("common.sheets")} (${counts.sheets})`}
         </p>
       </>
     );

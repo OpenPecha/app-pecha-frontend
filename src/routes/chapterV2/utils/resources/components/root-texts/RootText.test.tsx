@@ -9,6 +9,11 @@ import "@testing-library/jest-dom";
 import { mockTolgee } from "../../../../../../test-utils/CommonMocks";
 import axiosInstance from "../../../../../../config/axios-config";
 import { PanelProvider } from "../../../../../../context/PanelContext";
+import { getSegmentRootText } from "@/services/library";
+vi.mock("@/services/library", () => ({
+  getSegmentRootText: vi.fn(),
+}));
+
 vi.mock("@tolgee/react", async () => {
   const actual = await vi.importActual("@tolgee/react");
   return {
@@ -151,21 +156,19 @@ describe("RootTextView", () => {
 
   test("fetchRootTextData makes correct API call", async () => {
     const segmentId = "mock-segment-id";
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      data: mockRootTextData,
-    });
+    (getSegmentRootText as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockRootTextData,
+    );
 
     const result = await fetchRootTextData(segmentId);
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      `/api/v1/segments/${segmentId}/root_text`,
-    );
+    expect(getSegmentRootText).toHaveBeenCalledWith({ segmentId });
     expect(result).toEqual(mockRootTextData);
   });
 
   test("fetchRootTextData handles errors gracefully", async () => {
     const segmentId = "mock-segment-id";
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (getSegmentRootText as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       new Error("API Error"),
     );
 

@@ -3,6 +3,7 @@ import { useTranslate } from "@tolgee/react";
 import { fetchPublicGroups } from "../api/accumulatorApi.ts";
 import JoinableGroupCard from "./JoinableGroupCard.tsx";
 import { Skeleton } from "@/components/ui/skeleton";
+import SectionHeading from "@/components/SectionHeading";
 import type { PlanLanguageCode } from "../../planviewer/utils/seriesUtils.ts";
 
 const PREVIEW_COUNT = 4;
@@ -54,28 +55,32 @@ const JoinableGroupsSection = ({
       className="space-y-5"
       aria-label={t("mantras.joinable_groups", "Groups to Join")}
     >
-      <header className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-            {t("mantras.joinable_groups", "Groups to Join")}
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            {t(
-              "mantras.joinable_groups_description",
-              "Practice together with the community.",
-            )}
-          </p>
-        </div>
-        {hasMoreGroups && (
-          <button
-            type="button"
-            onClick={onViewAllGroups}
-            className="shrink-0 text-sm font-semibold text-[#102544] transition hover:text-[#0c1c34] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#102544]/40"
-          >
-            {t("mantras.show_all_groups", "See all")}
-          </button>
+      <SectionHeading
+        eyebrow={t("mantras.joinable_groups", "Groups to Join")}
+        title={
+          <>
+            {t("home.groups_heading_lead", "Practice")}{" "}
+            <span className="en-serif-text italic">
+              {t("home.groups_heading_accent", "together")}
+            </span>
+          </>
+        }
+        description={t(
+          "mantras.joinable_groups_description",
+          "Practice together with the community.",
         )}
-      </header>
+        action={
+          hasMoreGroups && (
+            <button
+              type="button"
+              onClick={onViewAllGroups}
+              className="shrink-0 text-sm font-semibold text-[#102544] transition hover:text-[#0c1c34] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#102544]/40"
+            >
+              {t("mantras.show_all_groups", "See all")}
+            </button>
+          )
+        }
+      />
       <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
         {groups.map((group) => (
           <JoinableGroupCard

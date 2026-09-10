@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, beforeAll, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SheetSegmentModal, { fetchSegments } from "./SheetSegmentModal";
-import axiosInstance from "../../../../../config/axios-config";
 
 const mockOnClose = vi.fn();
 const mockOnSegment = vi.fn();
@@ -25,6 +24,10 @@ const mockSegmentData = {
   ],
   total: 1,
 };
+
+vi.mock("@/services/library", () => ({
+  multilingualSearch: vi.fn(),
+}));
 
 vi.mock("react-query", () => ({
   useQuery: vi.fn(() => ({
@@ -80,6 +83,7 @@ vi.mock("@/utils/constants", () => ({
 
 import { useQuery } from "react-query";
 
+import { multilingualSearch } from "@/services/library";
 describe("SheetSegmentModal", () => {
   beforeAll(() => {
     Object.defineProperty(window, "localStorage", {
@@ -188,8 +192,8 @@ describe("SheetSegmentModal", () => {
 
   it("fetchSegments makes correct API call", async () => {
     const mockResponse = { data: { sources: [], total: 0 } };
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValue(
-      mockResponse,
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockResolvedValue(
+      mockResponse.data,
     );
 
     const result = await fetchSegments("test query", 0, {
@@ -197,17 +201,12 @@ describe("SheetSegmentModal", () => {
       limit: 10,
     });
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "/api/v1/search/multilingual",
-      {
-        params: {
-          query: "test query",
-          search_type: "exact",
-          limit: 10,
-          skip: 0,
-        },
-      },
-    );
+    expect(multilingualSearch).toHaveBeenCalledWith({
+      query: "test query",
+      searchType: "exact",
+      limit: 10,
+      skip: 0,
+    });
     expect(result).toEqual(mockResponse.data);
   });
 

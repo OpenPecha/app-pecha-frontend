@@ -30,6 +30,10 @@ type Segment = {
   segment_id: string;
   segment_number?: number;
   content: string;
+  /** The edition's structural role for this segment, e.g. "verse", "title". */
+  type?: string | null;
+  /** The edition's own citation for this segment, e.g. "2-57". */
+  reference?: string | null;
   translation?: Translation | null;
 };
 
@@ -209,11 +213,19 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
     }
   }, [currentChapter.segmentId]);
 
+  // Select the segment this reader is anchored on: when it first opens, and
+  // again whenever the resources panel navigates it somewhere else.
+  //
+  // Both of these must depend on the anchor alone. This one also depended on
+  // selectedSegmentId (and compared against it), so it re-ran after every click
+  // and put the highlight straight back on the anchor - meaning a reader opened
+  // *on* a segment could never select a different one. That is every pane after
+  // the first, since those are opened by following a link from a segment.
   useEffect(() => {
-    if (currentSegmentId && currentSegmentId !== selectedSegmentId) {
+    if (currentSegmentId) {
       setSelectedSegmentId(currentSegmentId);
     }
-  }, [currentSegmentId, selectedSegmentId]);
+  }, [currentSegmentId]);
 
   useEffect(() => {
     const container = contentsContainerRef.current;
@@ -472,16 +484,21 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
                       handleSegmentClick(segment.segment_id);
                     }
                   }}
+                  title={`#${segment.reference}_${segment.type}`}
                   role="button"
                 >
-                  <p className="md:mr-4 text-xs">{segment.segment_number}</p>
+                  <div className="md:mr-4 flex shrink-0 flex-col items-start">
+                    <p className="text-xs" title={`#${segment.segment_number}`}>
+                      {segment.segment_number}
+                    </p>
+                  </div>
                   <div
                     className={`flex flex-col items-start text-lg w-full text-justify ${isSelected && "bg-blue-50"}`}
                   >
                     {(viewMode === VIEW_MODES.SOURCE ||
                       viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
                       <p
-                        className={languageClass}
+                        className={`${languageClass} whitespace-pre-line`}
                         dangerouslySetInnerHTML={{ __html: segment.content }}
                       />
                     )}
@@ -489,9 +506,9 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
                       (viewMode === VIEW_MODES.TRANSLATIONS ||
                         viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
                         <p
-                          className={getLanguageClass(
+                          className={`${getLanguageClass(
                             segment.translation.language || "en",
-                          )}
+                          )} whitespace-pre-line`}
                           dangerouslySetInnerHTML={{
                             __html: segment.translation.content,
                           }}

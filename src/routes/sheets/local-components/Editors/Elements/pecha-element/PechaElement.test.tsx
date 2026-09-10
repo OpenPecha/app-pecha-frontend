@@ -13,11 +13,15 @@ import {
 } from "../../../../../../test-utils/CommonMocks.js";
 import * as reactQuery from "react-query";
 import { removeFootnotes } from "../../../../sheet-utils/Constant.js";
-import axiosInstance from "../../../../../../config/axios-config.js";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.js";
 
+import { getSegmentById } from "@/services/library";
 mockAxios();
 mockReactQuery();
+
+vi.mock("@/services/library", () => ({
+  getSegmentById: vi.fn(),
+}));
 
 vi.mock("../../../../../../utils/helperFunctions.jsx", () => ({
   getLanguageClass: vi.fn(() => "tibetan-class"),
@@ -44,7 +48,7 @@ describe("PechaElement Component", () => {
   const mockUseQuery = vi.spyOn(reactQuery, "useQuery") as unknown as Mock;
   const mockGetLanguageClass = getLanguageClass as unknown as Mock;
   const mockRemoveFootnotes = removeFootnotes as unknown as Mock;
-  const axiosGetMock = axiosInstance.get as unknown as Mock;
+  const getSegmentByIdMock = getSegmentById as unknown as Mock;
 
   const buildQueryResult = (override: any = {}) =>
     ({
@@ -120,22 +124,18 @@ describe("PechaElement Component", () => {
   });
 
   test("fetchSegmentDetails function makes correct API call", async () => {
-    axiosGetMock.mockResolvedValueOnce({ data: mockSegmentData });
+    getSegmentByIdMock.mockResolvedValueOnce(mockSegmentData);
 
     const segmentId = "segment-123";
     const result = await fetchSegmentDetails(segmentId);
 
-    expect(axiosGetMock).toHaveBeenCalledWith("/api/v1/segments/segment-123", {
-      params: {
-        text_details: true,
-      },
-    });
+    expect(getSegmentByIdMock).toHaveBeenCalledWith("segment-123");
 
     expect(result).toEqual(mockSegmentData);
   });
 
   test("useQuery executes fetchSegmentDetails function", async () => {
-    axiosGetMock.mockResolvedValueOnce({ data: mockSegmentData });
+    getSegmentByIdMock.mockResolvedValueOnce(mockSegmentData);
 
     mockUseQuery.mockImplementation(
       (_queryKey: any, queryFn: any, options: any) => {
@@ -148,10 +148,6 @@ describe("PechaElement Component", () => {
 
     setup();
 
-    expect(axiosGetMock).toHaveBeenCalledWith("/api/v1/segments/segment-123", {
-      params: {
-        text_details: true,
-      },
-    });
+    expect(getSegmentByIdMock).toHaveBeenCalledWith("segment-123");
   });
 });

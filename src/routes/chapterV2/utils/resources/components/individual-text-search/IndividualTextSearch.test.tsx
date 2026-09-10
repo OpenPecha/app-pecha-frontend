@@ -6,8 +6,12 @@ import { useQuery } from "react-query";
 import IndividualTextSearch, {
   fetchTextSearchResults,
 } from "./IndividualTextSearch";
-import axiosInstance from "../../../../../../config/axios-config";
 import { usePanelContext } from "../../../../../../context/PanelContext";
+
+import { multilingualSearch } from "@/services/library";
+vi.mock("@/services/library", () => ({
+  multilingualSearch: vi.fn(),
+}));
 
 vi.mock("use-debounce", () => ({
   useDebounce: vi.fn((value: string) => [value, vi.fn()]),
@@ -127,8 +131,8 @@ describe("fetchTextSearchResults", () => {
     const mockPagination = { limit: 10, currentPage: 2 };
     const mockResponse = { data: { query: mockQuery, sources: [], total: 0 } };
 
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
-      mockResponse,
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockResponse.data,
     );
 
     const result = await fetchTextSearchResults(
@@ -138,24 +142,19 @@ describe("fetchTextSearchResults", () => {
       mockPagination,
     );
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "api/v1/search/multilingual",
-      {
-        params: {
-          query: mockQuery,
-          search_type: "exact",
-          text_id: mockTextId,
-          limit: mockPagination.limit,
-          skip: mockSkip,
-        },
-      },
-    );
+    expect(multilingualSearch).toHaveBeenCalledWith({
+      query: mockQuery,
+      searchType: "exact",
+      textId: mockTextId,
+      limit: mockPagination.limit,
+      skip: mockSkip,
+    });
     expect(result).toEqual(mockResponse.data);
   });
 
   it("should handle API errors correctly", async () => {
     const mockError = new Error("API Error");
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       mockError,
     );
 
@@ -169,8 +168,8 @@ describe("fetchTextSearchResults", () => {
 
   it("should handle empty parameters gracefully", async () => {
     const mockResponse = { data: { query: "", sources: [], total: 0 } };
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
-      mockResponse,
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockResponse.data,
     );
 
     const result = await fetchTextSearchResults("", "", 0, {
@@ -178,18 +177,13 @@ describe("fetchTextSearchResults", () => {
       currentPage: 1,
     });
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "api/v1/search/multilingual",
-      {
-        params: {
-          query: "",
-          search_type: "exact",
-          text_id: "",
-          limit: 10,
-          skip: 0,
-        },
-      },
-    );
+    expect(multilingualSearch).toHaveBeenCalledWith({
+      query: "",
+      searchType: "exact",
+      textId: "",
+      limit: 10,
+      skip: 0,
+    });
     expect(result).toEqual(mockResponse.data);
   });
 
@@ -225,8 +219,8 @@ describe("fetchTextSearchResults", () => {
       },
     };
 
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
-      mockResponse,
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockResponse.data,
     );
 
     const result = await fetchTextSearchResults(mockQuery, mockTextId, 0, {
@@ -268,8 +262,8 @@ describe("fetchTextSearchResults", () => {
       },
     };
 
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
-      mockResponse,
+    (multilingualSearch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockResponse.data,
     );
 
     const pagination = { limit: 10, currentPage: 1 };
@@ -281,18 +275,13 @@ describe("fetchTextSearchResults", () => {
       pagination,
     );
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      "api/v1/search/multilingual",
-      {
-        params: {
-          query: mockQuery,
-          search_type: "exact",
-          text_id: mockTextId,
-          limit: pagination.limit,
-          skip: skip,
-        },
-      },
-    );
+    expect(multilingualSearch).toHaveBeenCalledWith({
+      query: mockQuery,
+      searchType: "exact",
+      textId: mockTextId,
+      limit: pagination.limit,
+      skip: skip,
+    });
     expect(result.sources[0].segment_matches.length).toBe(11);
 
     const totalSegments = result.sources[0].segment_matches.length;

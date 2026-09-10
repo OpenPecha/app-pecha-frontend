@@ -1,8 +1,8 @@
 import { useQuery } from "react-query";
-import axiosInstance from "../../../../../../config/axios-config.ts";
 import pechaIcon from "../../../../../../assets/icons/pecha_icon.png";
 import { removeFootnotes } from "../../../../sheet-utils/Constant.ts";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
+import { getSegmentById } from "@/services/library";
 
 type PechaElementProps = {
   attributes: any;
@@ -14,20 +14,15 @@ type PechaElementProps = {
 type SegmentData = {
   content?: string;
   text: {
-    language: string;
+    language: string | null;
     title: string;
-  };
+  } | null;
 };
 
 export const fetchSegmentDetails = async (
   segmentId: string,
 ): Promise<SegmentData> => {
-  const { data } = await axiosInstance.get(`/api/v1/segments/${segmentId}`, {
-    params: {
-      text_details: true,
-    },
-  });
-  return data;
+  return getSegmentById(segmentId);
 };
 
 const PechaElement = ({ attributes, element }: PechaElementProps) => {
@@ -58,11 +53,14 @@ const PechaElement = ({ attributes, element }: PechaElementProps) => {
           <div>Loading...</div>
         ) : (
           <div
-            className={` border-l-2 border-red-900 pl-2 ${getLanguageClass(segmentData?.text.language ?? "")}`}
+            className={` border-l-2 border-red-900 pl-2 ${getLanguageClass(segmentData?.text?.language ?? "")}`}
           >
-            <div dangerouslySetInnerHTML={{ __html: cleanContent }} />
+            <div
+              className="whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: cleanContent }}
+            />
             <p className="mt-2.5 text-base font-semibold text-[#A9080E]">
-              {segmentData?.text.title}
+              {segmentData?.text?.title}
             </p>
           </div>
         )}
