@@ -79,7 +79,7 @@ describe("PartnerMarquee", () => {
     );
     // No duplicate run, and no animation to run it.
     expect(container.querySelectorAll("ul")).toHaveLength(1);
-    expect(container.querySelector(".animate-marquee")).toBeNull();
+    expect(container.querySelector(".partner-marquee-track")).toBeNull();
   });
 
   test("renders nothing at all when there are no partners", async () => {
@@ -97,12 +97,12 @@ describe("PartnerMarquee", () => {
     const { container } = renderMarquee();
 
     await waitFor(() =>
-      expect(container.querySelector(".animate-marquee")).not.toBeNull(),
+      expect(container.querySelector(".partner-marquee-track")).not.toBeNull(),
     );
     // 20 partners at three seconds each, rather than a fixed duration that
     // would crawl for a long list and race through a short one.
     expect(
-      container.querySelector(".animate-marquee")?.getAttribute("style"),
+      container.querySelector(".partner-marquee-track")?.getAttribute("style"),
     ).toContain("60s");
   });
 

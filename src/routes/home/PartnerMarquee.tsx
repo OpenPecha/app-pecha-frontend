@@ -92,7 +92,7 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
       {/* Fades the strip out at both edges instead of cutting it off. */}
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <div
-          className={`flex w-max ${shouldAnimate ? "animate-marquee" : "justify-center"}`}
+          className={`flex w-max ${shouldAnimate ? "partner-marquee-track" : "justify-center"}`}
           style={
             shouldAnimate
               ? ({ "--marquee-duration": duration } as React.CSSProperties)

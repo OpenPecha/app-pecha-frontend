@@ -15,9 +15,10 @@
 /*
  * Partner marquee: the track holds two copies of the list, so travelling exactly
  * half its width lands the second copy where the first began and the loop is
- * seamless.
+ * seamless. Longhands (not the animation shorthand, and not animate-*) so
+ * Tailwind v4 cannot replace this with a one-shot utility.
  */
-@keyframes marquee {
+@keyframes partner-marquee {
   from {
     transform: translateX(0);
   }
@@ -26,18 +27,16 @@
   }
 }
 
-.animate-marquee {
-  animation: marquee var(--marquee-duration, 45s) linear infinite;
-}
-
-.animate-marquee:hover,
-.animate-marquee:focus-within {
-  animation-play-state: paused;
+.partner-marquee-track {
+  animation-name: partner-marquee;
+  animation-duration: var(--marquee-duration, 45s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 /* A continuously moving strip is a common trigger; hold it still instead. */
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .partner-marquee-track {
     animation: none;
   }
 }
@@ -109,6 +108,8 @@ div::-webkit-scrollbar {
 }
 
 @theme inline {
+  --animate-partner-marquee: partner-marquee var(--marquee-duration, 45s) linear
+    infinite;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
