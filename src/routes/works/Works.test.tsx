@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as reactQuery from "react-query";
 import "@testing-library/jest-dom";
@@ -193,7 +193,7 @@ describe("Works Component", () => {
 
     expect(reactQuery.useQuery).toHaveBeenCalled();
     const queryKey = reactQuery.useQuery.mock.calls[0][0];
-    expect(queryKey).toEqual(["works", "works-id", 0, 12]);
+    expect(queryKey).toEqual(["works", "works-id", "en", 0, 12]);
   });
 
   test("uses pagination parameters correctly", () => {
@@ -496,5 +496,43 @@ describe("Works Component", () => {
         textCount: 0,
       }),
     ).toBe(0);
+  });
+
+  test("resets to first page when collection id changes", async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    vi.spyOn(reactQuery, "useQuery").mockImplementation(() => ({
+      data: { ...mockTextCategoryData, has_more: true },
+      isLoading: false,
+    }));
+
+    const renderWorks = () => (
+      <Router>
+        <QueryClientProvider client={queryClient}>
+          <TolgeeProvider fallback={"Loading tolgee..."} tolgee={mockTolgee}>
+            <Works />
+          </TolgeeProvider>
+        </QueryClientProvider>
+      </Router>
+    );
+
+    const { rerender } = render(renderWorks());
+
+    await user.click(screen.getByRole("link", { name: "2" }));
+    expect(
+      reactQuery.useQuery.mock.calls.some(
+        ([queryKey]) =>
+          Array.isArray(queryKey) &&
+          queryKey[1] === "works-id" &&
+          queryKey[3] === 12,
+      ),
+    ).toBe(true);
+
+    useParams.mockReturnValue({ id: "other-id" });
+    rerender(renderWorks());
+
+    await waitFor(() => {
+      const lastKey = reactQuery.useQuery.mock.calls.at(-1)[0];
+      expect(lastKey).toEqual(["works", "other-id", "en", 0, 12]);
+    });
   });
 });

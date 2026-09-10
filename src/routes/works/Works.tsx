@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosInstance from "../../config/axios-config.ts";
 import { LANGUAGE, siteName } from "../../utils/constants.ts";
-import { useTranslate } from "@tolgee/react";
+import { useTolgee, useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -75,6 +75,8 @@ const Works = (props?: WorksProps) => {
   const { collection_id, setRendererInfo, isCompactView = false } = props || {};
   const { id: paramId } = useParams();
   const { t } = useTranslate();
+  const tolgee = useTolgee(["language"]);
+  const language = tolgee.getLanguage() || "en";
   const id = collection_id || paramId || "";
 
   const [pagination, setPagination] = useState<{
@@ -86,12 +88,18 @@ const Works = (props?: WorksProps) => {
     [pagination],
   );
 
+  useEffect(() => {
+    setPagination((prev) =>
+      prev.currentPage === 1 ? prev : { ...prev, currentPage: 1 },
+    );
+  }, [id, language]);
+
   const {
     data: worksData,
     isLoading: worksDataIsLoading,
     error: worksDataIsError,
   } = useQuery<WorksResponse>(
-    ["works", id, skip, pagination.limit],
+    ["works", id, language, skip, pagination.limit],
     () => fetchWorks(id, pagination.limit, skip),
     { refetchOnWindowFocus: false },
   );
