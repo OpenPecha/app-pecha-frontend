@@ -3,7 +3,6 @@ import { BiSearch } from "react-icons/bi";
 import { useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
-import axiosInstance from "../../../../../../config/axios-config.ts";
 import PaginationComponent from "../../../../../commons/pagination/PaginationComponent.tsx";
 import { highlightSearchMatch } from "../../../../../../utils/highlightUtils.tsx";
 import {
@@ -14,6 +13,7 @@ import { usePanelContext } from "../../../../../../context/PanelContext.tsx";
 import { useDebounce } from "use-debounce";
 import { LANGUAGE } from "../../../../../../utils/constants.ts";
 import ResourceHeader from "../common/ResourceHeader.tsx";
+import { multilingualSearch } from "@/services/library";
 
 export const fetchTextSearchResults = async (
   query: string,
@@ -21,16 +21,13 @@ export const fetchTextSearchResults = async (
   skip: number,
   pagination: { limit: number; currentPage: number },
 ) => {
-  const { data } = await axiosInstance.get("api/v1/search/multilingual", {
-    params: {
-      query,
-      search_type: "exact",
-      text_id: textId,
-      limit: pagination.limit,
-      skip: skip,
-    },
+  return multilingualSearch({
+    query,
+    searchType: "exact",
+    textId,
+    limit: pagination.limit,
+    skip,
   });
-  return data;
 };
 
 const IndividualTextSearch = ({

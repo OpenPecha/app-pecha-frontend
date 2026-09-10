@@ -8,19 +8,12 @@ import PaginationComponent from "../../commons/pagination/PaginationComponent.ts
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge.tsx";
 import { usePanelContext } from "@/context/PanelContext.tsx";
-
-const LANGUAGE_MAP = {
-  sa: "language.sanskrit",
-  bo: "language.tibetan",
-  en: "language.english",
-  zh: "language.chinese",
-  it: "language.italian",
-};
+import { useLanguageLabel } from "@/context/LanguagesContext.tsx";
 
 type CommentaryItem = {
   id: string;
   title: string;
-  language: keyof typeof LANGUAGE_MAP;
+  language: string;
   source_link?: string | null;
   license?: string | null;
 };
@@ -48,6 +41,7 @@ const Commentaries = ({
   currentChapter,
 }: CommentariesProps) => {
   const { t } = useTranslate();
+  const languageLabel = useLanguageLabel();
   const { closeResourcesPanel } = usePanelContext() as any;
 
   const earlyReturn = getEarlyReturn({ isLoading, error: isError, t });
@@ -123,7 +117,7 @@ const Commentaries = ({
           </div>
         </div>
         <Badge variant="outline" className="w-fit px-4 py-2">
-          {t(LANGUAGE_MAP[commentary.language])}
+          {languageLabel(commentary.language)}
         </Badge>
       </div>
     );

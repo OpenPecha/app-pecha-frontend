@@ -18,6 +18,7 @@ import { LANGUAGE } from "./utils/constants.ts";
 import { HelmetProvider } from "react-helmet-async";
 import { UserbackProvider } from "./context/UserBackProvider.tsx";
 import { CollectionColorProvider } from "./context/CollectionColorContext.tsx";
+import { LanguagesProvider } from "./context/LanguagesContext.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import AppOpenBanner from "./components/layout/AppOpenBanner.tsx";
 import { initClarity } from "./utils/clarity.ts";
@@ -59,11 +60,13 @@ createRoot(document.getElementById("root") as HTMLElement).render(
             <HelmetProvider>
               <UserbackProvider>
                 <CollectionColorProvider>
-                  <>
-                    <App />
-                    <Toaster />
-                    {window?.location?.pathname === "/" && <AppOpenBanner />}
-                  </>
+                  <LanguagesProvider>
+                    <>
+                      <App />
+                      <Toaster />
+                      {window?.location?.pathname === "/" && <AppOpenBanner />}
+                    </>
+                  </LanguagesProvider>
                 </CollectionColorProvider>
               </UserbackProvider>
             </HelmetProvider>

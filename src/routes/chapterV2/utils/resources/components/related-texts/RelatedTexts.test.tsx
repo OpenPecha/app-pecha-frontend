@@ -10,6 +10,11 @@ import "@testing-library/jest-dom";
 import { mockTolgee } from "../../../../../../test-utils/CommonMocks";
 import axiosInstance from "../../../../../../config/axios-config";
 
+import { getSegmentCommentaries } from "@/services/library";
+vi.mock("@/services/library", () => ({
+  getSegmentCommentaries: vi.fn(),
+}));
+
 vi.mock("@tolgee/react", async () => {
   const actual = await vi.importActual("@tolgee/react");
   return {
@@ -141,27 +146,23 @@ describe("CommentaryView", () => {
 
   test("fetchCommentaryData makes correct API call", async () => {
     const segmentId = "mock-segment-id";
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      data: mockCommentariesData,
-    });
+    (getSegmentCommentaries as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockCommentariesData,
+    );
 
     const result = await fetchCommentaryData(segmentId);
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      `/api/v1/segments/${segmentId}/commentaries`,
-      {
-        params: {
-          skip: 0,
-          limit: 10,
-        },
-      },
-    );
+    expect(getSegmentCommentaries).toHaveBeenCalledWith({
+      segmentId,
+      skip: 0,
+      limit: 10,
+    });
     expect(result).toEqual(mockCommentariesData);
   });
 
   test("fetchCommentaryData handles errors gracefully", async () => {
     const segmentId = "mock-segment-id";
-    (axiosInstance.get as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (getSegmentCommentaries as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       new Error("API Error"),
     );
 

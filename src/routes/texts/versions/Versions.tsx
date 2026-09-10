@@ -8,11 +8,12 @@ import { Link } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { Badge } from "@/components/ui/badge.tsx";
 import { usePanelContext } from "@/context/PanelContext.tsx";
+import { useLanguageLabel } from "@/context/LanguagesContext.tsx";
 
 type VersionItem = {
   id: string;
   title: string;
-  language: keyof typeof languageMap;
+  language: string;
   table_of_contents?: string[];
   source_link?: string | null;
   license?: string | null;
@@ -25,21 +26,11 @@ type VersionsData = {
 
 type VersionsProps = {
   contentId?: string;
-  versions: VersionsData;
+  versions?: VersionsData;
   versionsIsLoading: boolean;
   versionsIsError: unknown;
   addChapter?: (chapterData: any, currentChapter: any) => void;
   currentChapter?: any;
-};
-
-const languageMap = {
-  sa: "language.sanskrit",
-  bo: "language.tibetan",
-  en: "language.english",
-  zh: "language.chinese",
-  it: "language.italian",
-  tib: "language.tibetan",
-  tibphono: "language.tibetan",
 };
 
 const CommonCard = ({
@@ -53,8 +44,8 @@ const CommonCard = ({
   addChapter?: (chapterData: any, currentChapter: any) => void;
   currentChapter?: any;
 }) => {
-  const { t } = useTranslate();
   const { closeResourcesPanel } = usePanelContext() as any;
+  const languageLabel = useLanguageLabel();
 
   const handleOpenText = () => {
     addChapter?.({ textId: version.id }, currentChapter);
@@ -109,7 +100,7 @@ const CommonCard = ({
         </div>
       </div>
       <Badge variant="outline" className={`w-fit py-2 px-4 overalltext`}>
-        {t(languageMap[version.language])}
+        {languageLabel(version.language)}
       </Badge>
     </div>
   );
@@ -131,7 +122,7 @@ const Versions = ({
     t,
   });
   if (earlyReturn) return earlyReturn;
-  if (versions.versions.length === 0 && !versions.text) {
+  if (!versions?.versions?.length && !versions?.text) {
     return (
       <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-600">
         <p className="mt-2">{t("global.not_found")}</p>

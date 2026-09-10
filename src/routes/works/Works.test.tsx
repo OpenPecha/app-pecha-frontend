@@ -17,9 +17,14 @@ import Works, { getWorksTotalPages } from "./Works.js";
 import { BrowserRouter as Router, useParams } from "react-router-dom";
 import { TolgeeProvider } from "@tolgee/react";
 
+import { getTextsByCollection } from "@/services/library";
 mockAxios();
 mockUseAuth();
 mockReactQuery();
+
+vi.mock("@/services/library", () => ({
+  getTextsByCollection: vi.fn(),
+}));
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -239,9 +244,9 @@ describe("Works Component", () => {
 
   test("uses correct language from localStorage with mapping", () => {
     localStorageMock.getItem.mockReturnValue("en");
-    const axiosSpy = vi.spyOn(axiosInstance, "get").mockResolvedValueOnce({
-      data: mockTextCategoryData,
-    });
+    const worksSpy = (
+      getTextsByCollection as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce(mockTextCategoryData);
 
     vi.spyOn(reactQuery, "useQuery").mockImplementation((_, queryFn) => {
       queryFn();
@@ -253,15 +258,12 @@ describe("Works Component", () => {
 
     setup();
 
-    expect(axiosSpy).toHaveBeenCalledWith(
-      "/api/v1/texts",
+    expect(worksSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        params: expect.objectContaining({
-          collection_id: "works-id",
-          language: "en",
-          limit: 12,
-          skip: 0,
-        }),
+        collectionId: "works-id",
+        language: "en",
+        limit: 12,
+        skip: 0,
       }),
     );
 
@@ -270,9 +272,9 @@ describe("Works Component", () => {
 
   test("defaults to 'en' language when localStorage is empty", () => {
     localStorageMock.getItem.mockReturnValue(null);
-    const axiosSpy = vi.spyOn(axiosInstance, "get").mockResolvedValueOnce({
-      data: mockTextCategoryData,
-    });
+    const worksSpy = (
+      getTextsByCollection as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce(mockTextCategoryData);
 
     vi.spyOn(reactQuery, "useQuery").mockImplementation((_, queryFn) => {
       queryFn();
@@ -284,20 +286,17 @@ describe("Works Component", () => {
 
     setup();
 
-    expect(axiosSpy).toHaveBeenCalledWith(
-      "/api/v1/texts",
+    expect(worksSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        params: expect.objectContaining({
-          language: "en",
-        }),
+        language: "en",
       }),
     );
   });
 
   test("passes correct pagination parameters to API", () => {
-    const axiosSpy = vi.spyOn(axiosInstance, "get").mockResolvedValueOnce({
-      data: mockTextCategoryData,
-    });
+    const worksSpy = (
+      getTextsByCollection as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce(mockTextCategoryData);
 
     vi.spyOn(reactQuery, "useQuery").mockImplementation((_, queryFn) => {
       queryFn();
@@ -309,13 +308,10 @@ describe("Works Component", () => {
 
     setup();
 
-    expect(axiosSpy).toHaveBeenCalledWith(
-      "/api/v1/texts",
+    expect(worksSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        params: expect.objectContaining({
-          limit: 12,
-          skip: 0,
-        }),
+        limit: 12,
+        skip: 0,
       }),
     );
   });

@@ -1,5 +1,4 @@
 import { useTranslate } from "@tolgee/react";
-import axiosInstance from "../../config/axios-config.ts";
 import { LANGUAGE, siteName } from "../../utils/constants.ts";
 import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import clsx from "clsx";
 import { Button } from "@/components/ui/button.tsx";
 import TwoColumnLayout from "../../components/layout/TwoColumnLayout";
 import CompactCollections from "../chapterV2/utils/resources/components/compare-text/CompactCollections.tsx";
+import { getCollections } from "@/services/library";
 
 type Collection = {
   id: string;
@@ -25,9 +25,7 @@ type Collection = {
 
 type CollectionsResponse = {
   collections: Collection[];
-  total: number;
-  skip: number;
-  limit: number;
+  pagination: { total: number; skip: number; limit: number };
 };
 
 type CollectionsProps = {
@@ -42,14 +40,7 @@ type CollectionColorContextValue = {
 export const fetchCollections = async (): Promise<CollectionsResponse> => {
   const storedLanguage = localStorage.getItem(LANGUAGE);
   const language = storedLanguage ? mapLanguageCode(storedLanguage) : "en";
-  const { data } = await axiosInstance.get("/api/v1/collections", {
-    params: {
-      language,
-      limit: 50,
-      skip: 0,
-    },
-  });
-  return data;
+  return getCollections({ language, limit: 50, skip: 0 });
 };
 
 const Collections = (props: CollectionsProps) => {

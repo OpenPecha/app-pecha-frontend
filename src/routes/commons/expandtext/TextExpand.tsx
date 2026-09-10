@@ -25,7 +25,7 @@ export default function TextExpand({
   return (
     <>
       <div
-        className={`text-base text-gray-500 ${getLanguageClass(language)}`}
+        className={`text-base text-gray-500 whitespace-pre-line ${getLanguageClass(language)}`}
         dangerouslySetInnerHTML={{
           __html: isExpanded
             ? transformedContent

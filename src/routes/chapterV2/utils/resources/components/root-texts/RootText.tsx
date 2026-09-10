@@ -2,18 +2,15 @@ import { GoLinkExternal } from "react-icons/go";
 import { useTranslate } from "@tolgee/react";
 import { useQuery } from "react-query";
 import { useEffect } from "react";
-import axiosInstance from "../../../../../../config/axios-config.ts";
 import { usePanelContext } from "../../../../../../context/PanelContext.tsx";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
 import TextExpand from "../../../../../commons/expandtext/TextExpand.tsx";
 import ResourceHeader from "../common/ResourceHeader.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { getSegmentRootText } from "@/services/library";
 
 export const fetchRootTextData = async (segment_id: string) => {
-  const { data } = await axiosInstance.get(
-    `/api/v1/segments/${segment_id}/root_text`,
-  );
-  return data;
+  return getSegmentRootText({ segmentId: segment_id });
 };
 
 const RootTextView = ({
@@ -79,9 +76,9 @@ const RootTextView = ({
       />
       <div className="flex-1 overflow-y-auto p-4 text-left text-black">
         <div className=" [&_.footnote-marker]:cursor-pointer [&_.footnote-marker]:px-0.5 [&_.footnote-marker]:text-xs [&_.footnote-marker]:font-semibold [&_.footnote-marker]:text-blue-600 [&_.footnote-marker]:transition-colors [&_.footnote-marker]:duration-200 hover:[&_.footnote-marker]:text-blue-800 [&_.footnote]:hidden [&_.footnote]:rounded [&_.footnote]:bg-gray-100 [&_.footnote]:px-1.5 [&_.footnote]:py-0.5 [&_.footnote]:text-[0.9em] [&_.footnote]:italic [&_.footnote]:text-[#8a8a8a] [&_.footnote.active]:inline">
-          {rootTextData?.root_text?.length > 0 && (
+          {(rootTextData?.root_text?.length ?? 0) > 0 && (
             <div>
-              {rootTextData.root_text.map((rootText: any) => {
+              {rootTextData?.root_text?.map((rootText: any) => {
                 const textId = rootText.text_id;
                 const language = rootText.language;
                 return (

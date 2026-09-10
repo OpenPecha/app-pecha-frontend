@@ -32,10 +32,10 @@ type SheetPublisher = {
 type SegmentDataProps = {
   content?: string;
   text?: {
-    language: string;
+    language: string | null;
     title: string;
     text_id?: string;
-  };
+  } | null;
   text_id?: string;
 };
 type SheetSegment = {
@@ -232,7 +232,10 @@ const SheetDetailPage = ({
               <div
                 className={`${getLanguageClass(segment.language || "en")} text-lg border-l-2 border-red-900 px-2 text-left`}
               >
-                <p dangerouslySetInnerHTML={{ __html: segment.content }} />
+                <p
+                  className="whitespace-pre-line"
+                  dangerouslySetInnerHTML={{ __html: segment.content }}
+                />
                 <p className="text-sm mt-2 font-semibold text-[#A9080E]">
                   {segment.text_title}
                 </p>

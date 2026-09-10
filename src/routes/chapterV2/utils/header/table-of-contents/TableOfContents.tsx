@@ -3,7 +3,7 @@ import { useTranslate } from "@tolgee/react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { getLanguageClass } from "../../../../../utils/helperFunctions.tsx";
 import { useQuery } from "react-query";
-import { fetchTableOfContents } from "../../../../texts/Texts.tsx";
+import { getTableOfContents } from "@/services/library";
 
 type TocSegment = { segment_id: string };
 type TocSection = {
@@ -15,7 +15,7 @@ type TocSection = {
 type TocContent = { id: string; sections: TocSection[] };
 type TocResponse = {
   contents?: TocContent[];
-  text_detail?: { language?: string };
+  text_detail?: { language?: string } | null;
 };
 
 const TableOfContents = (props: any) => {
@@ -39,7 +39,7 @@ const TableOfContents = (props: any) => {
     isLoading,
   } = useQuery<TocResponse>(
     ["toc", textId, language],
-    () => fetchTableOfContents(textId, 0, 1000),
+    () => getTableOfContents(textId),
     {
       enabled: !!textId,
       refetchOnWindowFocus: false,

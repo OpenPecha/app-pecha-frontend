@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useTranslate } from "@tolgee/react";
-import axiosInstance from "../../../config/axios-config.js";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import PaginationComponent from "../../commons/pagination/PaginationComponent.tsx";
@@ -9,6 +8,7 @@ import {
   getLanguageClass,
   getSearchErrorMessage,
 } from "../../../utils/helperFunctions.tsx";
+import { multilingualSearch } from "@/services/library";
 
 type SegmentMatch = {
   segment_id: string;
@@ -38,15 +38,12 @@ export const fetchSources = async (
   skip: number,
   pagination: { limit: number },
 ): Promise<SourceResponse> => {
-  const { data } = await axiosInstance.get("api/v1/search/multilingual", {
-    params: {
-      query,
-      search_type: "exact",
-      limit: pagination.limit,
-      skip: skip,
-    },
+  return multilingualSearch({
+    query,
+    searchType: "exact",
+    limit: pagination.limit,
+    skip,
   });
-  return data;
 };
 
 const Sources = (query: any) => {

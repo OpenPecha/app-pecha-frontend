@@ -481,7 +481,7 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
                     {(viewMode === VIEW_MODES.SOURCE ||
                       viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
                       <p
-                        className={languageClass}
+                        className={`${languageClass} whitespace-pre-line`}
                         dangerouslySetInnerHTML={{ __html: segment.content }}
                       />
                     )}
@@ -489,9 +489,9 @@ const UseChapterHook: React.FC<UseChapterHookProps> = (props) => {
                       (viewMode === VIEW_MODES.TRANSLATIONS ||
                         viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
                         <p
-                          className={getLanguageClass(
+                          className={`${getLanguageClass(
                             segment.translation.language || "en",
-                          )}
+                          )} whitespace-pre-line`}
                           dangerouslySetInnerHTML={{
                             __html: segment.translation.content,
                           }}

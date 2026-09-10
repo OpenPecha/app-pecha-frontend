@@ -1,31 +1,21 @@
 import { useTranslate } from "@tolgee/react";
 import { GoLinkExternal } from "react-icons/go";
 import { useQuery } from "react-query";
-import axiosInstance from "../../../../../../config/axios-config.ts";
 import { usePanelContext } from "../../../../../../context/PanelContext.tsx";
 import { getLanguageClass } from "../../../../../../utils/helperFunctions.tsx";
+import { useLanguageLabel } from "@/context/LanguagesContext.tsx";
 import TextExpand from "../../../../../commons/expandtext/TextExpand.tsx";
 import ResourceHeader from "../common/ResourceHeader.tsx";
-import { languageMap } from "@/utils/constants.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { getSegmentTranslations } from "@/services/library";
 
 export const fetchTranslationsData = async (
   segment_id: string,
   skip = 0,
   limit = 10,
 ) => {
-  const { data } = await axiosInstance.get(
-    `/api/v1/segments/${segment_id}/translations`,
-    {
-      params: {
-        segment_id,
-        skip,
-        limit,
-      },
-    },
-  );
-  return data;
+  return getSegmentTranslations({ segmentId: segment_id, skip, limit });
 };
 
 const TranslationView = ({
@@ -37,6 +27,7 @@ const TranslationView = ({
   handleNavigate,
 }: any) => {
   const { t } = useTranslate();
+  const languageLabel = useLanguageLabel();
   const { closeResourcesPanel } = usePanelContext() as any;
 
   const handleOpenText = (targetTextId: string, targetSegmentId: string) => {
@@ -150,7 +141,7 @@ const TranslationView = ({
               ([language, translations]: any) => (
                 <div key={language}>
                   <h3 className="overalltext mb-3 flex items-center gap-1 border-b-2 border-[#C74444] text-[#7d7d7d]">
-                    {t(languageMap[language as keyof typeof languageMap])}
+                    {languageLabel(language)}
                     <span className="ml-1 text-sm text-[#718096]">
                       ({translations.length})
                     </span>

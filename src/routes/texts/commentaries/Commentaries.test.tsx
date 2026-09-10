@@ -21,7 +21,8 @@ vi.mock("@tolgee/react", async () => {
   };
 });
 
-vi.mock("../../../utils/helperFunctions.jsx", () => ({
+vi.mock("../../../utils/helperFunctions.jsx", async (importOriginal) => ({
+  ...((await importOriginal()) as object),
   getLanguageClass: (lang: string) => `language-${lang}`,
   mapLanguageCode: () => "en",
   getEarlyReturn: ({

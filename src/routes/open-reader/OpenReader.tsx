@@ -2,28 +2,29 @@ import { useState, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { VIEW_MODES } from "@/routes/chapterV2/utils/header/view-selector/ViewSelector.tsx";
 import { siteName, PLAY_STORE_URL, APP_STORE_URL } from "@/utils/constants.ts";
-import axiosInstance from "@/config/axios-config.ts";
 import { useInfiniteQuery } from "react-query";
 import { PanelProvider } from "@/context/PanelContext.tsx";
 import {
   getEarlyReturn,
   mergeSections,
   getLanguageClass,
-  getLastSegmentId,
+  getLastSegment,
 } from "@/utils/helperFunctions.tsx";
+import { getTextDetails } from "@/services/library";
 import { useTranslate } from "@tolgee/react";
 import Seo from "@/routes/commons/seo/Seo.tsx";
 
 const fetchContentDetails = async ({ pageParam = null, queryKey }: any) => {
   const [_, textId, size, initialSegmentId] = queryKey;
   const segmentId = pageParam?.segmentId ?? initialSegmentId;
-  const direction = pageParam?.direction ?? "next";
-  const { data } = await axiosInstance.post(`/api/v1/texts/${textId}/details`, {
+  return getTextDetails(textId, {
     ...(segmentId && { segment_id: segmentId }),
-    direction,
+    ...(pageParam?.position != null && {
+      segment_position: pageParam.position,
+    }),
+    direction: pageParam?.direction ?? "next",
     size,
   });
-  return data;
 };
 
 const transformLineBreaks = (content: string): string => {
@@ -79,10 +80,14 @@ const OpenReader = () => {
     fetchContentDetails,
     {
       getNextPageParam: (lastPage) => {
-        if (lastPage?.current_segment_position === lastPage?.total_segments)
-          return null;
-        const lastSegmentId = getLastSegmentId(lastPage.content.sections);
-        return { segmentId: lastSegmentId, direction: "next" };
+        if (!lastPage?.has_more_down) return null;
+        const last = getLastSegment(lastPage.content.sections);
+        if (!last) return null;
+        return {
+          segmentId: last.segment_id,
+          position: last.segment_number,
+          direction: "next",
+        };
       },
       enabled: !!textId,
       refetchOnWindowFocus: false,
@@ -144,7 +149,7 @@ const OpenReader = () => {
           {(viewMode === VIEW_MODES.SOURCE ||
             viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
             <p
-              className={languageClass}
+              className={`${languageClass} whitespace-pre-line`}
               dangerouslySetInnerHTML={{ __html: segment.content }}
             />
           )}
@@ -152,9 +157,9 @@ const OpenReader = () => {
             (viewMode === VIEW_MODES.TRANSLATIONS ||
               viewMode === VIEW_MODES.SOURCE_AND_TRANSLATIONS) && (
               <p
-                className={getLanguageClass(
+                className={`${getLanguageClass(
                   segment.translation.language || "en",
-                )}
+                )} whitespace-pre-line`}
                 dangerouslySetInnerHTML={{
                   __html: segment.translation.content,
                 }}

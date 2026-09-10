@@ -8,6 +8,11 @@ import Resources, { fetchSidePanelData } from "./Resources.tsx";
 import { mockTolgee } from "../../../../test-utils/CommonMocks.ts";
 import axiosInstance from "../../../../config/axios-config.ts";
 
+import { getSegmentInfo } from "@/services/library";
+vi.mock("@/services/library", () => ({
+  getSegmentInfo: vi.fn(),
+}));
+
 vi.mock("../../../../utils/helperFunctions.tsx", () => ({
   mapLanguageCode: (code) => (code === "bo-IN" ? "bo" : code),
 }));
@@ -128,13 +133,13 @@ describe("Resources Side Panel", () => {
 
   test("fetchSidePanelData makes correct API call", async () => {
     const segmentId = "test123";
-    axiosInstance.get.mockResolvedValueOnce({ data: mockSidePanelData });
+    (getSegmentInfo as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockSidePanelData,
+    );
 
     const result = await fetchSidePanelData(segmentId);
 
-    expect(axiosInstance.get).toHaveBeenCalledWith(
-      `/api/v1/segments/${segmentId}/info`,
-    );
+    expect(getSegmentInfo).toHaveBeenCalledWith(segmentId);
     expect(result).toEqual(mockSidePanelData);
   });
 

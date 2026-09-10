@@ -1,4 +1,5 @@
 import pechaLogo from "../assets/icons/pecha_icon.png";
+import { languageMap } from "./constants.ts";
 
 export const getFirstSegmentId = (sections: any[]): string | null => {
   if (!sections?.length) {
@@ -21,6 +22,31 @@ export const getLastSegmentId = (sections: any[]): string | null => {
     getLastSegmentId(lastSection.sections) ??
     lastSection.segments?.at(-1)?.segment_id ??
     null
+  );
+};
+
+/**
+ * The first/last segment objects of a page, so callers can read a segment's
+ * position as well as its id. Knowing the position lets the reader ask for the
+ * next window directly instead of making the library locate the anchor segment.
+ */
+export const getFirstSegment = (sections: any[]): any | null => {
+  if (!sections?.length) {
+    return null;
+  }
+  const [firstSection] = sections;
+  return (
+    getFirstSegment(firstSection.sections) ?? firstSection.segments?.[0] ?? null
+  );
+};
+
+export const getLastSegment = (sections: any[]): any | null => {
+  if (!sections?.length) {
+    return null;
+  }
+  const lastSection = sections.at(-1);
+  return (
+    getLastSegment(lastSection.sections) ?? lastSection.segments?.at(-1) ?? null
   );
 };
 
@@ -84,6 +110,21 @@ export const mapLanguageCode = (languageCode: string): string => {
     languageMap[languageCode as keyof typeof languageMap] || languageMap.en
   );
 };
+/**
+ * Resolves an API language code to its Tolgee label key. Handles region-tagged
+ * codes ("bo-IN") and casing. Returns null when the code has no label, so
+ * callers can fall back to showing the raw code instead of a blank badge.
+ */
+export const getLanguageLabelKey = (
+  language?: string | null,
+): string | null => {
+  if (!language) return null;
+  const normalized = language.trim().toLowerCase().replace(/_/g, "-");
+  const base = normalized.split("-")[0];
+  const key = languageMap as Record<string, string | undefined>;
+  return key[normalized] ?? key[base] ?? null;
+};
+
 export const getLanguageClass = (language?: string | null): string => {
   if (!language) return "en-serif-text";
   if (language === "en-san") return "en-text";

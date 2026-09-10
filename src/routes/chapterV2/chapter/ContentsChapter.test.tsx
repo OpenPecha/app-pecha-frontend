@@ -13,13 +13,15 @@ import { MemoryRouter as Router } from "react-router-dom";
 import { vi, describe, beforeEach, test, expect, type Mock } from "vitest";
 import "@testing-library/jest-dom";
 import ContentsChapter from "./ContentsChapter.js";
-import axiosInstance from "../../../config/axios-config.js";
 
+import { getTextDetails } from "@/services/library";
 mockAxios();
 mockUseAuth();
 mockReactQuery();
 
-const axiosPostMock = axiosInstance.post as unknown as Mock;
+vi.mock("@/services/library", () => ({
+  getTextDetails: vi.fn(),
+}));
 
 vi.mock("@tolgee/react", async () => {
   const actual = await vi.importActual("@tolgee/react");
@@ -165,7 +167,7 @@ describe("ContentsChapter", () => {
   describe("fetchContentDetails function", () => {
     test("calls axios with correct parameters when all props are provided", async () => {
       const mockData = { content: { sections: [] } };
-      axiosPostMock.mockResolvedValue({ data: mockData });
+      (getTextDetails as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
 
       const queryKey = [
         "content",
@@ -190,21 +192,17 @@ describe("ContentsChapter", () => {
         await capturedFetchFunction({ pageParam, queryKey });
       }
 
-      expect(axiosInstance.post).toHaveBeenCalledWith(
-        "/api/v1/texts/text-1/details",
-        {
-          content_id: "content-1",
-          segment_id: "test-segment",
-          version_id: "version-1",
-          direction: "next",
-          size: 20,
-        },
-      );
+      expect(getTextDetails).toHaveBeenCalledWith("text-1", {
+        segment_id: "test-segment",
+        version_id: "version-1",
+        direction: "next",
+        size: 20,
+      });
     });
 
     test("calls axios with default direction when pageParam is null", async () => {
       const mockData = { content: { sections: [] } };
-      axiosPostMock.mockResolvedValue({ data: mockData });
+      (getTextDetails as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
 
       let capturedFetchFunction: any;
       vi.spyOn(reactQuery, "useInfiniteQuery").mockImplementation(
@@ -229,21 +227,17 @@ describe("ContentsChapter", () => {
         await capturedFetchFunction({ pageParam: null, queryKey });
       }
 
-      expect(axiosInstance.post).toHaveBeenCalledWith(
-        "/api/v1/texts/text-1/details",
-        {
-          content_id: "content-1",
-          segment_id: "segment-1",
-          version_id: "version-1",
-          direction: "next",
-          size: 20,
-        },
-      );
+      expect(getTextDetails).toHaveBeenCalledWith("text-1", {
+        segment_id: "segment-1",
+        version_id: "version-1",
+        direction: "next",
+        size: 20,
+      });
     });
 
     test("calls axios without optional parameters when they are null/undefined", async () => {
       const mockData = { content: { sections: [] } };
-      axiosPostMock.mockResolvedValue({ data: mockData });
+      (getTextDetails as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
 
       let capturedFetchFunction: any;
       vi.spyOn(reactQuery, "useInfiniteQuery").mockImplementation(
@@ -265,18 +259,15 @@ describe("ContentsChapter", () => {
         await capturedFetchFunction({ pageParam: null, queryKey });
       }
 
-      expect(axiosInstance.post).toHaveBeenCalledWith(
-        "/api/v1/texts/text-1/details",
-        {
-          direction: "next",
-          size: 20,
-        },
-      );
+      expect(getTextDetails).toHaveBeenCalledWith("text-1", {
+        direction: "next",
+        size: 20,
+      });
     });
   });
 
   describe("getNextPageParam logic", () => {
-    test("returns null when current_segment_position equals total_segments", () => {
+    test("returns null when the page reports no more segments below", () => {
       let capturedGetNextPageParam: any;
 
       vi.spyOn(reactQuery, "useInfiniteQuery").mockImplementation(
@@ -290,7 +281,7 @@ describe("ContentsChapter", () => {
 
       const lastPage = {
         current_segment_position: 10,
-        total_segments: 10,
+        has_more_down: false,
         content: { sections: [{ id: 1 }] },
       };
 
@@ -316,7 +307,7 @@ describe("ContentsChapter", () => {
   });
 
   describe("getPreviousPageParam logic", () => {
-    test("returns null when current_segment_position equals 1", () => {
+    test("returns null when the page reports no more segments above", () => {
       let capturedGetPreviousPageParam: any;
 
       vi.spyOn(reactQuery, "useInfiniteQuery").mockImplementation(
@@ -330,6 +321,7 @@ describe("ContentsChapter", () => {
 
       const firstPage = {
         current_segment_position: 1,
+        has_more_up: false,
         content: { sections: [{ id: 1 }] },
       };
 

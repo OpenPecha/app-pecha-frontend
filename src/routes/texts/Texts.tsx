@@ -7,7 +7,6 @@ import {
 } from "../../utils/helperFunctions.tsx";
 import Seo from "../commons/seo/Seo.tsx";
 import { LANGUAGE, siteName } from "../../utils/constants.ts";
-import axiosInstance from "../../config/axios-config.ts";
 import { useTranslate } from "@tolgee/react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import Versions from "./versions/Versions.tsx";
@@ -18,57 +17,26 @@ import Breadcrumbs, {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TwoColumnLayout from "../../components/layout/TwoColumnLayout";
 import { usePanelContext } from "@/context/PanelContext.tsx";
-
-export const fetchTableOfContents = async (
-  textId: string,
-  skip: number,
-  limit: number,
-) => {
-  const language = sessionStorage.getItem("textLanguage");
-  const mappedLanguage = language ? mapLanguageCode(language) : "en";
-  const { data } = await axiosInstance.get(`/api/v1/texts/${textId}/contents`, {
-    params: {
-      language: mappedLanguage,
-      limit: limit,
-      skip: skip,
-    },
-  });
-  return data;
-};
+import {
+  getTableOfContents,
+  getTextCommentariesByEdition,
+  getTextsByCollection,
+  getTextVersionsByEdition,
+} from "@/services/library";
 
 export const fetchVersions = async (
   textId: string,
   skip: number,
   limit: number,
-) => {
-  const language = sessionStorage.getItem("textLanguage");
-  const mappedLanguage = language ? mapLanguageCode(language) : "en";
-  const { data } = await axiosInstance.get(`/api/v1/texts/${textId}/versions`, {
-    params: {
-      language: mappedLanguage,
-      limit,
-      skip,
-    },
-  });
-  return data;
-};
+) => getTextVersionsByEdition({ editionId: textId, skip, limit });
 
 export const fetchCommentaries = async (
   textId: string,
   skip: number,
   limit: number,
-) => {
-  const { data } = await axiosInstance.get(
-    `/api/v1/texts/${textId}/commentaries`,
-    {
-      params: {
-        skip,
-        limit,
-      },
-    },
-  );
-  return { items: data };
-};
+) => ({
+  items: await getTextCommentariesByEdition({ editionId: textId, skip, limit }),
+});
 
 const Texts = (props: any) => {
   const {
@@ -104,7 +72,7 @@ const Texts = (props: any) => {
 
   const { data: tableOfContents } = useQuery(
     ["table-of-contents", textId, skip, pagination.limit],
-    () => fetchTableOfContents(textId, skip, pagination.limit),
+    () => getTableOfContents(textId),
     { refetchOnWindowFocus: false, enabled: !!textId, retry: false },
   );
 
@@ -136,15 +104,12 @@ const Texts = (props: any) => {
     async () => {
       const storedLanguage = localStorage.getItem(LANGUAGE);
       const language = storedLanguage ? mapLanguageCode(storedLanguage) : "en";
-      const { data } = await axiosInstance.get("/api/v1/texts", {
-        params: {
-          language,
-          collection_id: parentCollectionId,
-          limit: 12,
-          skip: 0,
-        },
+      return getTextsByCollection({
+        collectionId: parentCollectionId,
+        language,
+        limit: 12,
+        skip: 0,
       });
-      return data;
     },
     {
       refetchOnWindowFocus: false,
@@ -190,7 +155,7 @@ const Texts = (props: any) => {
       <Tabs className="w-full space-y-4" defaultValue="versions">
         <TabsList className="overalltext">
           <TabsTrigger value="versions">{t("common.version")}</TabsTrigger>
-          {commentaries?.items.length > 0 && (
+          {(commentaries?.items?.length ?? 0) > 0 && (
             <TabsTrigger value="commentaries">
               {t("text.type.commentary")}
             </TabsTrigger>
@@ -198,7 +163,7 @@ const Texts = (props: any) => {
         </TabsList>
         <TabsContent value="versions">
           <Versions
-            contentId={tableOfContents?.contents[0]?.id}
+            contentId={tableOfContents?.contents?.[0]?.id}
             versions={versions}
             versionsIsLoading={versionsIsLoading}
             versionsIsError={versionsIsError}
