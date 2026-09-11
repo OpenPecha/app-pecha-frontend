@@ -1,27 +1,34 @@
 import { useEffect, useRef, useState } from "react";
+import { useScroll, useTransform } from "motion/react";
+import { usePrefersReducedMotion } from "../../hooks/use-prefers-reduced-motion.ts";
 
 /** Tailwind's `lg` breakpoint, where the sections become two columns. */
 const LARGE_SCREEN = 1024;
 
+const isAtLeast = (minWidth: number) =>
+  typeof window.matchMedia === "function" &&
+  window.matchMedia(`(min-width: ${minWidth}px)`).matches;
+
 /**
  * Drifts an element against the page as it scrolls.
  *
- * Put `measureRef` on a wrapper and `style` on a child inside it. They must be
- * different elements: getBoundingClientRect() reports the *transformed* box, so
- * measuring the node being moved makes each reading include the offset it was
- * just given, and the position chases itself instead of tracking the page.
+ * Put `measureRef` on a wrapper and spread `style` on a `motion.div` inside it.
+ * They must be different elements: the wrapper is what gets measured, and a
+ * transformed node would report the box it was just moved to.
  *
- * The offset comes from how far the wrapper's centre sits from the centre of the
- * viewport, so it settles at zero when the section is the thing being read and
- * drifts as it enters and leaves - rather than growing with absolute scroll
- * position, which sends elements wandering as a page gets longer.
+ * Motion tracks the wrapper's pass through the viewport as a 0-1 progress and
+ * maps it onto a translation in `vh`, so the drift is a fraction of the screen
+ * rather than of the panel, and survives a resize without remeasuring. The
+ * progress comes from the wrapper's layout position (its offsetTop chain), not
+ * its painted position, so it keeps advancing while the section is held in
+ * place by `position: sticky` - which is exactly when these sections are on
+ * screen.
  *
- * Reads are batched into an animation frame. The effect is skipped entirely for
- * anyone who has asked for reduced motion, and on screens narrower than
- * `minWidth`, where the sections stack into one column and there is no second
- * column to drift.
+ * The effect is left off entirely for anyone who has asked for reduced motion,
+ * and on screens narrower than `minWidth`, where the sections stack into one
+ * column and there is no second column to drift.
  *
- * @param strength Fraction of the viewport height travelled across a full pass.
+ * @param strength Fraction of the viewport height travelled in each direction.
  * @param minWidth Width below which the effect is left off entirely.
  */
 export const useParallax = <T extends HTMLElement>(
@@ -29,12 +36,13 @@ export const useParallax = <T extends HTMLElement>(
   minWidth = LARGE_SCREEN,
 ) => {
   const measureRef = useRef<T>(null);
-  const [offset, setOffset] = useState(0);
-  const [isWideEnough, setIsWideEnough] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  // Read on the first render, so the panel is handed its transform before it
+  // paints rather than a frame later. Kept in state as well, so that crossing
+  // the breakpoint - rotating a tablet, dragging a window wider - turns the
+  // drift on or off instead of leaving it stuck as it was at first paint.
+  const [isWideEnough, setIsWideEnough] = useState(() => isAtLeast(minWidth));
 
-  // Tracked in state rather than read once, so that crossing the breakpoint -
-  // rotating a tablet, dragging a window wider - re-runs the effect below
-  // instead of leaving the drift stuck on or off.
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return;
 
@@ -46,52 +54,20 @@ export const useParallax = <T extends HTMLElement>(
     return () => query.removeEventListener?.("change", sync);
   }, [minWidth]);
 
-  useEffect(() => {
-    const element = measureRef.current;
-    if (!element || strength === 0 || !isWideEnough) {
-      setOffset(0);
-      return;
-    }
+  // 0 as the wrapper enters at the bottom of the screen, 1 as it leaves the top.
+  const { scrollYProgress } = useScroll({
+    target: measureRef,
+    offset: ["start end", "end start"],
+  });
 
-    if (
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
+  const travel = strength * 100;
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [`${travel}vh`, `${-travel}vh`],
+  );
 
-    let frame = 0;
+  const isDrifting = strength !== 0 && isWideEnough && !prefersReducedMotion;
 
-    const measure = () => {
-      frame = 0;
-      const rect = element.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      if (!viewportHeight) return;
-      // -0.5 above the fold, 0 dead centre, +0.5 below it.
-      const distanceFromCentre =
-        (rect.top + rect.height / 2 - viewportHeight / 2) / viewportHeight;
-      setOffset(distanceFromCentre * strength * viewportHeight);
-    };
-
-    const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(measure);
-    };
-
-    measure();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, [strength, isWideEnough]);
-
-  return {
-    measureRef,
-    style: offset
-      ? { transform: `translate3d(0, ${offset.toFixed(2)}px, 0)` }
-      : undefined,
-  };
+  return { measureRef, style: isDrifting ? { y } : undefined };
 };

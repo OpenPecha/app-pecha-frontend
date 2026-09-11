@@ -2,6 +2,8 @@ import { useCallback, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useTolgee, useTranslate } from "@tolgee/react";
 import { FiArrowRight } from "react-icons/fi";
+import { ReactLenis } from "lenis/react";
+import "lenis/dist/lenis.css";
 import HomeHero from "../planviewer/components/HomeHero.tsx";
 import IntroSection from "./IntroSection.tsx";
 import RandomMala from "./RandomMala.tsx";
@@ -19,6 +21,7 @@ import {
   isMobileDevice,
   openAppDownloadPage,
 } from "../../utils/deviceUtils.ts";
+import { usePrefersReducedMotion } from "../../hooks/use-prefers-reduced-motion.ts";
 
 /** Query keys the practice area reads; "/" used to serve these views itself. */
 const PRACTICE_PARAMS = ["series", "plan", "group", "accumulator", "view"];
@@ -43,6 +46,7 @@ const Home = () => {
   const tolgee = useTolgee(["language"]);
   const [searchParams] = useSearchParams();
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const storedLanguage =
     tolgee.getLanguage() || localStorage.getItem(LANGUAGE) || "en";
@@ -66,7 +70,19 @@ const Home = () => {
   }
 
   return (
-    <>
+    /*
+      Lenis eases the wheel rather than letting the page jump a notch at a time,
+      which is what makes the pinned sections read as one sliding over another.
+      It keeps the document's own scroll - no transformed wrapper - so the
+      `position: sticky` those sections rely on still works, and `root` renders
+      no element of its own.
+
+      Mounted here rather than around the whole app: Lenis takes over the wheel
+      wherever it is active, and the reader's panels elsewhere scroll on their
+      own. Turning off `smoothWheel` hands the wheel straight back to the
+      browser for anyone who has asked for reduced motion.
+    */
+    <ReactLenis root options={{ smoothWheel: !prefersReducedMotion }}>
       <Seo
         title={siteName}
         description={siteDescription}
@@ -74,11 +90,12 @@ const Home = () => {
       />
       <div className="bg-[#f4f6f8]">
         {/*
-          The hero is deliberately shorter than the window; the marquee takes
-          the rest, so the first screen ends on the community instead of on a
-          band of empty background.
+          Locked to one viewport at every width: the hero is shorter than the
+          window and the marquee takes the rest, so the first screen always
+          ends on the community. Below lg this used to be only min-h-dvh, which
+          let the hero fill the window and push the strip off-screen.
         */}
-        <div className="flex min-h-dvh flex-col lg:h-dvh">
+        <div className="flex h-dvh flex-col">
           <HomeHero apiLanguage={apiLanguage} />
           <PartnerMarquee apiLanguage={apiLanguage} language={planLanguage} />
         </div>
@@ -179,7 +196,7 @@ const Home = () => {
         open={downloadModalOpen}
         onClose={() => setDownloadModalOpen(false)}
       />
-    </>
+    </ReactLenis>
   );
 };
 

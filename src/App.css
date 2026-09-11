@@ -12,36 +12,6 @@
   }
 }
 
-/*
- * Partner marquee: the track holds two copies of the list, so travelling exactly
- * half its width lands the second copy where the first began and the loop is
- * seamless.
- */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee var(--marquee-duration, 45s) linear infinite;
-}
-
-.animate-marquee:hover,
-.animate-marquee:focus-within {
-  animation-play-state: paused;
-}
-
-/* A continuously moving strip is a common trigger; hold it still instead. */
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
-}
-
 #root {
   --content-font-family: "EBGaramond-Regular", sans-serif;
   --overalltext-font-family: "overalltext-font", "Inter";

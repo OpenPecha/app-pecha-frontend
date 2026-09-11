@@ -257,10 +257,12 @@ const Navigation = () => {
           }}
         >
           <img
-            className={`h-[30px] transition duration-300 ${
-              isOverHero ? "brightness-0 invert" : ""
-            }`}
-            src="/img/light_mode_logo.svg"
+            className={`h-[30px] transition duration-300 `}
+            src={
+              !isOverHero
+                ? "/img/light_mode_logo.svg"
+                : "/img/dark_mode_logo.svg"
+            }
             alt="Webuddhist"
           />
         </Link>

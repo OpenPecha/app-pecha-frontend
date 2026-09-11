@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useTranslate } from "@tolgee/react";
@@ -8,6 +9,14 @@ import VerseOfDayCard from "./VerseOfDayCard.tsx";
 type HomeHeroProps = {
   apiLanguage: string;
 };
+
+/**
+ * Stands in while the day's verse is still in flight, and for the days it
+ * arrives without a picture (or with one that fails to load) - the hero is
+ * full-bleed, so an empty backdrop reads as a broken page rather than a plain
+ * one.
+ */
+const FALLBACK_IMAGE = "/img/buddha_hero.jpg";
 
 /**
  * The home page hero: today's verse image full-bleed, with what this site is
@@ -30,17 +39,21 @@ const HomeHero = ({ apiLanguage }: HomeHeroProps) => {
     { refetchOnWindowFocus: false },
   );
 
-  const imageUrl = data?.verse_of_day?.image_url;
+  const [imageFailed, setImageFailed] = useState(false);
+
+  const verseImageUrl = data?.verse_of_day?.image_url;
+  const imageUrl =
+    verseImageUrl && !imageFailed ? verseImageUrl : FALLBACK_IMAGE;
 
   return (
-    <header className="relative isolate flex flex-1 flex-col overflow-hidden bg-[#102544]">
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      )}
+    <header className="relative isolate flex min-h-0 flex-1 flex-col overflow-hidden bg-[#102544]">
+      <img
+        src={imageUrl}
+        alt=""
+        data-testid="hero-backdrop"
+        className="absolute inset-0 h-full w-full object-cover"
+        onError={() => setImageFailed(true)}
+      />
       {/*
         Weighted to the lower left, where the headline sits, so the type stays
         legible over whatever photograph is published that day.

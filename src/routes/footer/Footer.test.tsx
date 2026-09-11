@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const translateMock = vi.fn((key: string) => `translated-${key}`);
 
@@ -43,8 +43,23 @@ describe("Footer", () => {
       </MemoryRouter>,
     );
 
+  /** jsdom's scrollY is read-only, so the page is moved by redefining it. */
+  const scrollTo = (offset: number) => {
+    Object.defineProperty(window, "scrollY", {
+      value: offset,
+      configurable: true,
+    });
+    act(() => {
+      window.dispatchEvent(new Event("scroll"));
+    });
+  };
+
   beforeEach(() => {
     translateMock.mockClear();
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, "scrollY", { value: 0, configurable: true });
   });
 
   test("renders footer landmark and headings", () => {
@@ -141,6 +156,44 @@ describe("Footer", () => {
     expect(container.innerHTML).not.toContain("grid-rows-[0fr]");
     expect(container.querySelector("footer")?.className).not.toContain(
       "lg:fixed",
+    );
+  });
+
+  test("starts transparent, so the hero band shows through the bar", () => {
+    const { container } = setup("/");
+
+    // The bar rests over the bottom of the hero; a solid strip there would cut
+    // the image off short of the fold.
+    expect(container.querySelector("footer")?.className).toContain(
+      "lg:bg-transparent",
+    );
+  });
+
+  test("takes its background once the page has moved off the hero", () => {
+    const { container } = setup("/");
+
+    scrollTo(200);
+
+    expect(container.querySelector("footer")?.className).not.toContain(
+      "lg:bg-transparent",
+    );
+  });
+
+  test("takes its background while it is open, whatever the scroll", () => {
+    const { container } = setup("/");
+    const footer = container.querySelector("footer") as HTMLElement;
+
+    // Hovering opens the columns upward, and they have to be readable.
+    fireEvent.mouseEnter(footer);
+
+    expect(footer.className).not.toContain("lg:bg-transparent");
+  });
+
+  test("is never transparent on a page with no hero behind it", () => {
+    const { container } = setup("/collections");
+
+    expect(container.querySelector("footer")?.className).not.toContain(
+      "lg:bg-transparent",
     );
   });
 

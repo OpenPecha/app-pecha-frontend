@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { vi, describe, test, expect, beforeEach } from "vitest";
@@ -99,6 +99,19 @@ describe("Home", () => {
     expect(screen.getByText("Practise")).toBeInTheDocument();
   });
 
+  test("keeps the partners on the first screen at every width", async () => {
+    renderHome();
+
+    const band = await screen.findByRole("region", {
+      name: /Groups practising with us/i,
+    });
+    // A definite viewport height, not min-h-dvh / lg:h-dvh: below lg the hero
+    // used to fill the window and the strip disappeared into it.
+    expect(band.parentElement).toHaveClass("h-dvh");
+    expect(band.parentElement).not.toHaveClass("lg:h-dvh");
+    expect(band).toHaveClass("shrink-0");
+  });
+
   test("explains each one rather than listing what is in it", () => {
     renderHome();
 
@@ -152,6 +165,51 @@ describe("Home", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByTestId("group-avatar").length).toBeGreaterThan(8);
     expect(screen.queryByText("128")).not.toBeInTheDocument();
+  });
+
+  test("falls back to the Buddha image when the day has no verse picture", async () => {
+    renderHome();
+
+    // The hero is full-bleed, so it cannot wait on the verse with nothing
+    // behind the headline.
+    expect(await screen.findByTestId("hero-backdrop")).toHaveAttribute(
+      "src",
+      "/img/buddha_hero.jpg",
+    );
+  });
+
+  test("uses the day's verse picture once it arrives", async () => {
+    fetchVerseOfDayToday.mockResolvedValue({
+      verse_of_day: { image_url: "https://img.test/verse.jpg" },
+    });
+
+    renderHome();
+
+    await waitFor(() =>
+      expect(screen.getByTestId("hero-backdrop")).toHaveAttribute(
+        "src",
+        "https://img.test/verse.jpg",
+      ),
+    );
+  });
+
+  test("falls back to the Buddha image when the verse picture fails to load", async () => {
+    fetchVerseOfDayToday.mockResolvedValue({
+      verse_of_day: { image_url: "https://img.test/gone.jpg" },
+    });
+
+    renderHome();
+
+    const backdrop = await screen.findByTestId("hero-backdrop");
+    await waitFor(() =>
+      expect(backdrop).toHaveAttribute("src", "https://img.test/gone.jpg"),
+    );
+    fireEvent.error(backdrop);
+
+    expect(screen.getByTestId("hero-backdrop")).toHaveAttribute(
+      "src",
+      "/img/buddha_hero.jpg",
+    );
   });
 
   test("sends links made before the practice area moved to /plans", () => {

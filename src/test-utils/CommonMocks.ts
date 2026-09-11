@@ -81,6 +81,28 @@ vi.mock("react-helmet-async", () => ({
 
 window.alert = vi.fn();
 
+// jsdom implements no matchMedia either, and the home page asks about the
+// viewport and the reader's motion preference. A query that never matches gives
+// every caller the plain, unanimated branch.
+window.matchMedia ??= ((query: string) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: () => {},
+  removeListener: () => {},
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  dispatchEvent: () => false,
+})) as unknown as typeof window.matchMedia;
+
+// jsdom ships no ResizeObserver, and anything that measures itself on mount -
+// the partner strip's marquee, for one - constructs one straight away.
+window.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as unknown as typeof ResizeObserver;
+
 export const mockLocalStorage = () => {
   const localStorageMock = {
     getItem: vi.fn(),

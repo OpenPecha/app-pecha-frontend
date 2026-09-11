@@ -1,5 +1,6 @@
 import { getLanguageClass } from "@/utils/helperFunctions";
 import { useTranslate } from "@tolgee/react";
+import { useEffect, useState, type FocusEvent } from "react";
 import {
   FaEnvelope,
   FaFacebook,
@@ -77,6 +78,30 @@ const connectLinks = [
   },
 ];
 
+/** How far the page has to move before the bar takes on its background. */
+const SCROLL_THRESHOLD = 24;
+
+/**
+ * How the peeking bar looks while it is still over the hero: no background of
+ * its own, no rule above it, and light text to sit on the dark band behind it.
+ *
+ * Rebinding the colour tokens rather than restyling each piece of text, the way
+ * the navigation bar does at the other end of the screen - everything inside
+ * picks the new values up without knowing where it is being rendered. The
+ * border goes fully transparent rather than merely faint: the bar and the row
+ * inside it each carry a top border, and with the columns collapsed the two sit
+ * on the same line, so any colour at all draws a rule across the hero.
+ *
+ * From `lg` up only, which is where the bar is pinned over the hero at all.
+ * Below that it sits at the end of a light page in the ordinary way.
+ */
+const OVER_HERO = [
+  "lg:bg-transparent",
+  "lg:[--foreground:#ffffff]",
+  "lg:[--muted-foreground:rgba(255,255,255,0.75)]",
+  "lg:[--custom-border:transparent]",
+].join(" ");
+
 const Footer = () => {
   const { t } = useTranslate();
   const { pathname } = useLocation();
@@ -93,11 +118,52 @@ const Footer = () => {
    */
   const isPeek = pathname === "/";
 
+  const [isScrolled, setIsScrolled] = useState(false);
+  // Pointer or keyboard is in the footer - which is also what opens it, so the
+  // panel is never asked to be readable without a background behind it.
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isPeek) {
+      setIsScrolled(false);
+      return;
+    }
+    const handleScroll = () => setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isPeek]);
+
+  /**
+   * The bar rests over the last of the hero band, so it starts transparent and
+   * takes its background once the page has moved - the same trade the
+   * navigation bar makes at the top of the screen.
+   */
+  const isOverHero = isPeek && !isScrolled && !isOpen;
+
+  // Only the peeking bar cares: everywhere else the footer is opaque whatever
+  // the pointer is doing.
+  const peekHandlers = isPeek
+    ? {
+        onMouseEnter: () => setIsOpen(true),
+        onMouseLeave: () => setIsOpen(false),
+        onFocus: () => setIsOpen(true),
+        // Focus moving between the footer's own links is not focus leaving it;
+        // without this the background would blink on every tab press.
+        onBlur: (event: FocusEvent<HTMLElement>) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsOpen(false);
+          }
+        },
+      }
+    : {};
+
   return (
     <footer
-      className={`group relative z-10 border-t border-custom-border bg-background ${
+      {...peekHandlers}
+      className={`group relative z-10 border-t border-custom-border bg-background transition-colors duration-300 ${
         isPeek ? "lg:fixed lg:inset-x-0 lg:bottom-0" : ""
-      }`}
+      } ${isOverHero ? OVER_HERO : ""}`}
     >
       <div
         className={
