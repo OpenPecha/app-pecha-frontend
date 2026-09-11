@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 import { useParallax } from "./useParallax.ts";
 
 type IntroSectionProps = {
@@ -43,7 +44,7 @@ const IntroSection = ({
   parallax = false,
   background = "",
 }: IntroSectionProps) => {
-  // A quarter of the viewport across a full pass. A tenth was too slight to
+  // A quarter of the viewport in each direction. A tenth was too slight to
   // read as movement at all next to the page scrolling past it.
   const drift = useParallax<HTMLDivElement>(parallax ? 0.25 : 0);
 
@@ -81,9 +82,9 @@ const IntroSection = ({
           ref={drift.measureRef}
           className={reversed ? "lg:order-1" : undefined}
         >
-          <div style={drift.style} className="will-change-transform">
+          <motion.div style={drift.style} className="will-change-transform">
             {panel}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

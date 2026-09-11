@@ -258,7 +258,11 @@ const Navigation = () => {
         >
           <img
             className={`h-[30px] transition duration-300 `}
-            src="/img/light_mode_logo.svg"
+            src={
+              !isOverHero
+                ? "/img/light_mode_logo.svg"
+                : "/img/dark_mode_logo.svg"
+            }
             alt="Webuddhist"
           />
         </Link>

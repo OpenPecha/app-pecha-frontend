@@ -1,8 +1,10 @@
 import { useQuery } from "react-query";
 import { useTranslate } from "@tolgee/react";
+import Marquee from "react-fast-marquee";
 import { fetchPublicGroups } from "../mantras/api/accumulatorApi.ts";
 import { getGroupTitleForLanguage } from "../mantras/utils/groupUtils.ts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { usePrefersReducedMotion } from "../../hooks/use-prefers-reduced-motion.ts";
 import type { PlanLanguageCode } from "../planviewer/utils/seriesUtils.ts";
 
 type PartnerMarqueeProps = {
@@ -15,6 +17,15 @@ const PARTNER_LIMIT = 50;
 
 /** Below this there is too little to loop convincingly, so it sits still. */
 const MINIMUM_TO_ANIMATE = 8;
+
+/**
+ * Pixels a second. A speed rather than a duration, so the strip travels at the
+ * same pace whether there are eight partners or fifty.
+ */
+const SPEED = 40;
+
+/** The band's own background, so the strip fades out rather than being cut. */
+const BAND_COLOUR = "#0a1729";
 
 const initialsOf = (title: string) =>
   title
@@ -30,12 +41,14 @@ const initialsOf = (title: string) =>
  * The hero is deliberately shorter than the window; this takes the rest, so the
  * first screen ends on the community rather than on empty space.
  *
- * The list is rendered twice: the track travels exactly half its own width, at
- * which point the second copy sits where the first started, so the loop has no
- * seam. Only the first copy is announced - the duplicate is decorative.
+ * The scrolling itself is react-fast-marquee's: it measures the band and repeats
+ * the avatars as many times as it takes to fill it, so the loop has no seam at
+ * any width. Because it repeats them, the strip is decorative and the partners
+ * are named once in a list of their own for anyone reading the page aloud.
  */
 const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
   const { t } = useTranslate();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const { data } = useQuery(
     ["public-groups-marquee", apiLanguage],
@@ -46,63 +59,75 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
   const groups = data?.groups ?? [];
   if (groups.length === 0) return null;
 
-  const shouldAnimate = groups.length >= MINIMUM_TO_ANIMATE;
-  // Keep the pace even however many partners there are, rather than whipping
-  // through a short list and crawling through a long one.
-  const duration = `${Math.max(30, groups.length * 3)}s`;
+  // A continuously moving strip is a common migraine trigger, so anyone who has
+  // asked for reduced motion gets the still row that short lists get.
+  const shouldAnimate =
+    groups.length >= MINIMUM_TO_ANIMATE && !prefersReducedMotion;
 
-  const renderRun = (ariaHidden: boolean) => (
-    <ul
-      className="flex shrink-0 items-center gap-6 pr-6 sm:gap-10 sm:pr-10"
-      aria-hidden={ariaHidden || undefined}
+  const label = t("home.partners_label", "Groups practising with us");
+
+  const titlesById = groups.map((group) => ({
+    id: group.id,
+    avatarUrl: group.avatar_url,
+    title: getGroupTitleForLanguage(group.metadata, language),
+  }));
+
+  const renderAvatar = (
+    { id, avatarUrl, title }: (typeof titlesById)[number],
+    decorative: boolean,
+  ) => (
+    <Avatar
+      key={id}
+      className={`size-12 ring-1 ring-white/25 sm:size-14 ${decorative ? "mr-6 sm:mr-10" : ""}`}
+      title={title}
     >
-      {groups.map((group) => {
-        const title = getGroupTitleForLanguage(group.metadata, language);
-        return (
-          <li key={group.id} className="shrink-0">
-            <Avatar
-              className="size-12 ring-1 ring-white/25 sm:size-14"
-              title={title}
-            >
-              {group.avatar_url && (
-                <AvatarImage
-                  src={group.avatar_url}
-                  alt={ariaHidden ? "" : title}
-                />
-              )}
-              <AvatarFallback className="bg-white/10 text-xs font-semibold text-white/80">
-                {initialsOf(title)}
-              </AvatarFallback>
-            </Avatar>
-          </li>
-        );
-      })}
-    </ul>
+      {avatarUrl && (
+        <AvatarImage src={avatarUrl} alt={decorative ? "" : title} />
+      )}
+      <AvatarFallback className="bg-white/10 text-xs font-semibold text-white/80">
+        {initialsOf(title)}
+      </AvatarFallback>
+    </Avatar>
   );
 
   return (
     <section
       className="flex min-h-28 flex-[0_0_20%] flex-col justify-center gap-3 overflow-hidden bg-[#0a1729] py-3 lg:pb-14"
-      aria-label={t("home.partners_label", "Groups practising with us")}
+      aria-label={label}
     >
       <p className="px-4 mb-4 text-center text-[0.65rem] font-semibold uppercase  tracking-[0.24em] text-white/40 sm:px-6">
-        {t("home.partners_label", "Groups practising with us")}
+        {label}
       </p>
 
-      {/* Fades the strip out at both edges instead of cutting it off. */}
-      <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-        <div
-          className={`flex w-max ${shouldAnimate ? "partner-marquee-track" : "justify-center"}`}
-          style={
-            shouldAnimate
-              ? ({ "--marquee-duration": duration } as React.CSSProperties)
-              : undefined
-          }
-        >
-          {renderRun(false)}
-          {shouldAnimate && renderRun(true)}
-        </div>
-      </div>
+      {shouldAnimate ? (
+        <>
+          <ul className="sr-only">
+            {titlesById.map(({ id, title }) => (
+              <li key={id}>{title}</li>
+            ))}
+          </ul>
+
+          <div aria-hidden="true">
+            <Marquee
+              speed={SPEED}
+              autoFill
+              gradient
+              gradientColor={BAND_COLOUR}
+              gradientWidth={72}
+            >
+              {titlesById.map((group) => renderAvatar(group, true))}
+            </Marquee>
+          </div>
+        </>
+      ) : (
+        <ul className="flex items-center justify-center gap-6 sm:gap-10">
+          {titlesById.map((group) => (
+            <li key={group.id} className="shrink-0">
+              {renderAvatar(group, false)}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 };

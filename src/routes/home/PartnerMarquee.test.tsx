@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { vi, describe, test, expect, beforeEach } from "vitest";
+import { vi, describe, test, expect, beforeEach, afterEach } from "vitest";
 import "@testing-library/jest-dom";
 
 // The shared test setup stubs react-query's useQuery; this uses a real one.
@@ -39,34 +39,57 @@ const renderMarquee = () =>
     </QueryClientProvider>,
   );
 
+const originalMatchMedia = window.matchMedia;
+
+/** Answers the reduced-motion query, leaving every other query unmatched. */
+const setReducedMotion = (reduce: boolean) => {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches: query.includes("prefers-reduced-motion") ? reduce : false,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+};
+
 beforeEach(() => {
   vi.clearAllMocks();
+  setReducedMotion(false);
+});
+
+afterEach(() => {
+  window.matchMedia = originalMatchMedia;
 });
 
 describe("PartnerMarquee", () => {
-  test("renders every partner it is given", async () => {
+  test("scrolls the partners past in a marquee", async () => {
     fetchPublicGroups.mockResolvedValue(groupsOf(10));
 
     const { container } = renderMarquee();
 
+    // react-fast-marquee owns the scrolling: it measures the band and repeats
+    // the avatars as many times as it takes to fill it.
     await waitFor(() =>
-      expect(container.querySelectorAll("li").length).toBeGreaterThan(0),
+      expect(container.querySelector(".rfm-marquee-container")).not.toBeNull(),
     );
-    // Two runs of ten: the second is the copy that makes the loop seamless.
-    expect(container.querySelectorAll("li")).toHaveLength(20);
+    expect(
+      container.querySelectorAll(".rfm-child").length,
+    ).toBeGreaterThanOrEqual(10);
   });
 
-  test("announces the partners once, not twice", async () => {
+  test("names the partners once, however often the strip repeats them", async () => {
     fetchPublicGroups.mockResolvedValue(groupsOf(10));
 
     const { container } = renderMarquee();
 
     await waitFor(() =>
-      expect(container.querySelectorAll("ul")).toHaveLength(2),
+      expect(container.querySelector(".rfm-marquee-container")).not.toBeNull(),
     );
-    const [first, duplicate] = Array.from(container.querySelectorAll("ul"));
-    expect(first).not.toHaveAttribute("aria-hidden");
-    expect(duplicate).toHaveAttribute("aria-hidden", "true");
+    // The repeated strip is decorative; the partners are listed once instead.
+    expect(container.querySelectorAll("li")).toHaveLength(10);
+    expect(
+      container
+        .querySelector(".rfm-marquee-container")
+        ?.closest("[aria-hidden]"),
+    ).toHaveAttribute("aria-hidden", "true");
   });
 
   test("holds still when there are too few partners to loop", async () => {
@@ -77,9 +100,19 @@ describe("PartnerMarquee", () => {
     await waitFor(() =>
       expect(container.querySelectorAll("li")).toHaveLength(3),
     );
-    // No duplicate run, and no animation to run it.
-    expect(container.querySelectorAll("ul")).toHaveLength(1);
-    expect(container.querySelector(".partner-marquee-track")).toBeNull();
+    expect(container.querySelector(".rfm-marquee-container")).toBeNull();
+  });
+
+  test("holds still for a reader who has asked for less movement", async () => {
+    setReducedMotion(true);
+    fetchPublicGroups.mockResolvedValue(groupsOf(10));
+
+    const { container } = renderMarquee();
+
+    await waitFor(() =>
+      expect(container.querySelectorAll("li")).toHaveLength(10),
+    );
+    expect(container.querySelector(".rfm-marquee-container")).toBeNull();
   });
 
   test("renders nothing at all when there are no partners", async () => {
@@ -89,21 +122,6 @@ describe("PartnerMarquee", () => {
 
     await waitFor(() => expect(fetchPublicGroups).toHaveBeenCalled());
     expect(container).toBeEmptyDOMElement();
-  });
-
-  test("paces itself by how many partners there are", async () => {
-    fetchPublicGroups.mockResolvedValue(groupsOf(20));
-
-    const { container } = renderMarquee();
-
-    await waitFor(() =>
-      expect(container.querySelector(".partner-marquee-track")).not.toBeNull(),
-    );
-    // 20 partners at three seconds each, rather than a fixed duration that
-    // would crawl for a long list and race through a short one.
-    expect(
-      container.querySelector(".partner-marquee-track")?.getAttribute("style"),
-    ).toContain("60s");
   });
 
   test("labels the strip for anyone who cannot see it", async () => {
