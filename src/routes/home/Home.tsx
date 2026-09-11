@@ -90,11 +90,12 @@ const Home = () => {
       />
       <div className="bg-[#f4f6f8]">
         {/*
-          The hero is deliberately shorter than the window; the marquee takes
-          the rest, so the first screen ends on the community instead of on a
-          band of empty background.
+          Locked to one viewport at every width: the hero is shorter than the
+          window and the marquee takes the rest, so the first screen always
+          ends on the community. Below lg this used to be only min-h-dvh, which
+          let the hero fill the window and push the strip off-screen.
         */}
-        <div className="flex min-h-dvh flex-col lg:h-dvh">
+        <div className="flex h-dvh flex-col">
           <HomeHero apiLanguage={apiLanguage} />
           <PartnerMarquee apiLanguage={apiLanguage} language={planLanguage} />
         </div>

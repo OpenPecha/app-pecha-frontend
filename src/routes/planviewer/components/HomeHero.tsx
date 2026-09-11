@@ -46,7 +46,7 @@ const HomeHero = ({ apiLanguage }: HomeHeroProps) => {
     verseImageUrl && !imageFailed ? verseImageUrl : FALLBACK_IMAGE;
 
   return (
-    <header className="relative isolate flex flex-1 flex-col overflow-hidden bg-[#102544]">
+    <header className="relative isolate flex min-h-0 flex-1 flex-col overflow-hidden bg-[#102544]">
       <img
         src={imageUrl}
         alt=""

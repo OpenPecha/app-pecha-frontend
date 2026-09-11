@@ -38,8 +38,10 @@ const initialsOf = (title: string) =>
 /**
  * A slow strip of the groups practising here, filling the band below the hero.
  *
- * The hero is deliberately shorter than the window; this takes the rest, so the
- * first screen ends on the community rather than on empty space.
+ * Sized to its own content, and to a fifth of the first screen from lg up, so
+ * it stays visible instead of being clipped or pushed into the hero. The hero
+ * is deliberately shorter than the window; this takes the rest, so the first
+ * screen ends on the community rather than on empty space.
  *
  * The scrolling itself is react-fast-marquee's: it measures the band and repeats
  * the avatars as many times as it takes to fill it, so the loop has no seam at
@@ -92,7 +94,7 @@ const PartnerMarquee = ({ apiLanguage, language }: PartnerMarqueeProps) => {
 
   return (
     <section
-      className="flex min-h-28 flex-[0_0_20%] flex-col justify-center gap-3 overflow-hidden bg-[#0a1729] py-3 lg:pb-14"
+      className="flex min-h-36 shrink-0 flex-col justify-center gap-3 overflow-x-hidden bg-[#0a1729] py-3 lg:min-h-[20%] lg:pb-14"
       aria-label={label}
     >
       <p className="px-4 mb-4 text-center text-[0.65rem] font-semibold uppercase  tracking-[0.24em] text-white/40 sm:px-6">

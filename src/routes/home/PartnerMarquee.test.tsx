@@ -133,4 +133,16 @@ describe("PartnerMarquee", () => {
       await screen.findByRole("region", { name: /Groups practising with us/i }),
     ).toBeInTheDocument();
   });
+
+  test("does not shrink, so the label stays visible on a short screen", async () => {
+    fetchPublicGroups.mockResolvedValue(groupsOf(10));
+
+    renderMarquee();
+
+    const band = await screen.findByRole("region", {
+      name: /Groups practising with us/i,
+    });
+    expect(band).toHaveClass("shrink-0");
+    expect(band).toHaveClass("min-h-36");
+  });
 });

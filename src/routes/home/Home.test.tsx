@@ -99,6 +99,19 @@ describe("Home", () => {
     expect(screen.getByText("Practise")).toBeInTheDocument();
   });
 
+  test("keeps the partners on the first screen at every width", async () => {
+    renderHome();
+
+    const band = await screen.findByRole("region", {
+      name: /Groups practising with us/i,
+    });
+    // A definite viewport height, not min-h-dvh / lg:h-dvh: below lg the hero
+    // used to fill the window and the strip disappeared into it.
+    expect(band.parentElement).toHaveClass("h-dvh");
+    expect(band.parentElement).not.toHaveClass("lg:h-dvh");
+    expect(band).toHaveClass("shrink-0");
+  });
+
   test("explains each one rather than listing what is in it", () => {
     renderHome();
 
